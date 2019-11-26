@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center"
+    tools:context=".login.SignInActivity">
+
+
+    <LinearLayout
+        android:id="@+id/signin_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/img_icon_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="32dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/ibtn_facebook"
+                    style="@style/com_facebook_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/facebook_btn_border"
+                    android:drawableStart="@drawable/ic_facebook"
+                    android:paddingStart="16dp"
+                    android:text="@string/signin_by_facebook"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/ibtn_google"
+                    style="@style/com_facebook_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/google_btn_border"
+                    android:drawableStart="@drawable/ic_google"
+                    android:paddingStart="16dp"
+                    android:text="@string/signin_by_google"
+                    android:textColor="@color/gray"
+                    app:strokeWidth="2dp" />
+
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/btnLoginFb"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/btnLoginGg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

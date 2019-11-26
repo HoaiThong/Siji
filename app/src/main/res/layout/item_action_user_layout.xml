@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/action_user_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/ic_cart"
+        android:drawablePadding="15dp"
+        android:padding="14dp"
+        android:singleLine="true"
+        android:text="name"
+        android:textSize="16dp"
+         />
+    <TextView
+        android:background="@color/browser_actions_bg_grey"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp" />
+</LinearLayout>
+
