@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import net.siji.R;
+import net.siji.dao.ItemClickListener;
 import net.siji.homeView.GridViewAdapter;
 import net.siji.homeView.HorizontalListAdapter;
 import net.siji.homeView.ImageAdapter;
@@ -38,13 +39,10 @@ public class CategoryFragment extends Fragment {
     int page = 0;
     ArrayList<String> listImageSlider;
     private Activity mActivity;
-    private RecyclerView recyclerViewNew;
-    private RecyclerView recyclerViewMost;
-    private RecyclerView recyclerViewFull;
-    private RecyclerView recyclerViewCountry;
-    private RecyclerView recyclerViewOtherCountry;
+    private RecyclerView recyclerView;
     private HorizontalListCategoryAdapter horizontalAdapter;
     private GridViewAdapter gridViewAdapter;
+    private ItemClickListener itemClickListener;
 
     @Nullable
     @Override
@@ -60,15 +58,22 @@ public class CategoryFragment extends Fragment {
     }
 
     public void initCategory() {
-        recyclerViewNew = (RecyclerView) view.findViewById(R.id.horizontal_recycler_category);
+        recyclerView = (RecyclerView) view.findViewById(R.id.horizontal_recycler_category);
 
-        recyclerViewNew.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
 
         //set horizontal LinearLayout as layout manager to creating horizontal list view
         LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewNew.setLayoutManager(horizontalManager);
+        recyclerView.setLayoutManager(horizontalManager);
         horizontalAdapter = new HorizontalListCategoryAdapter(mActivity);
-        recyclerViewNew.setAdapter(horizontalAdapter);
+        recyclerView.setAdapter(horizontalAdapter);
+        horizontalAdapter.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(View view, int position, boolean isLongClick) {
+                Toast.makeText(mActivity, String.valueOf(position), Toast.LENGTH_SHORT).show();
+                System.out.println(isLongClick);
+            }
+        });
     }
 
     @Override

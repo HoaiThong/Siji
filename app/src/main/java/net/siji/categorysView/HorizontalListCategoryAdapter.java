@@ -12,12 +12,14 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.siji.R;
+import net.siji.dao.ItemClickListener;
 import net.siji.inforView.InforActivity;
 
 
 public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<HorizontalListCategoryAdapter.ViewHolder> {
 
     private Activity activity;
+    private ItemClickListener itemClickListener;
 
     public HorizontalListCategoryAdapter(Activity activity) {
         this.activity = activity;
@@ -33,15 +35,7 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, "Position clicked: " + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(activity, InforActivity.class);
-                activity.startActivity(intent);
-                activity.finish();
-            }
-        });
+
     }
 
     @Override
@@ -49,16 +43,26 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
         return 10;
     }
 
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
     /**
      * View holder to display each RecylerView item
      */
-    protected class ViewHolder extends RecyclerView.ViewHolder {
+    protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView textView;
+        private TextView mTextView;
 
         public ViewHolder(View view) {
             super(view);
-            textView = view.findViewById(R.id.tv_title_category);
+            mTextView = view.findViewById(R.id.tv_title_category);
+            view.setOnClickListener( this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            itemClickListener.onClick(v, getAdapterPosition(),false);
         }
     }
 }
