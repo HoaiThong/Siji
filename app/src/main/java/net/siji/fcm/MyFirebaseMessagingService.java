@@ -1,5 +1,6 @@
 package net.siji.fcm;
 
+import android.app.Activity;
 import android.util.Log;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -21,6 +22,7 @@ import androidx.work.WorkManager;
 import net.siji.MainActivity;
 import net.siji.R;
 import net.siji.dao.OkHttpUtil;
+import net.siji.sessionApp.SessionManager;
 
 import java.util.Map;
 
@@ -36,9 +38,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String SOUND = "sound";
     private static final String ACTION_DESTINATION = "action_destination";
     OkHttpUtil okHttpUtil;
-    private final String URl="";
+    private final String URl = "";
+    Activity mActivity;
 
     public MyFirebaseMessagingService() {
+    }
+
+    public MyFirebaseMessagingService(Activity mActivity) {
+        this.mActivity = mActivity;
     }
 
     /**
@@ -154,7 +161,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        String jsonUser = sessionManager.getReaded("user");
+        System.out.println(jsonUser);
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
@@ -190,8 +199,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
-        okHttpUtil=new OkHttpUtil();
-        okHttpUtil.excutePost(URl,token);
+        okHttpUtil = new OkHttpUtil();
+        okHttpUtil.excutePost(URl, token);
     }
 
     /**

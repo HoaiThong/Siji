@@ -5,49 +5,51 @@ import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Customer {
+public class Customer implements Serializable{
     //Gson serializable
-    @Expose(serialize = false)
+//    @Expose
     private int id;
-    @Expose
+//    @Expose
     private String idFacebook="";
-    @Expose
+//    @Expose
     private String idGoogle="";
-    @Expose
+//    @Expose
     private String idAccoutKit="";
-    @Expose
+//    @Expose
     private String nameFaceBook="";
-    @Expose
+//    @Expose
     private String nameGoogle="";
-    @Expose
+//    @Expose
     private String firstName="";
-    @Expose
+//    @Expose
     private String secondName="";
-    @Expose
+//    @Expose
     private String linkFacebook="";
-    @Expose
+//    @Expose
     private String phone="";
-    @Expose
+//    @Expose
     private String phoneFacebook="";
-    @Expose
+//    @Expose
     private String emailFacebook="";
-    @Expose
+//    @Expose
     private String emailGoogle="";
-    @Expose
+//    @Expose
     private String emailAccoutKit="";
-    @Expose
+//    @Expose
     private String address="";
-    @Expose
+//    @Expose
     private String sex="";
-    @Expose
+//    @Expose
     private String dateOfBirth="";
-    @Expose
+//    @Expose
     private String idTokenFcm="";
-    @Expose
+//    @Expose
     private String job="";
-    @Expose(serialize = false)
+
+    private String iconUrl="http://siji.asia/thumb/icon.jpg";
+//    @Expose(serialize = false)
     private Timestamp createAt;
-    @Expose(serialize = false)//=@Expose(serialize = false, deserialize = true)
+//    @Expose(serialize = false)//=@Expose(serialize = false, deserialize = true)
     private Timestamp updateAt;
 
     public Customer() {
@@ -205,6 +207,14 @@ public class Customer {
         this.job = job;
     }
 
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
     public Timestamp getCreateAt() {
         return createAt;
     }
@@ -219,5 +229,28 @@ public class Customer {
 
     public void setUpdateAt(Timestamp updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public String toJSONNoId(){
+        String json="{\"address\":\""+address+"\"," +
+                "\"dateOfBirth\":\""+dateOfBirth+"\"," +
+                "\"emailAccoutKit\":\""+emailAccoutKit+"\"," +
+                "\"emailFacebook\":\""+emailFacebook+"\"," +
+                "\"emailGoogle\":\""+emailGoogle+"\"," +
+                "\"firstName\":\""+firstName+"\"," +
+                "\"idAccoutKit\":\""+idAccoutKit+"\"," +
+                "\"idFacebook\":\""+idFacebook+"\"," +
+                "\"idGoogle\":\""+idGoogle+"\"," +
+                "\"idTokenFcm\":\""+idTokenFcm+"\"," +
+                "\"iconUrl\":\""+iconUrl+"\"," +
+                "\"job\":\""+job+"\"," +
+                "\"linkFacebook\":\""+linkFacebook+"\"," +
+                "\"nameFaceBook\":\""+nameFaceBook+"\"," +
+                "\"nameGoogle\":\""+nameGoogle+"\"," +
+                "\"phone\":\""+phone+"\"," +
+                "\"phoneFacebook\":\""+phoneFacebook+"\"," +
+                "\"secondName\":\""+secondName+"\"," +
+                "\"sex\":\""+sex+"\"}";
+        return json;
     }
 }

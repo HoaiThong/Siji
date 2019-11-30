@@ -15,14 +15,18 @@ import net.siji.R;
 import net.siji.dao.ItemClickListener;
 import net.siji.inforView.InforActivity;
 
+import java.util.List;
+
 
 public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<HorizontalListCategoryAdapter.ViewHolder> {
 
     private Activity activity;
     private ItemClickListener itemClickListener;
+    private List<String> list;
 
-    public HorizontalListCategoryAdapter(Activity activity) {
+    public HorizontalListCategoryAdapter(Activity activity, List<String> list) {
         this.activity = activity;
+        this.list = list;
     }
 
     @Override
@@ -35,12 +39,14 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
+        String label = list.get(position);
+        viewHolder.mTextView.setText(label);
+        viewHolder.mView.setVisibility(View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return list.size();
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
@@ -53,16 +59,18 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
     protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mTextView;
+        private View mView;
 
         public ViewHolder(View view) {
             super(view);
             mTextView = view.findViewById(R.id.tv_title_category);
-            view.setOnClickListener( this);
+            mView = view.findViewById(R.id.divider_horizontal);
+            view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            itemClickListener.onClick(v, getAdapterPosition(),false);
+            itemClickListener.onClick(v, getAdapterPosition(), false);
         }
     }
 }

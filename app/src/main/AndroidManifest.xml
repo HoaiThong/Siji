@@ -31,10 +31,8 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity
-            android:name=".readView.ReadBookActivity"
-            android:theme="@style/Theme" />
-        <activity android:name=".splashScreenView.SplashScreenActivity" />
+        <activity android:name=".splashScreenView.SplashScreenActivity"
+            android:theme="@style/FullscreenTheme"/>
         <activity
             android:name=".inforView.InforActivity"
             android:theme="@style/Theme" />
@@ -71,7 +69,7 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_abc_block" />
+            android:resource="@drawable/ic_notifications_black_24dp" />
         <!--
  Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more.

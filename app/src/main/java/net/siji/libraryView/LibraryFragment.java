@@ -27,8 +27,8 @@ public class LibraryFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_user_view, container, false);
-        init();
+        view = inflater.inflate(R.layout.fragment_list_manga, container, false);
+//        init();
         return view;
     }
 

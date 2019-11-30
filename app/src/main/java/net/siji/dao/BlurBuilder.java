@@ -15,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class BlurBuilder {
-    private static final float BITMAP_SCALE = 0.4f;
+    private static final float BITMAP_SCALE = 0.2f;
     private static final float BLUR_RADIUS = 7.5f;
 
     public static Bitmap blur(Context context, Bitmap image) {

@@ -25,9 +25,11 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import net.siji.MainActivity;
 import net.siji.R;
 import net.siji.dao.BlurBuilder;
 import net.siji.readView.EpubViewerActivity;
+import net.siji.splashScreenView.SplashScreenActivity;
 
 
 public class InforActivity extends AppCompatActivity {
@@ -81,7 +83,9 @@ public class InforActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            Toast.makeText(this,"hello",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, SplashScreenActivity.class);
+            startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,21 +1,20 @@
 package net.siji.homeView;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -23,14 +22,18 @@ import androidx.viewpager.widget.ViewPager;
 import net.siji.R;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.imageSliderViewPager.PagesLessException;
+import net.siji.model.Comic;
 import net.siji.sessionApp.SessionManager;
+import net.siji.verticalView.VerticalListFragment;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
     private ListView listView;
     private View view;
     private ViewPager viewPager;
@@ -39,98 +42,122 @@ public class HomeFragment extends Fragment {
     int page = 0;
     ArrayList<String> listImageSlider;
     private Activity mActivity;
+    private RecyclerView recyclerViewRank;
     private RecyclerView recyclerViewNew;
     private RecyclerView recyclerViewMost;
     private RecyclerView recyclerViewFull;
-    private RecyclerView recyclerViewCountry;
-    private RecyclerView recyclerViewOtherCountry;
     private HorizontalListAdapter horizontalAdapter;
     private GridViewAdapter gridViewAdapter;
+    private FragmentManager fragmentManager;
+    private String API_RANK_URL = "http://192.168.0.110/KindleServer/view/rank_manga.php";
+    private String count = "10";
+    private String API_GET_LIMIT_COMIC_BY_UPDATE = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_update.php";
+    private String API_GET_LIMIT_COMIC_FULL = "http://192.168.1.121/siji-server/view/api_get_limit_comic_full.php";
+    private String API_GET_LIMIT_COMIC_BY_VIEW_DAY = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_view_day.php";
+    private LinearLayout ll_form_comic_full;
+    private LinearLayout ll_form_view_day;
+    private LinearLayout ll_form_new_comic;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_home_view, container, false);
-        SessionManager sessionManager=new SessionManager(mActivity);
-        String user =sessionManager.getReaded("user");
-        Log.d("uuuuuuuuuuuuuu:",user);
-        Toast.makeText(mActivity,user,Toast.LENGTH_SHORT).show();
-
+        SessionManager sessionManager = new SessionManager(mActivity);
+        String user = sessionManager.getReaded("user");
+        Log.d("uuuuuuuuuuuuuu:", user);
+        fragmentManager = getFragmentManager();
         init();
+//        progressBar.setVisibility(View.GONE);
         return view;
     }
 
     public void init() {
         viewPager = view.findViewById(R.id.viewPager);
         indicatorView = view.findViewById(R.id.indicator);
+        ll_form_comic_full = view.findViewById(R.id.ll_form_comic_full);
+        ll_form_new_comic = view.findViewById(R.id.ll_form_new_comic);
+        ll_form_view_day = view.findViewById(R.id.ll_form_view_day);
+        ll_form_new_comic.setOnClickListener(this);
+        ll_form_comic_full.setOnClickListener(this);
+        ll_form_view_day.setOnClickListener(this);
         initViewPager();
+//        initRank();
         initNew();
-        initMostViews();
+        initViewsDay();
         initFull();
-        initCountry();
-        initOtherCountry();
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity) {
+            mActivity = (Activity) context;
+        }
+    }
+
+    public void initRank() {
+        List<Comic> objectArrayList = new ArrayList<>();
+        objectArrayList = mActivity.getIntent().getParcelableArrayListExtra("rank");
+        if (objectArrayList.isEmpty()) {
+            recyclerViewRank = (RecyclerView) view.findViewById(R.id.horizontal_recycler_rate);
+            recyclerViewRank.setHasFixedSize(true);
+            LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewRank.setLayoutManager(horizontalManager);
+            horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
+            recyclerViewRank.setAdapter(horizontalAdapter);
+            LinearLayout linearLayout = view.findViewById(R.id.ll_rank);
+            linearLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     public void initNew() {
-        recyclerViewNew = (RecyclerView) view.findViewById(R.id.horizontal_recycler);
+        List<Comic> objectArrayList = new ArrayList<>();
+        objectArrayList = mActivity.getIntent().getParcelableArrayListExtra("update");
+        if (!objectArrayList.isEmpty()) {
+            recyclerViewNew = (RecyclerView) view.findViewById(R.id.horizontal_recycler);
 
-        recyclerViewNew.setHasFixedSize(true);
+            recyclerViewNew.setHasFixedSize(true);
 
-        //set horizontal LinearLayout as layout manager to creating horizontal list view
-        LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewNew.setLayoutManager(horizontalManager);
-        horizontalAdapter = new HorizontalListAdapter(mActivity);
-        recyclerViewNew.setAdapter(horizontalAdapter);
+            //set horizontal LinearLayout as layout manager to creating horizontal list view
+            LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewNew.setLayoutManager(horizontalManager);
+            horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
+            recyclerViewNew.setAdapter(horizontalAdapter);
+        }
     }
 
-    public void initMostViews() {
-        recyclerViewMost = (RecyclerView) view.findViewById(R.id.horizontal_recycler_most_view);
+    public void initViewsDay() {
+        List<Comic> objectArrayList = new ArrayList<>();
+        objectArrayList = mActivity.getIntent().getParcelableArrayListExtra("viewday");
+        if (!objectArrayList.isEmpty()) {
+            recyclerViewMost = (RecyclerView) view.findViewById(R.id.horizontal_recycler_most_view);
 
-        recyclerViewMost.setHasFixedSize(true);
+            recyclerViewMost.setHasFixedSize(true);
 
-        //set horizontal LinearLayout as layout manager to creating horizontal list view
-        LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewMost.setLayoutManager(horizontalManager);
-        horizontalAdapter = new HorizontalListAdapter(mActivity);
-        recyclerViewMost.setAdapter(horizontalAdapter);
+            //set horizontal LinearLayout as layout manager to creating horizontal list view
+            LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewMost.setLayoutManager(horizontalManager);
+            horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
+            recyclerViewMost.setAdapter(horizontalAdapter);
+        }
     }
 
     public void initFull() {
-        recyclerViewFull = (RecyclerView) view.findViewById(R.id.horizontal_recycler_full);
+        List<Comic> objectArrayList = new ArrayList<>();
+        objectArrayList = mActivity.getIntent().getParcelableArrayListExtra("full");
+        if (!objectArrayList.isEmpty()) {
+            recyclerViewFull = (RecyclerView) view.findViewById(R.id.horizontal_recycler_full);
 
-        recyclerViewFull.setHasFixedSize(true);
+            recyclerViewFull.setHasFixedSize(true);
 
-        //set horizontal LinearLayout as layout manager to creating horizontal list view
-        LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewFull.setLayoutManager(horizontalManager);
-        horizontalAdapter = new HorizontalListAdapter(mActivity);
-        recyclerViewFull.setAdapter(horizontalAdapter);
-    }
-
-    public void initCountry() {
-        recyclerViewCountry = (RecyclerView) view.findViewById(R.id.recycler_in_country);
-        recyclerViewCountry.setNestedScrollingEnabled(false);
-        recyclerViewCountry.setHasFixedSize(true);
-
-        //set horizontal LinearLayout as layout manager to creating horizontal list view
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mActivity, 3);
-        recyclerViewCountry.setLayoutManager(gridLayoutManager);
-        gridViewAdapter = new GridViewAdapter(mActivity);
-        recyclerViewCountry.setAdapter(gridViewAdapter);
-    }
-
-    public void initOtherCountry() {
-        recyclerViewOtherCountry = (RecyclerView) view.findViewById(R.id.recycler_other_country);
-        recyclerViewOtherCountry.setNestedScrollingEnabled(false);
-        recyclerViewOtherCountry.setHasFixedSize(true);
-
-        //set horizontal LinearLayout as layout manager to creating horizontal list view
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mActivity, 2);
-        recyclerViewOtherCountry.setLayoutManager(gridLayoutManager);
-        gridViewAdapter = new GridViewAdapter(mActivity);
-        recyclerViewOtherCountry.setAdapter(gridViewAdapter);
+            //set horizontal LinearLayout as layout manager to creating horizontal list view
+            LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewFull.setLayoutManager(horizontalManager);
+            horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
+            recyclerViewFull.setAdapter(horizontalAdapter);
+        }
     }
 
     public void initViewPager() {
@@ -144,6 +171,7 @@ public class HomeFragment extends Fragment {
         }
         pageSwitcher(3);
     }
+
 
     public ArrayList<String> getImageSlider() {
         ArrayList<String> list = new ArrayList<>();
@@ -160,10 +188,26 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Activity) {
-            mActivity = (Activity) context;
+    public void onClick(View v) {
+        System.out.println("OnClick");
+        VerticalListFragment fragment = new VerticalListFragment();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        switch (v.getId()) {
+            case R.id.ll_form_new_comic:
+                mActivity.getIntent().putExtra("apiUrl", API_GET_LIMIT_COMIC_BY_UPDATE);
+                fragmentTransaction.replace(R.id.fragment_content, fragment);
+                fragmentTransaction.commit();
+                break;
+            case R.id.ll_form_view_day:
+                mActivity.getIntent().putExtra("apiUrl", API_GET_LIMIT_COMIC_BY_VIEW_DAY);
+                fragmentTransaction.replace(R.id.fragment_content, fragment);
+                fragmentTransaction.commit();
+                break;
+            case R.id.ll_form_comic_full:
+                mActivity.getIntent().putExtra("apiUrl", API_GET_LIMIT_COMIC_FULL);
+                fragmentTransaction.replace(R.id.fragment_content, fragment);
+                fragmentTransaction.commit();
+                break;
         }
     }
 

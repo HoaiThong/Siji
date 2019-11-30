@@ -1,4 +1,4 @@
-package net.siji.libraryView;
+package net.siji.categorysView;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,19 +7,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-
 import net.siji.R;
 
 import java.util.List;
 
-public class LibraryListAdapter extends BaseAdapter {
+public class VerticalListAdapter extends BaseAdapter {
 
     private List<Object> listData;
     private LayoutInflater layoutInflater;
     private Context context;
     private ViewHolder holder;
 
-    public LibraryListAdapter(Context aContext, List<Object> listData) {
+    public VerticalListAdapter(Context aContext, List<Object> listData) {
         this.context = aContext;
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
@@ -43,14 +42,12 @@ public class LibraryListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.item_detail_list, null);
+            convertView = layoutInflater.inflate(R.layout.item_vertical_list, null);
             holder = new ViewHolder();
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-
         return convertView;
     }
 

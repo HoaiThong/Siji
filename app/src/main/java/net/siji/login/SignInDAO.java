@@ -33,6 +33,7 @@ import net.siji.MainActivity;
 import net.siji.R;
 import net.siji.model.Customer;
 import net.siji.sessionApp.SessionManager;
+import net.siji.splashScreenView.SplashScreenActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,7 +50,7 @@ public class SignInDAO {
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
     private Gson gson;
-    private String url = "http://127.0.0.1/ServerKoniki/view/signin.php";
+    private String api_signin = "http://127.0.0.1/siji-server/view/signin.php";
     private ProgressBar mProgressBar;
     private SessionManager sessionManager;
 
@@ -57,7 +58,7 @@ public class SignInDAO {
         this.mActivity = mActivity;
         gson = getGson();
         okHttpUtil = new OkHttpUtil();
-        sessionManager=new SessionManager(mActivity);
+        sessionManager = new SessionManager(mActivity);
     }
 
     public Gson getGson() {
@@ -160,20 +161,23 @@ public class SignInDAO {
                             if (user.getPhoneNumber() != (null))
                                 customer.setPhone(user.getPhoneNumber());
 
-                            String json = gson.toJson(customer);
-                            sessionManager.setReading("user",json);
+                            String json = customer.toJSONNoId();
+                            sessionManager.setReading("user", json);
                             String data = getPackageData(json, "Google");
                             Log.d("======Gson======", json);
+                            Log.d("======Data======", data);
                             OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
-                            boolean bool = false;
+                            int flag;
                             try {
-                                bool = httpHandler.execute(data).get();
+                                flag = httpHandler.execute(data).get();
+                                if (flag >= 0) {
+                                    if (flag > 0) customer.setId(flag);
+                                    redirectUI();
+                                }
 
                             } catch (ExecutionException e) {
-                                bool = false;
                                 Log.d("======Gson======", e.toString());
                             } catch (InterruptedException e) {
-                                bool = false;
                                 Log.d("======Gson======", e.toString());
                             }
 
@@ -206,32 +210,37 @@ public class SignInDAO {
                                 customer.setEmailFacebook(email);
                                 customer.setLinkFacebook(link);
                                 customer.setNameFaceBook(name);
-
+                                customer.setIconUrl(imageURL.toString());
                                 Log.d("name: ", object.toString());
                                 Log.d("id: ", id);
                                 Log.d("email: ", email);
                                 Log.d("link: ", link);
                                 Log.d("imageURL: ", imageURL.toString());
 
-                                String json = gson.toJson(customer);
-                                Log.d("======Gson======", json);
-                                sessionManager.setReading("user",json);
+                                String json = customer.toJSONNoId();
+                                sessionManager.setReading("user", json);
                                 String data = getPackageData(json, "Facebook");
                                 Log.d("======Gson======", json);
+                                Log.d("======Data======", data);
                                 OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
-                                boolean bool = false;
-
+                                int flag;
                                 try {
-                                    bool = httpHandler.execute(data).get();
+                                    flag = httpHandler.execute(data).get();
+                                    if (flag >= 0) {
+                                        if (flag > 0) {
+                                            customer.setId(flag);
+                                            String customerJSON = gson.toJson(customer);
+                                            sessionManager.setReading("user", customerJSON);
+                                            Log.d("======Gson======", customerJSON);
+                                        }
+                                        redirectUI();
+                                    }
 
                                 } catch (ExecutionException e) {
-                                    bool = false;
                                     Log.d("======Gson======", e.toString());
                                 } catch (InterruptedException e) {
-                                    bool = false;
                                     Log.d("======Gson======", e.toString());
                                 }
-
 
                             }
                         }
@@ -349,7 +358,7 @@ public class SignInDAO {
 //    }
 
     public void redirectUI() {
-        Intent intent = new Intent(mActivity, MainActivity.class);
+        Intent intent = new Intent(mActivity, SplashScreenActivity.class);
         mActivity.startActivity(intent);
         mActivity.finish();
     }

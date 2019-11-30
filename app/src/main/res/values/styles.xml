@@ -23,7 +23,7 @@
 
     <style name="Theme" parent="AppTheme">
         <item name="windowNoTitle">true</item>
-        <!--        <item name="windowActionBar">false</item>-->
+<!--                <item name="windowActionBar">false</item>-->
         <!--        <item name="android:windowNoTitle">true</item>-->
         <!--        <item name="android:windowActionBar">false</item>-->
         <item name="android:windowFullscreen">true</item>
@@ -40,5 +40,9 @@
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
+    </style>
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 </resources>

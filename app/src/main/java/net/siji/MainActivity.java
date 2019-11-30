@@ -25,6 +25,7 @@ import net.siji.categorysView.CategoryFragment;
 import net.siji.dao.NetworkChangeReceiver;
 import net.siji.homeView.HomeFragment;
 import net.siji.imageSliderViewPager.IndicatorView;
+import net.siji.libraryView.LibraryFragment;
 import net.siji.userView.UserFragment;
 
 import java.util.ArrayList;
@@ -58,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
                     transaction.commit();
                     return true;
                 case R.id.navigation_library:
+                    transaction = fragmentManager.beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    transaction.replace(R.id.fragment_content, new LibraryFragment());
+                    transaction.commit();
                     return true;
                 case R.id.navigation_subject:
                     transaction = fragmentManager.beginTransaction();
@@ -111,19 +116,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.add(R.id.fragment_content, homeFragment);
         transaction.commit();
-//        final MyProgressDialog dialog = new MyProgressDialog(this);
-//        dialog.setCancelable(false);
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                //Do something after 100ms
-//                dialog.show();
-//            }
-//        }, 10);
-//        dialog.dismiss();
-//        FragmentManager fm = getFragmentManager();
-//
 //// add
 //        FragmentTransaction ft_add = fm.beginTransaction();
 //        ft_add.add(R.id.your_placehodler,new YourFragment());
@@ -141,6 +133,11 @@ public class MainActivity extends AppCompatActivity {
 //        ft_remo.commit();
 
 //
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

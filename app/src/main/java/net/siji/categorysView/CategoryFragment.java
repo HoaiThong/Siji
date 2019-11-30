@@ -27,6 +27,7 @@ import net.siji.imageSliderViewPager.PagesLessException;
 import net.siji.sessionApp.SessionManager;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,6 +44,7 @@ public class CategoryFragment extends Fragment {
     private HorizontalListCategoryAdapter horizontalAdapter;
     private GridViewAdapter gridViewAdapter;
     private ItemClickListener itemClickListener;
+    private List<String> listCategory;
 
     @Nullable
     @Override
@@ -52,7 +54,12 @@ public class CategoryFragment extends Fragment {
         SessionManager sessionManager = new SessionManager(mActivity);
         String user = sessionManager.getReaded("user");
         Log.d("uuuuuuuuuuuuuu:", user);
-        Toast.makeText(mActivity, user, Toast.LENGTH_SHORT).show();
+        listCategory=new ArrayList<>();
+        listCategory.add("All");
+        listCategory.add("All");
+        listCategory.add("All");
+        listCategory.add("All");
+        listCategory.add("All");
         initCategory();
         return view;
     }
@@ -63,9 +70,9 @@ public class CategoryFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         //set horizontal LinearLayout as layout manager to creating horizontal list view
-        LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
+        final LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(horizontalManager);
-        horizontalAdapter = new HorizontalListCategoryAdapter(mActivity);
+        horizontalAdapter = new HorizontalListCategoryAdapter(mActivity,listCategory);
         recyclerView.setAdapter(horizontalAdapter);
         horizontalAdapter.setItemClickListener(new ItemClickListener() {
             @Override

@@ -64,7 +64,7 @@ public class IndicatorView extends View implements IndicatorInterface, ViewPager
 
         this.distance = typedArray.getInt(R.styleable.IndicatorView_hado_distance, DEFAULT_DISTANCE);
 
-        this.colorSelected = typedArray.getColor(R.styleable.IndicatorView_hado_color_selected, Color.parseColor("#ffffff"));
+        this.colorSelected = typedArray.getColor(R.styleable.IndicatorView_hado_color_selected, Color.parseColor("#009688"));
 
         this.colorUnselected = typedArray.getColor(R.styleable.IndicatorView_hado_color_unselected, Color.parseColor("#ffffff"));
 

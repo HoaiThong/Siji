@@ -57,6 +57,7 @@ import net.siji.fcm.FcmUtil;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.imageSliderViewPager.PagesLessException;
 import net.siji.model.Customer;
+import net.siji.splashScreenView.SplashScreenActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -133,7 +134,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 //                Toast.makeText(getApplicationContext(), "Login Facebook success.", Toast.LENGTH_SHORT).show();
                 signInDAO = new SignInDAO(SignInActivity.this);
                 signInDAO.sendRegistrationFacebookToServe();
-                redirect();
 
             }
 
@@ -181,7 +181,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void redirect() {
-        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+        Intent intent = new Intent(SignInActivity.this, SplashScreenActivity.class);
         startActivity(intent);
         finish();
     }
@@ -220,7 +220,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 //                firebaseAuthWithGoogle(account);
                 signInDAO = new SignInDAO(SignInActivity.this);
                 signInDAO.sendRegistrationGoogleToServe(account);
-                redirect();
+//                redirect();
 
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(),"Google sign in failed!",Toast.LENGTH_SHORT).show();

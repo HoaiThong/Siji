@@ -3,18 +3,12 @@ package net.siji.login;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
 import okhttp3.MediaType;
@@ -24,12 +18,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class OkHttpHandler extends AsyncTask<String, Void, Boolean> {
+public class OkHttpHandler extends AsyncTask<String, Void, Integer> {
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    String url = "http://192.168.0.110/KindleServer/view/signin.php";
+    String url = "http://192.168.1.121/siji-server/view/signin.php";
     OkHttpClient client = new OkHttpClient();
     Activity mActivity;
     JSONObject obj;
+    String TAG_SUCCESS = "success";
     String TAG_MESSAGE = "message";
     String result = "{\"success\":\"0\",\"message\":\"Null\"}";
     private static int i = 0;
@@ -45,15 +40,15 @@ public class OkHttpHandler extends AsyncTask<String, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(String... params) {
+    protected Integer doInBackground(String... params) {
         String data = params[0];
-        boolean bool = false;
-        while (i <= 1) {
-            bool = executePost(url, data);
-            i++;
-            if (bool) return bool;
-        }
-        return bool;
+//        int bool = -1;
+//        while (i <= 1) {
+//            bool = executePost(url, data);
+//            i++;
+//            if (bool) return bool;
+//        }
+        return executePost(url, data);
     }
 
 //    @Override
@@ -62,11 +57,9 @@ public class OkHttpHandler extends AsyncTask<String, Void, Boolean> {
 ////        myProgressDialog.dismiss();
 //    }
 
-    public boolean executePost(String url, String data) {
+    public int executePost(String url, String data) {
         Log.d("url :", url);
-        setMessage("Loading(" + i + "/3)...");
-//        myProgressDialog.setMessage();
-        String credential = Credentials.basic("kindlevn", "ZnSr3t9Ub8J0XV9v");
+        String credential = Credentials.basic("sijiandroid!", "ZnSr3t9Ub8J0XV9v");
         System.out.println(credential);
         RequestBody body = RequestBody.create(JSON, data);
         RequestBody requestBody = new MultipartBody.Builder()
@@ -74,13 +67,7 @@ public class OkHttpHandler extends AsyncTask<String, Void, Boolean> {
                 .addFormDataPart("request", data)
                 .build();
 
-        client=new OkHttpClient();
-//        client = new OkHttpClient.Builder()
-//                .connectTimeout(10, TimeUnit.SECONDS)
-//                .writeTimeout(10, TimeUnit.SECONDS)
-//                .readTimeout(30, TimeUnit.SECONDS)
-//                .build();
-        i++;
+        client = new OkHttpClient();
 //        credential = "Basic a2luZGxldm46Wm53I1NyM3Q5VWI4SjBYVjl2QA==";
         Request request = new Request.Builder()
                 .header("Authorization", credential)
@@ -93,19 +80,18 @@ public class OkHttpHandler extends AsyncTask<String, Void, Boolean> {
             result = response.body().string();
             Log.d("respose data :", result);
             obj = new JSONObject(result);
-            String msg = obj.getString(TAG_MESSAGE);
-            if (msg.equals("SignIn Success!")) return true;
+            int s = obj.getInt(TAG_SUCCESS);
+            return s;
 
         } catch (IOException e) {
             Log.d("ioe :", e.toString());
-            return false;
+            return -1;
         } catch (JSONException e) {
             Log.d("joe :", e.toString());
 //                return excutePost(url, data);
-            return false;
+            return -1;
         }
 
-        return false;
     }
 
     public String getMessage() {
