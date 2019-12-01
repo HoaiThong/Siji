@@ -227,12 +227,11 @@ public class SignInDAO {
                                 try {
                                     flag = httpHandler.execute(data).get();
                                     if (flag >= 0) {
-                                        if (flag > 0) {
-                                            customer.setId(flag);
-                                            String customerJSON = gson.toJson(customer);
-                                            sessionManager.setReading("user", customerJSON);
-                                            Log.d("======Gson======", customerJSON);
-                                        }
+                                        customer.setId(flag);
+                                        String customerJSON = gson.toJson(customer);
+                                        sessionManager.setReading("user", customerJSON);
+                                        Log.d("======idUSER======", customerJSON);
+                                        sessionManager.setReading("idUser", String.valueOf(flag));
                                         redirectUI();
                                     }
 

@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +29,10 @@ import com.google.android.material.tabs.TabLayout;
 import net.siji.MainActivity;
 import net.siji.R;
 import net.siji.dao.BlurBuilder;
+import net.siji.model.Comic;
+import net.siji.model.Customer;
 import net.siji.readView.EpubViewerActivity;
+import net.siji.sessionApp.SessionManager;
 import net.siji.splashScreenView.SplashScreenActivity;
 
 
@@ -41,13 +45,17 @@ public class InforActivity extends AppCompatActivity {
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     AppBarLayout appBarLayout;
     FloatingActionButton fab;
+    Comic comic;
+    Customer user;
+    String isNotifi = "0";
+    private final String API_URL_SUBCRIBE_COMIC = "http://192.168.1.121/siji-server/view/api_subcribe_comic.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infor);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -69,7 +77,20 @@ public class InforActivity extends AppCompatActivity {
 //        });
         showHideTitle();
         setTitle("");
-        new AsyncGettingBitmapFromUrl().execute();
+        init();
+    }
+
+    public void init() {
+        comic = new Comic();
+        comic = (Comic) getIntent().getSerializableExtra("comic");
+        Log.d("name", comic.getName());
+        SessionManager sessionManager=new SessionManager(this);
+
+        String idCustomer = sessionManager.getReaded("idUser");
+        Log.d("id", idCustomer);
+        String idComic = String.valueOf(comic.getId());
+        new AsyncGettingBitmapFromUrl().execute(comic.getIconUrl().trim());
+        new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
     }
 
     @Override
@@ -116,10 +137,9 @@ public class InforActivity extends AppCompatActivity {
 
         @Override
         protected Bitmap doInBackground(String... params) {
+            String url = params[0];
 
-            Bitmap originalBitmap = BlurBuilder.getBitmapFromURL("https://i-giaitri.vnecdn.net/2019/02/25/ngoc-diem-2-1551065105_r_680x0.jpg");
-
-
+            Bitmap originalBitmap = BlurBuilder.getBitmapFromURL(url);
             return originalBitmap;
         }
 

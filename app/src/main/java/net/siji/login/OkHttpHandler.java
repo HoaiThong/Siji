@@ -3,6 +3,7 @@ package net.siji.login;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import org.json.JSONException;
@@ -26,13 +27,14 @@ public class OkHttpHandler extends AsyncTask<String, Void, Integer> {
     JSONObject obj;
     String TAG_SUCCESS = "success";
     String TAG_MESSAGE = "message";
-    String result = "{\"success\":\"0\",\"message\":\"Null\"}";
+    String result = "{\"success\":-1,\"message\":\"Null\"}";
     private static int i = 0;
-    private String message = "Loading...";
+    private String message = "";
+    private String msg="";
 
     public OkHttpHandler(Activity mActivity) {
         super.onPreExecute();
-//        this.mActivity = mActivity;
+        this.mActivity = mActivity;
 //        myProgressDialog = new MyProgressDialog(mActivity);
 //        myProgressDialog.setMessage(message);
 //        myProgressDialog.setCancelable(false);
@@ -51,6 +53,11 @@ public class OkHttpHandler extends AsyncTask<String, Void, Integer> {
         return executePost(url, data);
     }
 
+    @Override
+    protected void onPostExecute(Integer integer) {
+        super.onPostExecute(integer);
+        Toast.makeText(mActivity,msg,Toast.LENGTH_SHORT).show();
+    }
 //    @Override
 //    protected void onPostExecute(Boolean aBoolean) {
 //        super.onPostExecute(aBoolean);
@@ -81,6 +88,8 @@ public class OkHttpHandler extends AsyncTask<String, Void, Integer> {
             Log.d("respose data :", result);
             obj = new JSONObject(result);
             int s = obj.getInt(TAG_SUCCESS);
+            msg=obj.getString(TAG_MESSAGE);
+            System.out.println("flag:"+s);
             return s;
 
         } catch (IOException e) {

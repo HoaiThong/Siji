@@ -2,6 +2,7 @@ package net.siji.categorysView;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +38,32 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
         return new ViewHolder(view);
     }
 
+    int rowIndex = -1;
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         String label = list.get(position);
+
         viewHolder.mTextView.setText(label);
-        viewHolder.mView.setVisibility(View.GONE);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rowIndex = position;
+                notifyDataSetChanged();
+                if (itemClickListener != null) {
+                    itemClickListener.onClick(view, position, false);
+                }
+            }
+        });
+        if (rowIndex == position) {
+            viewHolder.mView.setBackgroundColor(Color.parseColor("#567845"));
+            viewHolder.mTextView.setTextColor(Color.parseColor("#567845"));
+            viewHolder.mView.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mView.setVisibility(View.GONE);
+            viewHolder.mTextView.setTextColor(Color.parseColor("#000000"));
+            viewHolder.mView.setBackgroundColor(Color.parseColor("#80808080"));
+        }
     }
 
     @Override
@@ -56,21 +78,18 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
     /**
      * View holder to display each RecylerView item
      */
-    protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    protected class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mTextView;
         private View mView;
+        private LinearLayout ll;
 
         public ViewHolder(View view) {
             super(view);
             mTextView = view.findViewById(R.id.tv_title_category);
             mView = view.findViewById(R.id.divider_horizontal);
-            view.setOnClickListener(this);
+            ll = view.findViewById(R.id.ll_category);
         }
 
-        @Override
-        public void onClick(View v) {
-            itemClickListener.onClick(v, getAdapterPosition(), false);
-        }
     }
 }

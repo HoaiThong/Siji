@@ -5,6 +5,9 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="myColorPrimary">#48AECB</color>
+    <color name="gray_tran">#80808080</color>
+    <color name="color_tab">#567845</color>
+
 
     <color name="tab">#E0484545</color>
     <color name="tab1">#E05F1111</color>
