@@ -13,11 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 
 import net.siji.R;
 import net.siji.model.Comic;
+import net.siji.sessionApp.SessionManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -28,12 +30,13 @@ public class LibraryFragment
         extends Fragment {
     private ListView listView;
     private View view;
-    private String API_URL;
+    private String API_URL="http://192.168.1.121/siji-server/view/api_get_limit_subcribe_comic.php";
     private Activity mActivity;
     private static int start = 0;
     private int quantity;
     private LinkedList<Comic> linkedList;
     private LibraryListAdapter libraryListAdapter;
+    String idCustomer;
 
 
     @Nullable
@@ -41,7 +44,12 @@ public class LibraryFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_list_manga, container, false);
+        mActivity.setTitle(mActivity.getString(R.string.bo_suu_tap));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
         Log.d("api", API_URL);
+        SessionManager sessionManager=new SessionManager(mActivity);
+        idCustomer=sessionManager.getReaded("idUser");
         start = 0;
         init();
         return view;
@@ -51,7 +59,7 @@ public class LibraryFragment
         List<Comic> listUpdate = new ArrayList<Comic>();
         try {
             String startAt = String.valueOf(start);
-            listUpdate = new LoadDataAsyncTask().execute(startAt, API_URL).get();
+            listUpdate = new LoadDataAsyncTask().execute(idCustomer,startAt, API_URL).get();
             quantity = listUpdate.size();
             start = start + quantity;
         } catch (ExecutionException e) {
@@ -65,6 +73,7 @@ public class LibraryFragment
 
     public void init() {
         linkedList = new LinkedList<>();
+        getListComic();
         listView = view.findViewById(R.id.list_view_manga);
         libraryListAdapter= new LibraryListAdapter(mActivity, linkedList);
         listView.setAdapter(libraryListAdapter);

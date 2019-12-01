@@ -61,8 +61,7 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
             viewHolder.mView.setVisibility(View.VISIBLE);
         } else {
             viewHolder.mView.setVisibility(View.GONE);
-            viewHolder.mTextView.setTextColor(Color.parseColor("#000000"));
-            viewHolder.mView.setBackgroundColor(Color.parseColor("#80808080"));
+            viewHolder.mTextView.setTextColor(Color.parseColor("#FFFFFF"));
         }
     }
 

@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,10 +66,11 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_category_view, container, false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        start=0;
         SessionManager sessionManager = new SessionManager(mActivity);
         String user = sessionManager.getReaded("user");
         Log.d("uuuuuuuuuuuuuu:", user);
-
         initCategory();
         init();
         return view;
@@ -78,7 +80,7 @@ public class CategoryFragment extends Fragment {
         try {
             listCategory = new LoadCategorysAsyncTask().execute(API_GET_CATEGORYS).get();
             nameCategory = listCategory.get(0);
-            Log.e("nameCategory",nameCategory);
+            Log.e("nameCategory", nameCategory);
         } catch (ExecutionException e) {
             getCategory();
             e.printStackTrace();
@@ -103,8 +105,8 @@ public class CategoryFragment extends Fragment {
         horizontalAdapter.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                nameCategory=listCategory.get(position).trim();
-                start=0;
+                nameCategory = listCategory.get(position).trim();
+                start = 0;
                 init();
 //                view.findViewById(R.id.divider_horizontal).setVisibility(View.VISIBLE);
 //                view.findViewById(R.id.divider_horizontal).setBackgroundColor(Color.parseColor("#567845"));
@@ -117,7 +119,7 @@ public class CategoryFragment extends Fragment {
         List<Comic> listUpdate = new ArrayList<Comic>();
         try {
             String startAt = String.valueOf(start);
-            listUpdate = new LoadDataAsyncTask().execute(nameCategory,startAt, API_URL).get();
+            listUpdate = new LoadDataAsyncTask().execute(nameCategory, startAt, API_URL).get();
             quantity = listUpdate.size();
             start = start + quantity;
         } catch (ExecutionException e) {
@@ -132,6 +134,7 @@ public class CategoryFragment extends Fragment {
     public void init() {
         linkedList = new LinkedList<>();
         getListComic(nameCategory);
+        mActivity.setTitle(nameCategory);
         listView = view.findViewById(R.id.list_view_comic);
         verticalListAdapter = new VerticalListAdapter(mActivity, linkedList);
         listView.setAdapter(verticalListAdapter);

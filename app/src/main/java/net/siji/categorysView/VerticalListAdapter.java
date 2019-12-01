@@ -61,6 +61,8 @@ public class VerticalListAdapter extends BaseAdapter {
         final Comic c = listData.get(position);
         holder.tv_title.setText(c.getName().trim());
         holder.tv_author.setText(c.getAuthor().trim());
+        holder.tv_status.setText(c.getNewChapter().trim());
+
         Glide.with(mActivity)
                 .load(c.getIconUrl())
                 .into(holder.imageView);
@@ -85,12 +87,14 @@ public class VerticalListAdapter extends BaseAdapter {
         private TextView tv_title;
         private TextView tv_author;
         private TextView tv_kind;
+        private TextView tv_status;
 
         public ViewHolder(View view) {
             imageView = view.findViewById(R.id.icon_comic_img);
             tv_title = view.findViewById(R.id.tv_detail_title);
             tv_author = view.findViewById(R.id.tv_detail_author);
             tv_kind = view.findViewById(R.id.tv_detail_kind);
+            tv_status = view.findViewById(R.id.tv_detail_status);
 //            view.setOnClickListener(this);
         }
 

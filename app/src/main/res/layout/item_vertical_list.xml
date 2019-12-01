@@ -31,6 +31,8 @@
             android:layout_width="match_parent"
             android:singleLine="true"
             android:textStyle="bold"
+            android:textColor="@color/color_tab"
+            android:fontFamily="@font/comfortaa_regular"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp" />
 
@@ -38,6 +40,16 @@
             android:id="@+id/tv_detail_author"
             android:layout_width="match_parent"
             android:textStyle="italic"
+            android:fontFamily="@font/comfortaa_regular"
+            android:singleLine="true"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp" />
+        <TextView
+            android:id="@+id/tv_detail_status"
+            android:layout_width="match_parent"
+            android:textStyle="italic"
+            android:fontFamily="@font/comfortaa_regular"
+            android:singleLine="true"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp" />
 

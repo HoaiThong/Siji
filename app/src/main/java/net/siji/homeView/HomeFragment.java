@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -63,6 +65,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_home_view, container, false);
+        mActivity.setTitle(mActivity.getString(R.string.title_home));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         SessionManager sessionManager = new SessionManager(mActivity);
         String user = sessionManager.getReaded("user");
         Log.d("uuuuuuuuuuuuuu:", user);
@@ -197,16 +201,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 mActivity.getIntent().putExtra("apiUrl", API_GET_LIMIT_COMIC_BY_UPDATE);
                 fragmentTransaction.replace(R.id.fragment_content, fragment);
                 fragmentTransaction.commit();
+                getActivity().setTitle(mActivity.getString(R.string.truyen_moi));
                 break;
             case R.id.ll_form_view_day:
                 mActivity.getIntent().putExtra("apiUrl", API_GET_LIMIT_COMIC_BY_VIEW_DAY);
                 fragmentTransaction.replace(R.id.fragment_content, fragment);
                 fragmentTransaction.commit();
+                getActivity().setTitle(mActivity.getString(R.string.truyen_xem_nhieu));
                 break;
             case R.id.ll_form_comic_full:
                 mActivity.getIntent().putExtra("apiUrl", API_GET_LIMIT_COMIC_FULL);
                 fragmentTransaction.replace(R.id.fragment_content, fragment);
                 fragmentTransaction.commit();
+                getActivity().setTitle(mActivity.getString(R.string.truyen_hoan_thanh));
                 break;
         }
     }

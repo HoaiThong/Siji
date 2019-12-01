@@ -61,5 +61,7 @@
     <string name="signin_by_facebook">SignIn By FaceBook</string>
     <string name="signin_by_google">SignIn By Google</string>
 
+    <string name="bo_suu_tap">Bộ sưu tập</string>
+
 
 </resources>

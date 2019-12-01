@@ -21,7 +21,7 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
     HttpHander httpHander=new HttpHander();
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
-    private static final String TAG_COMIC = "comic";
+    private static final String TAG_SUBCRIBE = "subcribe";
 
     /**
      * Before starting background thread Show Progress Dialog
@@ -36,18 +36,20 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
      * @return
      */
     protected ArrayList<Comic> doInBackground(String... args) {
-        String startAt=args[0];
-        String API_URL=args[1];
+        String startAt=args[1];
+        String idCustomer=args[0];
+        String API_URL=args[2];
         Log.e("start At", startAt);
         Log.e("API", API_URL);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("startAt", startAt));
+        params.add(new BasicNameValuePair("idCustomer", idCustomer));
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
             String success=jsonObject.getString(TAG_SUCCESS);
             String message=jsonObject.getString(TAG_MESSAGE);
             if (success.equals(TAG_SUCCESS)){
-                JSONArray jsonArray=jsonObject.getJSONArray(TAG_COMIC);
+                JSONArray jsonArray=jsonObject.getJSONArray(TAG_SUBCRIBE);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     m = new Comic();
                     JSONObject c = jsonArray.getJSONObject(i);
