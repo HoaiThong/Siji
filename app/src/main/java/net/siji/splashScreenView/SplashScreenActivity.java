@@ -3,11 +3,9 @@ package net.siji.splashScreenView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -17,15 +15,8 @@ import android.widget.TextView;
 
 import net.siji.MainActivity;
 import net.siji.R;
-import net.siji.dao.HttpHander;
-import net.siji.dao.ServiceHandler;
 import net.siji.model.Comic;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.siji.model.Header;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +29,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private String API_GET_LIMIT_COMIC_BY_UPDATE = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_update.php";
     private String API_GET_LIMIT_COMIC_FULL = "http://192.168.1.121/siji-server/view/api_get_limit_comic_full.php";
     private String API_GET_LIMIT_COMIC_BY_VIEW_DAY = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_view_day.php";
+    private String API_GET_HEADER = "http://192.168.1.121/siji-server/view/api_get_header.php";
 
     private final String startAt = "0";
     private final Handler handler = new Handler();
@@ -58,6 +50,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 getListComicFull();
                 getListComicUpdate();
                 getListComicByViewDay();
+                getHeader();
                 redirect();
             }
         }, 100);
@@ -85,7 +78,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         List<Comic> list = new ArrayList<>();
         try {
             list = new LoadDataAsyncTask().execute(startAt, API_GET_LIMIT_COMIC_FULL).get();
-        data.putParcelableArrayList("full", (ArrayList<? extends Parcelable>) list);
+            data.putParcelableArrayList("full", (ArrayList<? extends Parcelable>) list);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -98,7 +91,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         List<Comic> list = new ArrayList<>();
         try {
             list = new LoadDataAsyncTask().execute(startAt, API_GET_LIMIT_COMIC_BY_VIEW_DAY).get();
-        data.putParcelableArrayList("viewday", (ArrayList<? extends Parcelable>) list);
+            data.putParcelableArrayList("viewday", (ArrayList<? extends Parcelable>) list);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -107,6 +100,18 @@ public class SplashScreenActivity extends AppCompatActivity {
         return list;
     }
 
+    public List<Header> getHeader() {
+        ArrayList<Header> list = new ArrayList<>();
+        try {
+            list = new LoadHeaderAsyncTask().execute(API_GET_HEADER).get();
+            data.putParcelableArrayList("header", (ArrayList<? extends Parcelable>) list);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     private void startAnimation() {
         Animation rotate = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -142,6 +147,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {

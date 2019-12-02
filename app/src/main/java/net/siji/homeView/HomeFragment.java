@@ -25,6 +25,7 @@ import net.siji.R;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.imageSliderViewPager.PagesLessException;
 import net.siji.model.Comic;
+import net.siji.model.Header;
 import net.siji.sessionApp.SessionManager;
 import net.siji.verticalView.VerticalListFragment;
 
@@ -42,7 +43,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private IndicatorView indicatorView;
     Timer timer;
     int page = 0;
-    ArrayList<String> listImageSlider;
+    ArrayList<Header> headerList;
     private Activity mActivity;
     private RecyclerView recyclerViewRank;
     private RecyclerView recyclerViewNew;
@@ -165,23 +166,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     public void initViewPager() {
-        listImageSlider = getImageSlider();
-        ImageAdapter adapter = new ImageAdapter(mActivity, listImageSlider);
-        viewPager.setAdapter(adapter);
-        try {
-            indicatorView.setViewPager(viewPager);
-        } catch (PagesLessException e) {
-            e.printStackTrace();
+        headerList = new ArrayList<>();
+        headerList = mActivity.getIntent().getParcelableArrayListExtra("header");
+        if (!headerList.isEmpty()) {
+            ImageAdapter adapter = new ImageAdapter(mActivity, headerList);
+            viewPager.setAdapter(adapter);
+            try {
+                indicatorView.setViewPager(viewPager);
+            } catch (PagesLessException e) {
+                e.printStackTrace();
+            }
+            pageSwitcher(3);
         }
-        pageSwitcher(3);
-    }
-
-
-    public ArrayList<String> getImageSlider() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add("https://i-giaitri.vnecdn.net/2019/02/25/ngoc-diem-2-1551065105_r_680x0.jpg");
-        list.add("https://icdn.dantri.com.vn/k:487bd2df65/2016/08/08/img-6481-copy-1470629461604/hoahaungocdiemlonglaylammchoahaubansacviet.jpg");
-        return list;
     }
 
     public void pageSwitcher(int seconds) {
@@ -228,7 +224,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             mActivity.runOnUiThread(new Runnable() {
                 public void run() {
 
-                    if (page >= listImageSlider.size()) { // In my case the number of pages are 5
+                    if (page >= headerList.size()) { // In my case the number of pages are 5
 //                        timer.cancel();
                         page = 0;
                         viewPager.setCurrentItem(page);

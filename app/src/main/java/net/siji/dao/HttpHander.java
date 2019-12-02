@@ -26,8 +26,8 @@ import java.util.List;
 public class HttpHander {
     static InputStream is = null;
     static JSONObject jObj = null;
-    String json = "{\"success\":\"0\",\"message\":\"Null\"}";
-    String result = "{\"success\":\"0\",\"message\":\"Null\"}";
+    String json = "{\"success\":\"error\",\"message\":\"Null\"}";
+    String result = "{\"success\":\"error\",\"message\":\"Null\"}";
     OutputStream os = null;
     HttpURLConnection conn = null;
     static JSONArray jarr = null;

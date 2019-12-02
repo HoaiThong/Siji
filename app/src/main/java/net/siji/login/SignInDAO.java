@@ -41,6 +41,7 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class SignInDAO {
@@ -160,26 +161,31 @@ public class SignInDAO {
                             if (user.getEmail() != (null)) customer.setEmailGoogle(user.getEmail());
                             if (user.getPhoneNumber() != (null))
                                 customer.setPhone(user.getPhoneNumber());
+                            Locale current = mActivity.getResources().getConfiguration().locale;
+                            customer.setLocale(current.getCountry());
 
+                            Log.d("locale", current.getCountry());
                             String json = customer.toJSONNoId();
                             sessionManager.setReading("user", json);
                             String data = getPackageData(json, "Google");
+                            sessionManager.setReading("datauser",data);
                             Log.d("======Gson======", json);
                             Log.d("======Data======", data);
-                            OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
-                            int flag;
-                            try {
-                                flag = httpHandler.execute(data).get();
-                                if (flag >= 0) {
-                                    if (flag > 0) customer.setId(flag);
-                                    redirectUI();
-                                }
-
-                            } catch (ExecutionException e) {
-                                Log.d("======Gson======", e.toString());
-                            } catch (InterruptedException e) {
-                                Log.d("======Gson======", e.toString());
-                            }
+                            registerServer(data);
+//                            OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
+//                            int flag;
+//                            try {
+//                                flag = httpHandler.execute(data).get();
+//                                if (flag >= 0) {
+//                                    if (flag > 0) customer.setId(flag);
+//                                    redirectUI();
+//                                }
+//
+//                            } catch (ExecutionException e) {
+//                                Log.d("======Gson======", e.toString());
+//                            } catch (InterruptedException e) {
+//                                Log.d("======Gson======", e.toString());
+//                            }
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -211,6 +217,10 @@ public class SignInDAO {
                                 customer.setLinkFacebook(link);
                                 customer.setNameFaceBook(name);
                                 customer.setIconUrl(imageURL.toString());
+                                Locale current = mActivity.getResources().getConfiguration().locale;
+                                customer.setLocale(current.getCountry());
+
+                                Log.d("locale", current.getCountry());
                                 Log.d("name: ", object.toString());
                                 Log.d("id: ", id);
                                 Log.d("email: ", email);
@@ -220,26 +230,28 @@ public class SignInDAO {
                                 String json = customer.toJSONNoId();
                                 sessionManager.setReading("user", json);
                                 String data = getPackageData(json, "Facebook");
+                                sessionManager.setReading("datauser",data);
                                 Log.d("======Gson======", json);
                                 Log.d("======Data======", data);
-                                OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
-                                int flag;
-                                try {
-                                    flag = httpHandler.execute(data).get();
-                                    if (flag >= 0) {
-                                        customer.setId(flag);
-                                        String customerJSON = gson.toJson(customer);
-                                        sessionManager.setReading("user", customerJSON);
-                                        Log.d("======idUSER======", customerJSON);
-                                        sessionManager.setReading("idUser", String.valueOf(flag));
-                                        redirectUI();
-                                    }
-
-                                } catch (ExecutionException e) {
-                                    Log.d("======Gson======", e.toString());
-                                } catch (InterruptedException e) {
-                                    Log.d("======Gson======", e.toString());
-                                }
+//                                OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
+//                                int flag;
+//                                try {
+//                                    flag = httpHandler.execute(data).get();
+//                                    if (flag >= 0) {
+//                                        customer.setId(flag);
+//                                        String customerJSON = gson.toJson(customer);
+//                                        sessionManager.setReading("user", customerJSON);
+//                                        Log.d("======idUSER======", customerJSON);
+//                                        sessionManager.setReading("idUser", String.valueOf(flag));
+//                                        redirectUI();
+//                                    }
+//
+//                                } catch (ExecutionException e) {
+//                                    Log.d("======Gson======", e.toString());
+//                                } catch (InterruptedException e) {
+//                                    Log.d("======Gson======", e.toString());
+//                                }
+                                registerServer(data);
 
                             }
                         }
@@ -265,6 +277,23 @@ public class SignInDAO {
             request1.executeAsync();
         }
 
+    }
+
+    public void registerServer(String data){
+        OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
+        int flag;
+        try {
+            flag = httpHandler.execute(data).get();
+            if (flag >= 0) {
+                sessionManager.setReading("idUser", String.valueOf(flag));
+                redirectUI();
+            }
+
+        } catch (ExecutionException e) {
+            Log.d("======Gson======", e.toString());
+        } catch (InterruptedException e) {
+            Log.d("======Gson======", e.toString());
+        }
     }
 
     public URL extractFacebookIcon(String id) {

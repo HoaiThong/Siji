@@ -29,6 +29,7 @@ import net.siji.libraryView.LibraryFragment;
 import net.siji.userView.UserFragment;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
 //        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 //        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 //        collapsingToolbarLayout.setTitle("Collapsing");

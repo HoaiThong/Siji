@@ -3,6 +3,8 @@ package net.siji.homeView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide;
 
 import net.siji.R;
 import net.siji.inforView.InforActivity;
+import net.siji.model.Header;
 
 import java.util.ArrayList;
 
@@ -26,9 +29,9 @@ public class ImageAdapter extends PagerAdapter {
     private Activity activity;
     private ImageView imageView;
     private Context mContext;
-    private ArrayList<String> arrayList;
+    private ArrayList<Header> arrayList;
 
-    public ImageAdapter(Activity activity, ArrayList<String> listUrl) {
+    public ImageAdapter(Activity activity, ArrayList<Header> listUrl) {
         this.arrayList=listUrl;
         this.activity=activity;
     }
@@ -50,20 +53,10 @@ public class ImageAdapter extends PagerAdapter {
 
         imageView = (ImageView) imageLayout.findViewById(R.id.image);
         DisplayMetrics dis = new DisplayMetrics();
-//        mContext.getWindowManager().getDefaultDisplay().getMetrics(dis);
-//        int height = dis.heightPixels;
-//        int width = dis.widthPixels;
-//        int height = imageView.getMeasuredHeight();
-//        int width = imageView.getMeasuredWidth();
-//        imageView.setMinimumHeight(height);
-//        imageView.setMinimumWidth(width);
-        String urlImage=arrayList.get(position);
-//        imageLoader = new ImageLoader(imageLayout.getContext());
-//        imageLoader.displayImage(arrayList.get(position).getUrl(), R.drawable.ic_launcher, imageView);
-//        imageView.clearAnimation();
+        final Header header=arrayList.get(position);
         try {
             Glide.with(activity)
-                    .load(urlImage)
+                    .load(header.getComic().getIconUrl())
                     .into(imageView);
         } catch (Exception e) {
         }
@@ -72,6 +65,9 @@ public class ImageAdapter extends PagerAdapter {
             public void onClick(View v) {
                 Toast.makeText(activity,String.valueOf(position),Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(activity, InforActivity.class);
+                Bundle data = new Bundle();
+                data.putSerializable("comic", header.getComic());
+                intent.putExtras(data);
                 activity.startActivity(intent);
                 activity.finish();
             }

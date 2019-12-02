@@ -48,6 +48,8 @@ public class InforActivity extends AppCompatActivity {
     Comic comic;
     Customer user;
     String isNotifi = "0";
+    String idCustomer;
+    private final String API_URL_READED_COMIC = "http://192.168.1.121/siji-server/view/api_readed_comic.php";
     private final String API_URL_SUBCRIBE_COMIC = "http://192.168.1.121/siji-server/view/api_subcribe_comic.php";
 
     @Override
@@ -84,13 +86,12 @@ public class InforActivity extends AppCompatActivity {
         comic = new Comic();
         comic = (Comic) getIntent().getSerializableExtra("comic");
         Log.d("name", comic.getName());
-        SessionManager sessionManager=new SessionManager(this);
-
-        String idCustomer = sessionManager.getReaded("idUser");
+        SessionManager sessionManager = new SessionManager(this);
+        idCustomer= sessionManager.getReaded("idUser");
         Log.d("id", idCustomer);
         String idComic = String.valueOf(comic.getId());
         new AsyncGettingBitmapFromUrl().execute(comic.getIconUrl().trim());
-        new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
+        new SubcribeComicAsyncTask().execute(idCustomer, idComic, "0", API_URL_READED_COMIC);
     }
 
     @Override

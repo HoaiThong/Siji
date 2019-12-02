@@ -1,9 +1,12 @@
 package net.siji.model;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Locale;
 
 public class Customer implements Serializable{
     //Gson serializable
@@ -45,6 +48,8 @@ public class Customer implements Serializable{
     private String idTokenFcm="";
 //    @Expose
     private String job="";
+
+    private String locale;
 
     private String iconUrl="http://siji.asia/thumb/icon.jpg";
 //    @Expose(serialize = false)
@@ -207,6 +212,15 @@ public class Customer implements Serializable{
         this.job = job;
     }
 
+    public String getLocale() {
+
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     public String getIconUrl() {
         return iconUrl;
     }
@@ -244,6 +258,7 @@ public class Customer implements Serializable{
                 "\"idTokenFcm\":\""+idTokenFcm+"\"," +
                 "\"iconUrl\":\""+iconUrl+"\"," +
                 "\"job\":\""+job+"\"," +
+                "\"locale\":\""+locale+"\"," +
                 "\"linkFacebook\":\""+linkFacebook+"\"," +
                 "\"nameFaceBook\":\""+nameFaceBook+"\"," +
                 "\"nameGoogle\":\""+nameGoogle+"\"," +
