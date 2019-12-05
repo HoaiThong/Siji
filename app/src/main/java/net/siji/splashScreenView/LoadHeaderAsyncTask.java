@@ -59,6 +59,7 @@ public class LoadHeaderAsyncTask extends AsyncTask<String, String, ArrayList<Hea
                     m.setName(c.getString(m.TAG_NAME));
                     m.setSummary(c.getString(m.TAG_SUMMARY));
                     m.setIconUrl(c.getString(m.TAG_ICON_URL));
+
                     header.setId(c.getInt(m.TAG_PID));
                     header.setBannerUrl(c.getString(header.TAG_BANNER_URL));
                     header.setComic(m);

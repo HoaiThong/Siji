@@ -34,6 +34,8 @@ public class Comic implements Parcelable,Serializable  {
     @Expose
     private float scoreRating;
     @Expose
+    private int viewDay;
+    @Expose
     private int viewWeek;
     @Expose
     private int viewMonth;
@@ -78,6 +80,7 @@ public class Comic implements Parcelable,Serializable  {
         summary = in.readString();
         tag = in.readString();
         scoreRating = in.readFloat();
+        viewDay = in.readInt();
         viewWeek = in.readInt();
         viewMonth = in.readInt();
         viewSum = in.readInt();
@@ -102,6 +105,14 @@ public class Comic implements Parcelable,Serializable  {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getViewDay() {
+        return viewDay;
+    }
+
+    public void setViewDay(int viewDay) {
+        this.viewDay = viewDay;
     }
 
     public String getName() {
@@ -224,6 +235,7 @@ public class Comic implements Parcelable,Serializable  {
         this.updateAt = updateAt;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -241,11 +253,10 @@ public class Comic implements Parcelable,Serializable  {
         dest.writeString(summary);
         dest.writeString(tag);
         dest.writeFloat(scoreRating);
+        dest.writeInt(viewDay);
         dest.writeInt(viewWeek);
         dest.writeInt(viewMonth);
         dest.writeInt(viewSum);
         dest.writeString(newChapter);
     }
-
-
 }

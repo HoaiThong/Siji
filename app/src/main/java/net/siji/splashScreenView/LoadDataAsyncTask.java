@@ -3,6 +3,7 @@ package net.siji.splashScreenView;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.siji.dao.ComicUtils;
 import net.siji.dao.HttpHander;
 import net.siji.model.Comic;
 
@@ -44,6 +45,7 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
         params.add(new BasicNameValuePair("startAt", startAt));
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
+            ComicUtils comicUtils=new ComicUtils();
             String success=jsonObject.getString(TAG_SUCCESS);
             String message=jsonObject.getString(TAG_MESSAGE);
             if (success.equals(TAG_SUCCESS)){
@@ -52,11 +54,13 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
                     m = new Comic();
                     JSONObject c = jsonArray.getJSONObject(i);
                     Log.e("ALL THE STUFF", c.toString());
-                    m.setId(c.getInt(m.TAG_PID));
-                    m.setName(c.getString(m.TAG_NAME));
-                    m.setNewChapter(c.getString(m.TAG_NEW_CHAP));
-                    m.setIconUrl(c.getString(m.TAG_ICON_URL));
-                    // adding HashList to ArrayList
+                    m=comicUtils.convertFromJSONObject(c);
+//                    m.setId(c.getInt(m.TAG_PID));
+//                    m.setName(c.getString(m.TAG_NAME));
+//                    m.setNewChapter(c.getString(m.TAG_NEW_CHAP));
+//                    m.setTblName(c.getString(m.TAG_TABLE));
+//                    m.setIconUrl(c.getString(m.TAG_ICON_URL));
+//                    // adding HashList to ArrayList
                     arrayList.add(m);
                 }
             }

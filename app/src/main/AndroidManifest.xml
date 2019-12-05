@@ -21,21 +21,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".readView.EpubViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_epub_viewer"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".splashScreenView.SplashScreenActivity"
-            android:theme="@style/FullscreenTheme"/>
+        <activity
+            android:name=".splashScreenView.SplashScreenActivity"
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".inforView.InforActivity"
-            android:theme="@style/Theme" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

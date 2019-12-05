@@ -63,5 +63,7 @@
 
     <string name="bo_suu_tap">Bộ sưu tập</string>
 
+    <string name="action_settings">Settings</string>
+
 
 </resources>

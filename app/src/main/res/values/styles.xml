@@ -23,11 +23,11 @@
 
     <style name="Theme" parent="AppTheme">
         <item name="windowNoTitle">true</item>
-<!--                <item name="windowActionBar">false</item>-->
+        <item name="windowActionBar">false</item>
         <!--        <item name="android:windowNoTitle">true</item>-->
         <!--        <item name="android:windowActionBar">false</item>-->
-        <item name="android:windowFullscreen">true</item>
-        <!--        <item name="android:windowContentOverlay">@null</item>-->
+        <!--        <item name="android:windowFullscreen">true</item>-->
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="FullscreenTheme" parent="AppTheme">
@@ -41,8 +41,25 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
+
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
+
+    <style name="CustomDialog" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Loading…</item>
+        <item name="DialogSpotColor">@android:color/holo_orange_dark</item>
+        <item name="DialogSpotCount">4</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

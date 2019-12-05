@@ -3,6 +3,7 @@ package net.siji.verticalView;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.siji.dao.ComicUtils;
 import net.siji.dao.HttpHander;
 import net.siji.model.Comic;
 
@@ -44,6 +45,7 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
         params.add(new BasicNameValuePair("startAt", startAt));
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
+            ComicUtils comicUtils=new ComicUtils();
             String success=jsonObject.getString(TAG_SUCCESS);
             String message=jsonObject.getString(TAG_MESSAGE);
             if (success.equals(TAG_SUCCESS)){
@@ -51,14 +53,15 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
                 for (int i = 0; i < jsonArray.length(); i++) {
                     m = new Comic();
                     JSONObject c = jsonArray.getJSONObject(i);
+                    m=comicUtils.convertFromJSONObject(c);
                     Log.e("ALL THE STUFF", c.toString());
                     Log.e("obj", c.get("name").toString().trim());
-                    m.setId(c.getInt(m.TAG_PID));
-                    m.setName(c.getString(m.TAG_NAME).trim());
-                    m.setNewChapter(c.getString(m.TAG_NEW_CHAP).trim());
-                    m.setIconUrl(c.getString(m.TAG_ICON_URL.trim()));
-                    m.setAuthor(c.getString(m.TAG_AUTHOR.trim()));
-                    m.setViewSum(c.getInt(m.TAG_VIEW_SUM));
+//                    m.setId(c.getInt(m.TAG_PID));
+//                    m.setName(c.getString(m.TAG_NAME).trim());
+//                    m.setNewChapter(c.getString(m.TAG_NEW_CHAP).trim());
+//                    m.setIconUrl(c.getString(m.TAG_ICON_URL.trim()));
+//                    m.setAuthor(c.getString(m.TAG_AUTHOR.trim()));
+//                    m.setViewSum(c.getInt(m.TAG_VIEW_SUM));
 //                    System.out.println(m.getId());
 //                    System.out.println(m.getName());
 //                    System.out.println(m.getNewChapter());
