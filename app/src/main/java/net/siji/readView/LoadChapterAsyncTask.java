@@ -1,8 +1,9 @@
-package net.siji.inforView;
+package net.siji.readView;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.siji.dao.ChapterUtils;
 import net.siji.dao.HttpHander;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
@@ -16,18 +17,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadListChapterAsyncTask extends AsyncTask<String, String, List<Chapter>> {
+public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter>> {
     HttpHander httpHander = new HttpHander();
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
-    private static final String TAG_DISTINCT_CHAPTERS = "chapterList";
-
     Chapter c;
     private ArrayList<Chapter> arrayList;
     private String table;
     private String idCustomer;
     private String idComic;
-
+    private String condition;
+    private String fcmtoken;
 
     /**
      * Before starting background thread Show Progress Dialog
@@ -45,29 +45,27 @@ public class LoadListChapterAsyncTask extends AsyncTask<String, String, List<Cha
     protected List<Chapter> doInBackground(String... args) {
         arrayList = new ArrayList<>();
         idCustomer = args[0];
-        idComic = args[1];
-        table = args[2];
-        String startAt = args[3];
+        fcmtoken = args[1];
+        idComic = args[2];
+        condition = args[3];
         String API_URL = args[4];
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("table", table));
         params.add(new BasicNameValuePair("idCustomer", idCustomer));
+        params.add(new BasicNameValuePair("fcmtoken", fcmtoken));
         params.add(new BasicNameValuePair("idComic", idComic));
-        params.add(new BasicNameValuePair("startAt", startAt));
+        params.add(new BasicNameValuePair("condition", condition));
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
+            ChapterUtils chapterUtils = new ChapterUtils();
             String success = jsonObject.getString(TAG_SUCCESS);
             String message = jsonObject.getString(TAG_MESSAGE);
             if (success.equals(TAG_SUCCESS)) {
-                JSONArray jsonArray = jsonObject.getJSONArray(TAG_DISTINCT_CHAPTERS);
+                JSONArray jsonArray = jsonObject.getJSONArray("135");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     c = new Chapter();
                     JSONObject o = jsonArray.getJSONObject(i);
                     Log.e("ALL THE STUFF", o.toString());
-                    c.setChapter((float) o.getDouble("chapter"));
-                    if (o.isNull("chapterComic")) {
-                        c.setPrice((float) o.getDouble("realprice"));
-                    } else c.setPrice(0);
+                    c = chapterUtils.convertFromJSONObject(o);
                     // adding HashList to ArrayList
                     arrayList.add(c);
                 }

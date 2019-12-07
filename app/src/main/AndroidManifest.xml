@@ -21,9 +21,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name=".readView.EpubViewerActivity"
+            android:name=".readView.ViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_epub_viewer"
             android:theme="@style/FullscreenTheme" />

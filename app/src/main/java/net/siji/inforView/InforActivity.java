@@ -6,35 +6,28 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
-import net.siji.MainActivity;
 import net.siji.R;
 import net.siji.dao.BlurBuilder;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
 import net.siji.model.Comment;
 import net.siji.model.Customer;
-import net.siji.readView.EpubViewerActivity;
+import net.siji.readView.ViewerActivity;
 import net.siji.sessionApp.SessionManager;
 import net.siji.splashScreenView.SplashScreenActivity;
 
@@ -86,15 +79,6 @@ public class InforActivity extends AppCompatActivity {
         mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         mCollapsingToolbarLayout.setTitle("");
         appBarLayout = findViewById(R.id.app_bar_layout);
-//        fab=findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), EpubViewerActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
         showHideTitle();
         setTitle("");
         init();
@@ -169,6 +153,15 @@ public class InforActivity extends AppCompatActivity {
         }
     }
 
+    public void redirect(){
+        Intent intent = new Intent(this, ViewerActivity.class);
+        Bundle data = new Bundle();
+        data.putSerializable("comic", comic);
+        intent.putExtras(data);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -183,6 +176,9 @@ public class InforActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SplashScreenActivity.class);
             startActivity(intent);
             finish();
+        }
+        if (item.getItemId() == R.id.menu_main_share) {
+            redirect();
         }
         return super.onOptionsItemSelected(item);
     }

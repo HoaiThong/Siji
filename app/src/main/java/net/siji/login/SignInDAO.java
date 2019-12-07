@@ -54,12 +54,14 @@ public class SignInDAO {
     private String api_signin = "http://127.0.0.1/siji-server/view/signin.php";
     private ProgressBar mProgressBar;
     private SessionManager sessionManager;
+    private LogOutDAO logOutDAO ;
 
     public SignInDAO(Activity mActivity) {
         this.mActivity = mActivity;
         gson = getGson();
         okHttpUtil = new OkHttpUtil();
         sessionManager = new SessionManager(mActivity);
+        logOutDAO = new LogOutDAO(mActivity);
     }
 
     public Gson getGson() {
@@ -288,11 +290,17 @@ public class SignInDAO {
                 sessionManager.setReading("idUser", String.valueOf(flag));
                 redirectUI();
             }
+            else {
+
+                logOutDAO.exit();
+            }
 
         } catch (ExecutionException e) {
-            Log.d("======Gson======", e.toString());
+            Toast.makeText(mActivity,mActivity.getString(R.string.msg_login_failed),Toast.LENGTH_SHORT).show();
+            logOutDAO.exit();
         } catch (InterruptedException e) {
-            Log.d("======Gson======", e.toString());
+            Toast.makeText(mActivity,mActivity.getString(R.string.msg_login_failed),Toast.LENGTH_SHORT).show();
+            logOutDAO.exit();
         }
     }
 

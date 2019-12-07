@@ -1,11 +1,10 @@
-package net.siji.inforView;
+package net.siji.readView;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import net.siji.dao.HttpHander;
 import net.siji.model.Chapter;
-import net.siji.model.Comic;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -16,7 +15,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadListChapterAsyncTask extends AsyncTask<String, String, List<Chapter>> {
+public class LoadDistincChapterAsyncTask extends AsyncTask<String, String, List<Chapter>> {
     HttpHander httpHander = new HttpHander();
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
@@ -46,11 +45,9 @@ public class LoadListChapterAsyncTask extends AsyncTask<String, String, List<Cha
         arrayList = new ArrayList<>();
         idCustomer = args[0];
         idComic = args[1];
-        table = args[2];
-        String startAt = args[3];
-        String API_URL = args[4];
+        String startAt = args[2];
+        String API_URL = args[3];
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("table", table));
         params.add(new BasicNameValuePair("idCustomer", idCustomer));
         params.add(new BasicNameValuePair("idComic", idComic));
         params.add(new BasicNameValuePair("startAt", startAt));
