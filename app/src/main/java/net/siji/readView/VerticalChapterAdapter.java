@@ -1,6 +1,7 @@
 package net.siji.readView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,10 +24,10 @@ public class VerticalChapterAdapter extends BaseAdapter {
 
     private List<Chapter> listData;
     private LayoutInflater layoutInflater;
-    private Activity mActivity;
+    private Context mActivity;
     private ViewHolder holder;
 
-    public VerticalChapterAdapter(Activity aContext, List<Chapter> listData) {
+    public VerticalChapterAdapter(Context aContext, List<Chapter> listData) {
         this.mActivity = aContext;
         this.listData = listData;
         layoutInflater = LayoutInflater.from(mActivity);
@@ -59,14 +60,17 @@ public class VerticalChapterAdapter extends BaseAdapter {
         Chapter c = listData.get(position);
         int num = (int) (c.getChapter() * 10);
         if (num % 10 == 0) {
-            String name = mActivity.getString(R.string.chapter) + " " + (int)c.getChapter();
+            String name = mActivity.getString(R.string.chapter) + " " + (int) c.getChapter();
             holder.tv_chapter.setText(name);
         } else {
             String name = mActivity.getString(R.string.chapter) + " " + c.getChapter();
             holder.tv_chapter.setText(name);
         }
         int coin = (int) c.getPrice();
-        holder.tv_price.setText(String.valueOf(coin));
+        if (coin > 0) {
+            holder.tv_price.setVisibility(View.VISIBLE);
+            holder.tv_price.setText(String.valueOf(coin));
+        } else holder.tv_price.setVisibility(View.GONE);
         return convertView;
     }
 

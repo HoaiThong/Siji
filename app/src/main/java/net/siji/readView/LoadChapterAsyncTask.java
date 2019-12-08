@@ -60,7 +60,7 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
             String success = jsonObject.getString(TAG_SUCCESS);
             String message = jsonObject.getString(TAG_MESSAGE);
             if (success.equals(TAG_SUCCESS)) {
-                JSONArray jsonArray = jsonObject.getJSONArray("135");
+                JSONArray jsonArray = jsonObject.getJSONArray(condition);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     c = new Chapter();
                     JSONObject o = jsonArray.getJSONObject(i);

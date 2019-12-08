@@ -47,7 +47,7 @@ public class InforActivity extends AppCompatActivity {
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     AppBarLayout appBarLayout;
     FloatingActionButton fab;
-    Comic comic;
+    Comic comic=new Comic();
     Customer user;
     String isNotifi = "0";
     String idCustomer;
@@ -161,11 +161,17 @@ public class InforActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        startActivity(intent);
+        finish();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.info_menu, menu);
         return true;
     }
 

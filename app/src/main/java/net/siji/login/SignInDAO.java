@@ -143,6 +143,7 @@ public class SignInDAO {
         mAuth = FirebaseAuth.getInstance();
         customer = new Customer();
         customer.setIdTokenFcm(tokenFcm);
+        sessionManager.setReading("tokenfcm",tokenFcm);
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getIdToken());
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getEmail() + "---" + acct.getDisplayName());
 
@@ -201,6 +202,7 @@ public class SignInDAO {
     public void getFbInfo(String tokenFcm) {
         customer = new Customer();
         customer.setIdTokenFcm(tokenFcm);
+        sessionManager.setReading("tokenfcm",tokenFcm);
         if (AccessToken.getCurrentAccessToken() != null) {
             AccessToken access_token = AccessToken.getCurrentAccessToken();
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
@@ -292,7 +294,7 @@ public class SignInDAO {
             }
             else {
 
-                logOutDAO.exit();
+                mActivity.startActivity(mActivity.getIntent());
             }
 
         } catch (ExecutionException e) {

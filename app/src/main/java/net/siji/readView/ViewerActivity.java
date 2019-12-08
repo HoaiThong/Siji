@@ -6,10 +6,15 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,11 +23,14 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,9 +39,11 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.siji.R;
+import net.siji.dao.ItemClickListener;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
 import net.siji.sessionApp.SessionManager;
+import net.siji.splashScreenView.SplashScreenActivity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -74,12 +84,20 @@ public class ViewerActivity extends AppCompatActivity {
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            if (!mFlag)
+                viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            else
+                mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
     private View mControlsView;
@@ -95,6 +113,7 @@ public class ViewerActivity extends AppCompatActivity {
         }
     };
     private boolean mVisible;
+    private boolean mFlag = false;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {
@@ -125,20 +144,23 @@ public class ViewerActivity extends AppCompatActivity {
     Comic comic;
     String idCustomer;
     String idComic;
+    String fcmtoken;
     List<Chapter> distinctChapterList;
     LinkedList<Chapter> linkedList;
-    FloatingActionButton fab1;
 
     private LinearLayout fabContainer, img_view;
     private FloatingActionButton fab;
     private boolean fabMenuOpen = false;
-    private FloatingActionButton exchange_fab;
-    static boolean flagShow = false;
+    private FloatingActionButton exchange_fab, msg_bug_fab;
+    private ViewPager viewPager;
     private TextView exchange_fb_tv;
     ListView chapterListView;
     VerticalChapterAdapter verticalChapterAdapter;
+    RecyclerView mRecyclerView;
+    RecyclerChapterAdapter recyclerChapterAdapter;
     int quantity;
     TextView tv_title_comic;
+    Chapter chapter;
 
 
     @Override
@@ -148,10 +170,18 @@ public class ViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_viewer);
         init();
         initFab();
-        loadContentChapter();
-        loadDistinctChapters();
-        initChapterMenu();
-        initWebView();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                loadContentChapter();
+                loadDistinctChapters();
+                initChapterMenu();
+                initViewMode();
+
+            }
+        }, 100);
+
+
         hide();
 
     }
@@ -172,8 +202,10 @@ public class ViewerActivity extends AppCompatActivity {
 
     public void loadContentChapter() {
         chapterList = new ArrayList<>();
+        float c = chapter.getChapter();
+        String chapter = String.valueOf(c);
         try {
-            chapterList = new LoadChapterAsyncTask().execute("", "", "", "", API_GET_CONTENT_CHAPTER_URL).get();
+            chapterList = new LoadChapterAsyncTask().execute(idCustomer, fcmtoken, idComic, chapter, API_GET_CONTENT_CHAPTER_URL).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -182,26 +214,86 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
     public void initChapterMenu() {
+//        mRecyclerView = findViewById(R.id.chapter_recycler_view);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerChapterAdapter = new RecyclerChapterAdapter(this, mRecyclerView, linkedList);
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setAdapter(recyclerChapterAdapter);
+//        recyclerChapterAdapter.setItemClickListener(new ItemClickListener() {
+//            @Override
+//            public void onClick(View view, int position, boolean isLongClick) {
+//                chapter = linkedList.get(position);
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    public void run() {
+//                        loadContentChapter();
+//                        initViewMode();
+//                    }
+//                }, 100);
+//            }
+//        });
+//        recyclerChapterAdapter.setLoadMore(new ILoadMore() {
+//            @Override
+//            public void onLoadMore() {
+//                linkedList.add(null);
+//                recyclerChapterAdapter.notifyItemInserted(linkedList.size() - 1);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        linkedList.remove(linkedList.size() - 1);
+//                        recyclerChapterAdapter.notifyItemRemoved(linkedList.size());
+//
+//                        //Random more data
+//                        int index = linkedList.size();
+//                        int end = index + 10;
+//                        loadDistinctChapters();
+//                        recyclerChapterAdapter.notifyDataSetChanged();
+//                        recyclerChapterAdapter.setLoaded();
+//                    }
+//                }, 100);
+//            }
+//        });
+//
+
         chapterListView = findViewById(R.id.listview_chapter);
         verticalChapterAdapter = new VerticalChapterAdapter(this, linkedList);
         chapterListView.setAdapter(verticalChapterAdapter);
         chapterListView.setOnScrollListener(onScrollListener());
+        chapterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                chapter = linkedList.get(position);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        loadContentChapter();
+                        initViewMode();
+                    }
+                }, 100);
+
+            }
+        });
     }
 
     public void init() {
         startAt = 0;
+        chapter = new Chapter();
+        chapter.setChapter(135);
         SessionManager sessionManager = new SessionManager(this);
         idCustomer = sessionManager.getReaded("idUser");
+        fcmtoken = sessionManager.getReaded("tokenfcm");
+
         comic = (Comic) getIntent().getSerializableExtra("comic");
         idComic = String.valueOf(comic.getId());
         distinctChapterList = new ArrayList<>();
         linkedList = new LinkedList<>();
         mVisible = true;
         tv_title_comic = findViewById(R.id.tv_nav_title_comic);
-        tv_title_comic.setText(comic.getName().trim());
+        if (comic.getName()!=null && !comic.getName().isEmpty())tv_title_comic.setText(comic.getName().trim());
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = (WebView) findViewById(R.id.fullscreen_content);
         frameLayout = findViewById(R.id.frame_layout);
+        viewPager = findViewById(R.id.view_pager);
         mContext = this;
 
 
@@ -209,7 +301,7 @@ public class ViewerActivity extends AppCompatActivity {
 
     public void initFab() {
         fabContainer = (LinearLayout) findViewById(R.id.fabContainerLayout);
-        exchange_fb_tv = (TextView) findViewById(R.id.exchange_fab_lb);
+        exchange_fb_tv = (TextView) findViewById(R.id.tv_exchange_fab_mode);
         fab = (FloatingActionButton) findViewById(R.id.fab_view_act);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,11 +315,22 @@ public class ViewerActivity extends AppCompatActivity {
             public void onClick(View view) {
             }
         });
-        exchange_fab = (FloatingActionButton) findViewById(R.id.exchange_fab);
+        exchange_fab = (FloatingActionButton) findViewById(R.id.exchange_fab_mode);
         exchange_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flagShow = !flagShow;
+                mFlag = !mFlag;
+                initViewMode();
+            }
+        });
+        msg_bug_fab = (FloatingActionButton) findViewById(R.id.msg_bug_fab);
+        msg_bug_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hide();
+                String chap = String.valueOf(chapter.getChapter());
+                NotificationBugDialog bugDialog = new NotificationBugDialog(getApplicationContext(), idCustomer, idComic, chap);
+                bugDialog.show(getSupportFragmentManager(), "dialogMsgBug");
             }
         });
     }
@@ -235,7 +338,7 @@ public class ViewerActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void toggleFabMenu() {
         if (!fabMenuOpen) {
-            fab.setImageResource(R.drawable.ic_error);
+            fab.setImageResource(R.drawable.ic_close_black);
             int centerX = fabContainer.getWidth() / 2;
             int centerY = fabContainer.getHeight() / 2;
             int startRadius = 0;
@@ -291,7 +394,29 @@ public class ViewerActivity extends AppCompatActivity {
         fabMenuOpen = !fabMenuOpen;
     }
 
+    public void initViewMode() {
+        if (mFlag) {
+            exchange_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic__line));
+            exchange_fb_tv.setText(getString(R.string.title_line_mode));
+            initWebView();
+        } else {
+            exchange_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_slide_mode));
+            exchange_fb_tv.setText(getString(R.string.title_slide_mode));
+            initViewPager();
+        }
+        hide();
+    }
+
+    public void initViewPager() {
+        viewPager.setVisibility(View.VISIBLE);
+        mContentView.setVisibility(View.GONE);
+        ImageAdapter imageAdapter = new ImageAdapter(this, chapterList);
+        viewPager.setAdapter(imageAdapter);
+    }
+
     public void initWebView() {
+        viewPager.setVisibility(View.GONE);
+        mContentView.setVisibility(View.VISIBLE);
         WebSettings webSetting = mContentView.getSettings();
         webSetting.setDomStorageEnabled(true);
         webSetting.setJavaScriptEnabled(true);
@@ -317,6 +442,14 @@ public class ViewerActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.epub_menu, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -371,9 +504,11 @@ public class ViewerActivity extends AppCompatActivity {
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
+
         // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+
     }
 
     @SuppressLint("InlinedApi")

@@ -19,6 +19,7 @@
 
     <string name="chi_tiet">Chi Tiết</string>
     <string name="noi_dung">Nội Dung</string>
+    <string name="title_noi_dung">Nhập không quá 100 ký tự...</string>
     <string name="refresh">Refresh</string>
     <string name="thay_doi">Thay Đổi</string>
 
@@ -66,7 +67,16 @@
 
     <string name="action_settings">Settings</string>
     <string name="msg_login_failed">Đăng nhập không thành công! </string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_slide_mode">Slide Mode</string>
+    <string name="title_line_mode">Line Mode</string>
+    <string name="title_bao_loi">Báo lỗi! </string>
+
+    <string name="send_btn">Gửi</string>
+    <string name="exit_dialog_title">Bạn có muốn đăng xuất không?</string>
+    <string name="exit_btn">Thoát</string>
+    <string name="cancel_btn">Hủy</string>
+    <string name="exit_label">Thông báo lỗi!</string>
+    <string name="thanks_label">Cảm ơn bạn đã phản hồi cho chúng tôi !</string>
 
 
 </resources>

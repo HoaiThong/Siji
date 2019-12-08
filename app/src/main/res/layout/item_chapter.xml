@@ -26,6 +26,7 @@
         android:layout_gravity="center|center_vertical"
         android:drawableEnd="@drawable/ic_google"
         android:drawablePadding="4dp"
+        android:visibility="gone"
         android:fontFamily="@font/comfortaa_regular"
         android:textColor="@color/purple" />
 </RelativeLayout>

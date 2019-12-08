@@ -21,9 +21,12 @@
                 android:id="@+id/banner_koniki"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
                 app:cardCornerRadius="6dp"
-                app:cardElevation="6dp">
+                app:cardElevation="1dp">
 
                 <RelativeLayout
                     android:id="@+id/slider_image_view"

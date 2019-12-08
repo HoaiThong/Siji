@@ -1,9 +1,7 @@
 package net.siji;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -11,13 +9,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,9 +25,7 @@ import net.siji.libraryView.LibraryFragment;
 import net.siji.userView.UserFragment;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 
 // ctrl + shift + - : rut gon code
 public class MainActivity extends AppCompatActivity {
@@ -165,13 +158,13 @@ public class MainActivity extends AppCompatActivity {
 //        unregisterReceiver(receiver);
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        if (hasFocus) {
-//            hideSystemUI();
-//        }
-//    }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            hideSystemUI();
+        }
+    }
 
     private void hideSystemUI() {
         // Enables regular immersive mode.

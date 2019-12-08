@@ -20,7 +20,7 @@ public class LoadListChapterAsyncTask extends AsyncTask<String, String, List<Cha
     HttpHander httpHander = new HttpHander();
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
-    private static final String TAG_DISTINCT_CHAPTERS = "chapterList";
+    private static final String TAG_DISTINCT_CHAPTERS = "distinctChapters";
 
     Chapter c;
     private ArrayList<Chapter> arrayList;
