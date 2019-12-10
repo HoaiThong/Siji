@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,13 +46,16 @@ public class LibraryFragment
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_list_manga, container, false);
         mActivity.setTitle(mActivity.getString(R.string.bo_suu_tap));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-
-        Log.d("api", API_URL);
         SessionManager sessionManager=new SessionManager(mActivity);
         idCustomer=sessionManager.getReaded("idUser");
         start = 0;
-        init();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+                init();
+            }
+        }, 100);
         return view;
     }
 

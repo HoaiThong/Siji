@@ -102,7 +102,6 @@ public class SignInDAO {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
                             return;
                         }
 
@@ -111,7 +110,6 @@ public class SignInDAO {
                         getFbInfo(token);
                         // Log and toast
                         String msg = mActivity.getString(R.string.msg_token_fmt, token);
-                        Log.d("token id :", token);
 //                        Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -144,8 +142,6 @@ public class SignInDAO {
         customer = new Customer();
         customer.setIdTokenFcm(tokenFcm);
         sessionManager.setReading("tokenfcm",tokenFcm);
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getIdToken());
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getEmail() + "---" + acct.getDisplayName());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -154,9 +150,7 @@ public class SignInDAO {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Log.d(TAG, "firebase:" + user.getUid());
 //                            Log.d(TAG, "firebase:" + user.getIdToken(true).getResult().getToken());
                             if (user.getUid() != null) customer.setIdGoogle(user.getUid());
                             if (user.getDisplayName() != null)
@@ -167,13 +161,10 @@ public class SignInDAO {
                             Locale current = mActivity.getResources().getConfiguration().locale;
                             customer.setLocale(current.getCountry());
 
-                            Log.d("locale", current.getCountry());
                             String json = customer.toJSONNoId();
                             sessionManager.setReading("user", json);
                             String data = getPackageData(json, "Google");
                             sessionManager.setReading("datauser",data);
-                            Log.d("======Gson======", json);
-                            Log.d("======Data======", data);
                             registerServer(data);
 //                            OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
 //                            int flag;
@@ -224,19 +215,11 @@ public class SignInDAO {
                                 Locale current = mActivity.getResources().getConfiguration().locale;
                                 customer.setLocale(current.getCountry());
 
-                                Log.d("locale", current.getCountry());
-                                Log.d("name: ", object.toString());
-                                Log.d("id: ", id);
-                                Log.d("email: ", email);
-                                Log.d("link: ", link);
-                                Log.d("imageURL: ", imageURL.toString());
 
                                 String json = customer.toJSONNoId();
                                 sessionManager.setReading("user", json);
                                 String data = getPackageData(json, "Facebook");
                                 sessionManager.setReading("datauser",data);
-                                Log.d("======Gson======", json);
-                                Log.d("======Data======", data);
 //                                OkHttpHandler httpHandler = new OkHttpHandler(mActivity);
 //                                int flag;
 //                                try {
@@ -268,7 +251,7 @@ public class SignInDAO {
                                 JSONArray jsonArray,
                                 GraphResponse response) {
                             if (jsonArray != null) {
-                                Log.d("jsonArray: ", jsonArray.toString());
+                                Log.d("jsonArrayFace: ", jsonArray.toString());
                             }
                         }
                     });

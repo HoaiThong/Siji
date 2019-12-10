@@ -85,11 +85,9 @@ public class OkHttpHandler extends AsyncTask<String, Void, Integer> {
         try {
             response = client.newCall(request).execute();
             result = response.body().string();
-            Log.d("respose data :", result);
             obj = new JSONObject(result);
             int s = obj.getInt(TAG_SUCCESS);
             msg=obj.getString(TAG_MESSAGE);
-            System.out.println("flag:"+s);
             return s;
 
         } catch (IOException e) {

@@ -64,7 +64,6 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
                 for (int i = 0; i < jsonArray.length(); i++) {
                     c = new Chapter();
                     JSONObject o = jsonArray.getJSONObject(i);
-                    Log.e("ALL THE STUFF", o.toString());
                     c = chapterUtils.convertFromJSONObject(o);
                     // adding HashList to ArrayList
                     arrayList.add(c);

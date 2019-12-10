@@ -29,6 +29,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private String API_GET_LIMIT_COMIC_BY_UPDATE = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_update.php";
     private String API_GET_LIMIT_COMIC_FULL = "http://192.168.1.121/siji-server/view/api_get_limit_comic_full.php";
     private String API_GET_LIMIT_COMIC_BY_VIEW_DAY = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_view_day.php";
+    private String API_GET_COMIC_RANDOM = "http://192.168.1.121/siji-server/view/api_get_comic_by_random.php";
     private String API_GET_HEADER = "http://192.168.1.121/siji-server/view/api_get_header.php";
 
     private final String startAt = "0";
@@ -47,6 +48,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 data = new Bundle();
+                getListComicToday();
                 getListComicFull();
                 getListComicUpdate();
                 getListComicByViewDay();
@@ -55,10 +57,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         }, 100);
 
-//        setContentView(R.layout.activity_splash_screen);
-//        mImageView = (ImageView) findViewById(R.id.image);
-//        mTextView = (TextView) findViewById(R.id.text);
-//        startAnimation();
     }
 
     private List<Comic> getListComicUpdate() {
@@ -100,6 +98,18 @@ public class SplashScreenActivity extends AppCompatActivity {
         return list;
     }
 
+    private List<Comic> getListComicToday() {
+        List<Comic> list = new ArrayList<>();
+        try {
+            list = new LoadDataAsyncTask().execute(startAt,API_GET_COMIC_RANDOM ).get();
+            data.putParcelableArrayList("today", (ArrayList<? extends Parcelable>) list);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     public List<Header> getHeader() {
         ArrayList<Header> list = new ArrayList<>();
         try {

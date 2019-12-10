@@ -23,6 +23,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import net.siji.R;
 import net.siji.dao.BlurBuilder;
+import net.siji.dialog.LoadingDialog;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
 import net.siji.model.Comment;
@@ -92,14 +93,14 @@ public class InforActivity extends AppCompatActivity {
         isNotifi="0";
         startAtCmt = 0;
         comic = (Comic) getIntent().getSerializableExtra("comic");
-        Log.d("name", comic.getName());
         SessionManager sessionManager = new SessionManager(this);
         idCustomer = sessionManager.getReaded("idUser");
-        Log.d("id", idCustomer);
         idComic = String.valueOf(comic.getId());
-        final SpotsDialog spotsDialog = (SpotsDialog) new SpotsDialog.Builder().setContext(this).build();
-        spotsDialog.setCancelable(false);
-        spotsDialog.setMessage("");
+//        final SpotsDialog spotsDialog = (SpotsDialog) new SpotsDialog.Builder().setContext(this).build();
+//        spotsDialog.setCancelable(false);
+//        spotsDialog.setMessage("");
+//        spotsDialog.show();
+        final LoadingDialog spotsDialog = new LoadingDialog(getSupportFragmentManager());
         spotsDialog.show();
 //        new AsyncGettingBitmapFromUrl().execute(comic.getIconUrl().trim());
         new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_READED_COMIC);
@@ -111,7 +112,7 @@ public class InforActivity extends AppCompatActivity {
                 getComment();
                 spotsDialog.dismiss();
             }
-        }, 5000);
+        }, 1000);
     }
 
     public void getComic() {

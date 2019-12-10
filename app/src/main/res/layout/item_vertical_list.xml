@@ -50,6 +50,7 @@
             android:textStyle="italic"
             android:fontFamily="@font/comfortaa_regular"
             android:singleLine="true"
+            android:textColor="@color/myColorPrimary"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp" />
 

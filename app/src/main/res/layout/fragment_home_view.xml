@@ -51,14 +51,14 @@
 
 
             <LinearLayout
-                android:id="@+id/ll_rank"
+                android:id="@+id/ll_hot_today"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="6dp"
                 android:layout_marginBottom="12dp"
                 android:orientation="vertical"
-                android:visibility="gone">
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -81,7 +81,7 @@
                         android:layout_marginLeft="6dp"
                         android:drawableEnd="@drawable/ic_keyboard_arrow_right"
                         android:fontFamily="@font/comfortaa_regular"
-                        android:text="@string/bang_xep_hang"
+                        android:text="@string/title_today"
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>

@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.AndroidException;
 import android.util.Base64;
@@ -159,14 +160,18 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onStart() {
         super.onStart();
-        if (isLoggedInFaceBook() || isLoggedInGoogle()) {
-            SessionManager sessionManager = new SessionManager(this);
-            String data = sessionManager.getReaded("datauser");
-            Log.d("======DataSibN======", data);
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                if (isLoggedInFaceBook() || isLoggedInGoogle()) {
+                    SessionManager sessionManager = new SessionManager(SignInActivity.this);
+                    String data = sessionManager.getReaded("datauser");
 
-            signInDAO = new SignInDAO(this);
-            signInDAO.registerServer(data);
-        }
+                    signInDAO = new SignInDAO(SignInActivity.this);
+                    signInDAO.registerServer(data);
+                }
+            }
+        }, 10);
+
     }
 
     @Override

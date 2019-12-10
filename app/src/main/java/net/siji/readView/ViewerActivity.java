@@ -31,15 +31,19 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.siji.R;
 import net.siji.dao.ItemClickListener;
+import net.siji.dialog.LoadingDialog;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
 import net.siji.sessionApp.SessionManager;
@@ -55,7 +59,7 @@ import java.util.concurrent.ExecutionException;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class ViewerActivity extends AppCompatActivity {
+public class ViewerActivity extends AppCompatActivity implements View.OnClickListener {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -139,7 +143,9 @@ public class ViewerActivity extends AppCompatActivity {
     FrameLayout frameLayout;
     private final String API_URL_GET_LIST_CHAPTER = "http://192.168.1.121/siji-server/view/api_get_limit_chapters.php";
     private final String API_GET_CONTENT_CHAPTER_URL = "http://192.168.1.121/siji-server/view/api_get_all_page_of_chapter.php";
+    private final String API_GET_TRANSLATOR_URL = "http://192.168.1.121/siji-server/view/api_get_translator.php";
     List<Chapter> chapterList;
+    List<Chapter> chapterViewPager;
     int startAt = 0;
     Comic comic;
     String idCustomer;
@@ -155,13 +161,19 @@ public class ViewerActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TextView exchange_fb_tv;
     ListView chapterListView;
+    ListView translatorListView;
     VerticalChapterAdapter verticalChapterAdapter;
     RecyclerView mRecyclerView;
     RecyclerChapterAdapter recyclerChapterAdapter;
     int quantity;
     TextView tv_title_comic;
     Chapter chapter;
-
+    private Spinner spinnerTranslator;
+    private List<String> listTranslator;
+    private StringBuilder builderHtml;
+    private LinearLayout tabChapter, translatorTab;
+    private View line_tab_chapter, line_tab_translator;
+    private List<String> stringList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,16 +182,21 @@ public class ViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_viewer);
         init();
         initFab();
+        final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+        loadingDialog.show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                loadContentChapter();
+//                loadTranslator();
                 loadDistinctChapters();
                 initChapterMenu();
+                loadContentChapter();
+                processData();
                 initViewMode();
-
+                initSpinner();
+                loadingDialog.dismiss();
             }
-        }, 100);
+        }, 2000);
 
 
         hide();
@@ -211,6 +228,19 @@ public class ViewerActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void loadTranslator() {
+        stringList = new ArrayList<>();
+        try {
+            stringList = new LoadDistincTranslatorAsyncTask().execute(idComic, API_GET_TRANSLATOR_URL).get();
+            return;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        loadTranslator();
     }
 
     public void initChapterMenu() {
@@ -254,31 +284,67 @@ public class ViewerActivity extends AppCompatActivity {
 //            }
 //        });
 //
-
-        chapterListView = findViewById(R.id.listview_chapter);
+        chapter = linkedList.get(0);
         verticalChapterAdapter = new VerticalChapterAdapter(this, linkedList);
         chapterListView.setAdapter(verticalChapterAdapter);
         chapterListView.setOnScrollListener(onScrollListener());
+//        verticalChapterAdapter.setItemClickListener(new ItemClickListener() {
+//            @Override
+//            public void onClick(View view, int position, boolean isLongClick) {
+//                chapter = linkedList.get(position);
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    public void run() {
+//                        loadContentChapter();
+//                        processData();
+//                        initViewMode();
+//                    }
+//                }, 100);
+//            }
+//        });
         chapterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView tv = parent.getChildAt(position).findViewById(R.id.tv_chapter_title);
+                tv.setTextColor(getApplicationContext().getResources().getColor(R.color.red));
                 chapter = linkedList.get(position);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         loadContentChapter();
+                        processData();
                         initViewMode();
                     }
                 }, 100);
 
             }
         });
+        chapterListView.setVisibility(View.VISIBLE);
+        translatorListView.setVisibility(View.GONE);
+        line_tab_translator.setVisibility(View.GONE);
+        line_tab_chapter.setVisibility(View.VISIBLE);
+    }
+
+    public void initTranslator() {
+
+        VerticalTranslatorAdapter adapter = new VerticalTranslatorAdapter(this, listTranslator);
+        translatorListView.setAdapter(adapter);
+        adapter.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(View view, int position, boolean isLongClick) {
+                Toast.makeText(getApplicationContext(), listTranslator.get(position), Toast.LENGTH_SHORT).show();
+            }
+        });
+        translatorListView.setVisibility(View.VISIBLE);
+        chapterListView.setVisibility(View.GONE);
+        line_tab_translator.setVisibility(View.VISIBLE);
+        line_tab_chapter.setVisibility(View.GONE);
     }
 
     public void init() {
         startAt = 0;
         chapter = new Chapter();
-        chapter.setChapter(135);
+        chapter.setChapter(1);
         SessionManager sessionManager = new SessionManager(this);
         idCustomer = sessionManager.getReaded("idUser");
         fcmtoken = sessionManager.getReaded("tokenfcm");
@@ -289,11 +355,21 @@ public class ViewerActivity extends AppCompatActivity {
         linkedList = new LinkedList<>();
         mVisible = true;
         tv_title_comic = findViewById(R.id.tv_nav_title_comic);
-        if (comic.getName()!=null && !comic.getName().isEmpty())tv_title_comic.setText(comic.getName().trim());
+        if (comic.getName() != null && !comic.getName().isEmpty())
+            tv_title_comic.setText(comic.getName().toUpperCase().trim());
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = (WebView) findViewById(R.id.fullscreen_content);
         frameLayout = findViewById(R.id.frame_layout);
         viewPager = findViewById(R.id.view_pager);
+        spinnerTranslator = findViewById(R.id.spin_translator);
+        translatorListView = findViewById(R.id.listview_translator);
+        chapterListView = findViewById(R.id.listview_chapter);
+        tabChapter = findViewById(R.id.tab_chapter);
+        translatorTab = findViewById(R.id.tab_translator);
+        line_tab_chapter = findViewById(R.id.line_tab_chapter);
+        line_tab_translator = findViewById(R.id.line_tab_translator);
+        tabChapter.setOnClickListener(this);
+        translatorTab.setOnClickListener(this);
         mContext = this;
 
 
@@ -306,15 +382,11 @@ public class ViewerActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hide();
                 toggleFabMenu();
             }
         });
-        FloatingActionButton bug_fab = (FloatingActionButton) findViewById(R.id.msg_bug_fab);
-        bug_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
+
         exchange_fab = (FloatingActionButton) findViewById(R.id.exchange_fab_mode);
         exchange_fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,6 +405,61 @@ public class ViewerActivity extends AppCompatActivity {
                 bugDialog.show(getSupportFragmentManager(), "dialogMsgBug");
             }
         });
+    }
+
+    public void initSpinner() {
+//        String o = "-1";
+//        List<String> list = new ArrayList<>();
+//        for (Chapter c : chapterList) {
+//
+//            String str = c.getTranslator().trim();
+//            if (!str.equals(o)) {
+//                list.add("Translator : " + str);
+//                o = str;
+//            }
+//        }
+        ArrayAdapter<String> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listTranslator);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        spinnerTranslator.setAdapter(adapter);
+        spinnerTranslator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                hide();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                hide();
+            }
+        });
+    }
+
+    public void processData() {
+        int i = 0;
+        String o = chapterList.get(0).getTranslator().trim();
+        listTranslator = new ArrayList<>();
+        chapterViewPager = new ArrayList<>();
+        builderHtml = new StringBuilder();
+        builderHtml.append("<html><head></head><body> ");
+        listTranslator.add(o);
+        for (Chapter c : chapterList) {
+
+            String str = c.getTranslator().trim();
+            if (!str.equals(o)) {
+                listTranslator.add("Translator : " + str);
+                i++;
+                o = str;
+            } else {
+                if (i == 0) {
+                    builderHtml.append("<img src=\"");
+                    builderHtml.append(c.getUrl());
+                    builderHtml.append("\">");
+                    chapterViewPager.add(c);
+                }
+            }
+        }
+        builderHtml.append(" </body></html>");
+
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -410,7 +537,7 @@ public class ViewerActivity extends AppCompatActivity {
     public void initViewPager() {
         viewPager.setVisibility(View.VISIBLE);
         mContentView.setVisibility(View.GONE);
-        ImageAdapter imageAdapter = new ImageAdapter(this, chapterList);
+        ImageAdapter imageAdapter = new ImageAdapter(this, chapterViewPager);
         viewPager.setAdapter(imageAdapter);
     }
 
@@ -424,25 +551,25 @@ public class ViewerActivity extends AppCompatActivity {
         webSetting.setAllowFileAccess(true);
         webSetting.setAllowFileAccessFromFileURLs(true);
         mContentView.setHorizontalScrollBarEnabled(false);
-        StringBuilder builder = new StringBuilder();
-        builder.append("<html><head></head><body> ");
-//                String html = "<html><head></head><body> <img src=\""+ imagePath + "\"> </body></html>";
-        for (Chapter c : chapterList) {
-            builder.append("<img src=\"");
-            builder.append(c.getUrl());
-            builder.append("\">");
-        }
-        builder.append(" </body></html>");
-        String html = "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + builder.toString();
+//        StringBuilder builder = new StringBuilder();
+//        builder.append("<html><head></head><body> ");
+////                String html = "<html><head></head><body> <img src=\""+ imagePath + "\"> </body></html>";
+//        for (Chapter c : chapterList) {
+//            builder.append("<img src=\"");
+//            builder.append(c.getUrl());
+//            builder.append("\">");
+//        }
+//        builder.append(" </body></html>");
+        String html = "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + builderHtml.toString();
         mContentView.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
         mContentView.getSettings();
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.epub_menu, menu);
-        return true;
-    }
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.epub_menu, menu);
+//        return true;
+//    }
 
     @Override
     public void onBackPressed() {
@@ -533,4 +660,16 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tab_chapter:
+                initChapterMenu();
+                break;
+            case R.id.tab_translator:
+                initTranslator();
+                break;
+        }
+
+    }
 }

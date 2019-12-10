@@ -1,7 +1,6 @@
 package net.siji.readView;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import net.siji.dao.HttpHander;
 import net.siji.model.Chapter;
@@ -15,14 +14,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadDistincChapterAsyncTask extends AsyncTask<String, String, List<Chapter>> {
+public class LoadDistincTranslatorAsyncTask extends AsyncTask<String, String, List<String>> {
     HttpHander httpHander = new HttpHander();
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
-    private static final String TAG_DISTINCT_CHAPTERS = "distinctChapters";
+    private static final String TAG_TRANSLATOR = "translator";
 
-    Chapter c;
-    private ArrayList<Chapter> arrayList;
+    private ArrayList<String> arrayList;
     private String table;
     private String idCustomer;
     private String idComic;
@@ -41,31 +39,23 @@ public class LoadDistincChapterAsyncTask extends AsyncTask<String, String, List<
      *
      * @return
      */
-    protected List<Chapter> doInBackground(String... args) {
+    protected List<String> doInBackground(String... args) {
         arrayList = new ArrayList<>();
-        idCustomer = args[0];
-        idComic = args[1];
-        String startAt = args[2];
-        String API_URL = args[3];
+        idComic = args[0];
+        String API_URL = args[1];
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("idCustomer", idCustomer));
         params.add(new BasicNameValuePair("idComic", idComic));
-        params.add(new BasicNameValuePair("startAt", startAt));
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
             String success = jsonObject.getString(TAG_SUCCESS);
             String message = jsonObject.getString(TAG_MESSAGE);
             if (success.equals(TAG_SUCCESS)) {
-                JSONArray jsonArray = jsonObject.getJSONArray(TAG_DISTINCT_CHAPTERS);
+                JSONArray jsonArray = jsonObject.getJSONArray(TAG_TRANSLATOR);
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    c = new Chapter();
                     JSONObject o = jsonArray.getJSONObject(i);
-                    c.setChapter((float) o.getDouble("chapter"));
-                    if (o.isNull("chapterComic")) {
-                        c.setPrice((float) o.getDouble("realprice"));
-                    } else c.setPrice(0);
+                    String trans=o.getString(TAG_TRANSLATOR).trim();
                     // adding HashList to ArrayList
-                    arrayList.add(c);
+                    arrayList.add(trans);
                 }
             }
             return arrayList;

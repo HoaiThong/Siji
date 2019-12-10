@@ -6,7 +6,7 @@
     android:padding="8sp">
 
     <TextView
-        android:id="@+id/tv_chapter_title"
+        android:id="@+id/tv_translator_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -16,16 +16,12 @@
         android:textSize="16sp"
         android:textColor="@color/color_tab" />
 
-    <TextView
-        android:id="@+id/tv_price_chapter"
+    <CheckBox
+        android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:textSize="16sp"
+        android:clickable="false"
         android:layout_gravity="center|center_vertical"
-        android:drawableEnd="@drawable/ic_google"
-        android:drawablePadding="4dp"
-        android:visibility="gone"
-        android:fontFamily="@font/comfortaa_regular"
-        android:textColor="@color/purple" />
+         />
 </RelativeLayout>

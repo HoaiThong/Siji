@@ -15,15 +15,17 @@
     <string name="truyen_moi">TRUYỆN MỚI</string>
     <string name="truyen_xem_nhieu">TRUYỆN XEM NHIỀU</string>
     <string name="bang_xep_hang">BẢNG XẾP HẠNG</string>
+    <string name="title_today">HÔM NAY XEM GÌ? </string>
     <string name="truyen_hoan_thanh">TRUYỆN HOÀN THÀNH</string>
 
+    <string name="title_loading">Loading...</string>
     <string name="chi_tiet">Chi Tiết</string>
     <string name="noi_dung">Nội Dung</string>
     <string name="title_noi_dung">Nhập không quá 100 ký tự...</string>
     <string name="refresh">Refresh</string>
     <string name="thay_doi">Thay Đổi</string>
 
-    <string name="app_name_fb">Koniki</string>
+    <string name="app_name_fb">Siji</string>
     <string name="FACEBOOK_APP_ID">701080807008710</string>
     <string name="ACCOUNT_KIT_CLIENT_TOKEN">239a1b571614af29e473068bf3c44cee</string>
     <string name="name">name</string>

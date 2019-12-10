@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private HorizontalListAdapter horizontalAdapter;
     private GridViewAdapter gridViewAdapter;
     private FragmentManager fragmentManager;
-    private String API_RANK_URL = "http://192.168.0.110/KindleServer/view/rank_manga.php";
+    private String API_URL_RANDOM_COMIC = "http://192.168.1.121/siji-server/view/api_get_comic_by_random.php";
     private String count = "10";
     private String API_GET_LIMIT_COMIC_BY_UPDATE = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_update.php";
     private String API_GET_LIMIT_COMIC_FULL = "http://192.168.1.121/siji-server/view/api_get_limit_comic_full.php";
@@ -60,6 +60,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private LinearLayout ll_form_comic_full;
     private LinearLayout ll_form_view_day;
     private LinearLayout ll_form_new_comic;
+    private LinearLayout ll_form_random_today;
 
     @Nullable
     @Override
@@ -81,13 +82,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         viewPager = view.findViewById(R.id.viewPager);
         indicatorView = view.findViewById(R.id.indicator);
         ll_form_comic_full = view.findViewById(R.id.ll_form_comic_full);
+        ll_form_random_today = view.findViewById(R.id.ll_hot_today);
         ll_form_new_comic = view.findViewById(R.id.ll_form_new_comic);
         ll_form_view_day = view.findViewById(R.id.ll_form_view_day);
         ll_form_new_comic.setOnClickListener(this);
         ll_form_comic_full.setOnClickListener(this);
         ll_form_view_day.setOnClickListener(this);
+        ll_form_random_today.setOnClickListener(this);
         initViewPager();
-//        initRank();
+        initRandom();
         initNew();
         initViewsDay();
         initFull();
@@ -102,19 +105,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void initRank() {
+    public void initRandom() {
         List<Comic> objectArrayList = new ArrayList<>();
-        objectArrayList = mActivity.getIntent().getParcelableArrayListExtra("rank");
-        if (objectArrayList.isEmpty()) {
+        objectArrayList = mActivity.getIntent().getParcelableArrayListExtra("today");
+        if (!objectArrayList.isEmpty()) {
             recyclerViewRank = (RecyclerView) view.findViewById(R.id.horizontal_recycler_rate);
             recyclerViewRank.setHasFixedSize(true);
             LinearLayoutManager horizontalManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
             recyclerViewRank.setLayoutManager(horizontalManager);
             horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
             recyclerViewRank.setAdapter(horizontalAdapter);
-            LinearLayout linearLayout = view.findViewById(R.id.ll_rank);
-            linearLayout.setVisibility(View.VISIBLE);
-        }
+            ll_form_random_today.setVisibility(View.VISIBLE);
+        } else ll_form_random_today.setVisibility(View.GONE);
     }
 
     public void initNew() {
@@ -130,7 +132,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             recyclerViewNew.setLayoutManager(horizontalManager);
             horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
             recyclerViewNew.setAdapter(horizontalAdapter);
-        }
+            ll_form_new_comic.setVisibility(View.VISIBLE);
+        } else ll_form_new_comic.setVisibility(View.GONE);
     }
 
     public void initViewsDay() {
@@ -146,7 +149,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             recyclerViewMost.setLayoutManager(horizontalManager);
             horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
             recyclerViewMost.setAdapter(horizontalAdapter);
-        }
+            ll_form_view_day.setVisibility(View.VISIBLE);
+        } else ll_form_view_day.setVisibility(View.GONE);
     }
 
     public void initFull() {
@@ -162,7 +166,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             recyclerViewFull.setLayoutManager(horizontalManager);
             horizontalAdapter = new HorizontalListAdapter(mActivity, fragmentManager, objectArrayList);
             recyclerViewFull.setAdapter(horizontalAdapter);
-        }
+            ll_form_comic_full.setVisibility(View.VISIBLE);
+        } else ll_form_comic_full.setVisibility(View.GONE);
     }
 
     public void initViewPager() {
@@ -193,6 +198,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         VerticalListFragment fragment = new VerticalListFragment();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         switch (v.getId()) {
+            case R.id.ll_hot_today:
+                mActivity.getIntent().putExtra("apiUrl", API_URL_RANDOM_COMIC);
+                fragmentTransaction.replace(R.id.fragment_content, fragment);
+                fragmentTransaction.commit();
+                getActivity().setTitle(mActivity.getString(R.string.title_today));
+                break;
+
             case R.id.ll_form_new_comic:
                 mActivity.getIntent().putExtra("apiUrl", API_GET_LIMIT_COMIC_BY_UPDATE);
                 fragmentTransaction.replace(R.id.fragment_content, fragment);

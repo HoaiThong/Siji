@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import net.siji.R;
+import net.siji.dao.ItemClickListener;
 import net.siji.inforView.InforActivity;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
@@ -26,6 +27,8 @@ public class VerticalChapterAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private Context mActivity;
     private ViewHolder holder;
+    private int rowIndex=0;
+    private ItemClickListener itemClickListener;
 
     public VerticalChapterAdapter(Context aContext, List<Chapter> listData) {
         this.mActivity = aContext;
@@ -48,7 +51,7 @@ public class VerticalChapterAdapter extends BaseAdapter {
         return position;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.item_chapter, null);
@@ -71,9 +74,25 @@ public class VerticalChapterAdapter extends BaseAdapter {
             holder.tv_price.setVisibility(View.VISIBLE);
             holder.tv_price.setText(String.valueOf(coin));
         } else holder.tv_price.setVisibility(View.GONE);
+//        convertView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                rowIndex = position;
+//                notifyDataSetChanged();
+//                if (itemClickListener != null) {
+//                    itemClickListener.onClick(v, position, false);
+//                }
+//            }
+//        });
+//        if (rowIndex == position) {
+//            holder.tv_chapter.setTextColor(mActivity.getResources().getColor(R.color.red));
+//        }
         return convertView;
     }
 
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     static class ViewHolder {
         private TextView tv_chapter;

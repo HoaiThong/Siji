@@ -38,7 +38,7 @@ public class HorizontalListCategoryAdapter extends RecyclerView.Adapter<Horizont
         return new ViewHolder(view);
     }
 
-    int rowIndex = -1;
+    int rowIndex = 0;
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {

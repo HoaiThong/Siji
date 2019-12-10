@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/myColorPrimary"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/view_home"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/ic_home_black_24dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_nav_title_comic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="center"
+            android:text="Table"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45sp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/tab_chapter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="44sp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="Chapter"
+                android:textSize="16dp" />
+
+            <View
+                android:id="@+id/line_tab_chapter"
+                android:layout_width="match_parent"
+                android:layout_height="1sp"
+                android:background="@color/myColorPrimary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_translator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="44sp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="Translator"
+                android:textSize="16dp" />
+
+            <View
+                android:id="@+id/line_tab_translator"
+                android:layout_width="match_parent"
+                android:background="@color/myColorPrimary"
+                android:layout_height="1sp"
+                 />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spin_translator"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:visibility="gone"></Spinner>
+</LinearLayout>

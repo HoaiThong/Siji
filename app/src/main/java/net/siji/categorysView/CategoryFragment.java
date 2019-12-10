@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,8 +72,13 @@ public class CategoryFragment extends Fragment {
         SessionManager sessionManager = new SessionManager(mActivity);
         String user = sessionManager.getReaded("user");
         Log.d("uuuuuuuuuuuuuu:", user);
-        initCategory();
-        init();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                initCategory();
+                init();
+            }
+        }, 100);
         return view;
     }
 
