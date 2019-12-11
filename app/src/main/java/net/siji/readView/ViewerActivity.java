@@ -88,20 +88,26 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-            if (!mFlag)
-                viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-            else
-                mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            frameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//            if (!mFlag)
+//                viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//            else
+//                mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
     private View mControlsView;
@@ -117,7 +123,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         }
     };
     private boolean mVisible;
-    private boolean mFlag = false;
+    private boolean mFlag = true;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {
@@ -173,6 +179,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     private StringBuilder builderHtml;
     private LinearLayout tabChapter, translatorTab;
     private View line_tab_chapter, line_tab_translator;
+    private TextView tv_reading;
     private List<String> stringList;
 
     @Override
@@ -192,6 +199,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 initChapterMenu();
                 loadContentChapter();
                 processData();
+                initTranslator();
                 initViewMode();
                 initSpinner();
                 loadingDialog.dismiss();
@@ -221,6 +229,9 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         chapterList = new ArrayList<>();
         float c = chapter.getChapter();
         String chapter = String.valueOf(c);
+
+        String str = getString(R.string.title_dang_doc) + " "+getString(R.string.chapter)+" " + chapter;
+        tv_reading.setText(str);
         try {
             chapterList = new LoadChapterAsyncTask().execute(idCustomer, fcmtoken, idComic, chapter, API_GET_CONTENT_CHAPTER_URL).get();
         } catch (ExecutionException e) {
@@ -291,28 +302,20 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 //        verticalChapterAdapter.setItemClickListener(new ItemClickListener() {
 //            @Override
 //            public void onClick(View view, int position, boolean isLongClick) {
-//                chapter = linkedList.get(position);
-//                Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    public void run() {
-//                        loadContentChapter();
-//                        processData();
-//                        initViewMode();
-//                    }
-//                }, 100);
+//                Toast.makeText(getApplicationContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+//
 //            }
 //        });
         chapterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView tv = parent.getChildAt(position).findViewById(R.id.tv_chapter_title);
-                tv.setTextColor(getApplicationContext().getResources().getColor(R.color.red));
                 chapter = linkedList.get(position);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         loadContentChapter();
                         processData();
+                        initTranslator();
                         initViewMode();
                     }
                 }, 100);
@@ -332,13 +335,12 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         adapter.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                Toast.makeText(getApplicationContext(), listTranslator.get(position), Toast.LENGTH_SHORT).show();
+                String translator = listTranslator.get(position);
+                reloadByTranslator(translator);
+                initViewMode();
             }
         });
-        translatorListView.setVisibility(View.VISIBLE);
-        chapterListView.setVisibility(View.GONE);
-        line_tab_translator.setVisibility(View.VISIBLE);
-        line_tab_chapter.setVisibility(View.GONE);
+
     }
 
     public void init() {
@@ -368,6 +370,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         translatorTab = findViewById(R.id.tab_translator);
         line_tab_chapter = findViewById(R.id.line_tab_chapter);
         line_tab_translator = findViewById(R.id.line_tab_translator);
+        tv_reading = findViewById(R.id.chapter_reading_tv);
         tabChapter.setOnClickListener(this);
         translatorTab.setOnClickListener(this);
         mContext = this;
@@ -446,7 +449,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
             String str = c.getTranslator().trim();
             if (!str.equals(o)) {
-                listTranslator.add("Translator : " + str);
+                listTranslator.add(str);
                 i++;
                 o = str;
             } else {
@@ -456,6 +459,23 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                     builderHtml.append("\">");
                     chapterViewPager.add(c);
                 }
+            }
+        }
+        builderHtml.append(" </body></html>");
+
+    }
+
+    public void reloadByTranslator(String translator) {
+        chapterViewPager = new ArrayList<>();
+        builderHtml = new StringBuilder();
+        builderHtml.append("<html><head></head><body> ");
+        for (Chapter c : chapterList) {
+            String str = c.getTranslator().trim();
+            if (str.equals(translator)) {
+                builderHtml.append("<img src=\"");
+                builderHtml.append(c.getUrl());
+                builderHtml.append("\">");
+                chapterViewPager.add(c);
             }
         }
         builderHtml.append(" </body></html>");
@@ -664,10 +684,16 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tab_chapter:
-                initChapterMenu();
+                chapterListView.setVisibility(View.VISIBLE);
+                translatorListView.setVisibility(View.GONE);
+                line_tab_translator.setVisibility(View.GONE);
+                line_tab_chapter.setVisibility(View.VISIBLE);
                 break;
             case R.id.tab_translator:
-                initTranslator();
+                translatorListView.setVisibility(View.VISIBLE);
+                chapterListView.setVisibility(View.GONE);
+                line_tab_translator.setVisibility(View.VISIBLE);
+                line_tab_chapter.setVisibility(View.GONE);
                 break;
         }
 

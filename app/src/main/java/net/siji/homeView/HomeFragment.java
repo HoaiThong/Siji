@@ -3,6 +3,7 @@ package net.siji.homeView;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +15,20 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
+
 import net.siji.R;
+import net.siji.carouselViewPager.Adapter;
+import net.siji.carouselViewPager.CarouselPagerAdapter;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.imageSliderViewPager.PagesLessException;
 import net.siji.model.Comic;
@@ -42,7 +49,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ViewPager viewPager;
     private IndicatorView indicatorView;
     Timer timer;
-    int page = 0;
+    int page = 0,pageAds=0;
     ArrayList<Header> headerList;
     private Activity mActivity;
     private RecyclerView recyclerViewRank;
@@ -53,7 +60,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private GridViewAdapter gridViewAdapter;
     private FragmentManager fragmentManager;
     private String API_URL_RANDOM_COMIC = "http://192.168.1.121/siji-server/view/api_get_comic_by_random.php";
-    private String count = "10";
     private String API_GET_LIMIT_COMIC_BY_UPDATE = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_update.php";
     private String API_GET_LIMIT_COMIC_FULL = "http://192.168.1.121/siji-server/view/api_get_limit_comic_full.php";
     private String API_GET_LIMIT_COMIC_BY_VIEW_DAY = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_view_day.php";
@@ -61,6 +67,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private LinearLayout ll_form_view_day;
     private LinearLayout ll_form_new_comic;
     private LinearLayout ll_form_random_today;
+    private LinearLayout ll_form_view_ads;
+    private CardView banner_header;
+
+    //    Carousel
+    public final static int LOOPS = 1000;
+    public CarouselPagerAdapter adapter;
+    public ViewPager pager;
+    public static int count = 10; //ViewPager items size
+    /**
+     * You shouldn't define first page = 0.
+     * Let define firstpage = 'number viewpager size' to make endless carousel
+     */
+    public static int FIRST_PAGE = 10;
+    private Adapter mAdapter;
+    private ViewPager adsViewPager;
 
     @Nullable
     @Override
@@ -85,6 +106,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ll_form_random_today = view.findViewById(R.id.ll_hot_today);
         ll_form_new_comic = view.findViewById(R.id.ll_form_new_comic);
         ll_form_view_day = view.findViewById(R.id.ll_form_view_day);
+        ll_form_view_ads = view.findViewById(R.id.ll_form_view_ads);
+        banner_header = view.findViewById(R.id.banner_header);
+
+
         ll_form_new_comic.setOnClickListener(this);
         ll_form_comic_full.setOnClickListener(this);
         ll_form_view_day.setOnClickListener(this);
@@ -94,6 +119,36 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         initNew();
         initViewsDay();
         initFull();
+        initAds();
+
+    }
+
+    public void initAds() {
+//        pager = (ViewPager) view.findViewById(R.id.myviewpager);
+//
+//        //set page margin between pages for viewpager
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//        int pageMargin = ((metrics.widthPixels / 4) * 2);
+//        pager.setPageMargin(-pageMargin);
+//        adapter = new CarouselPagerAdapter(mActivity,getFragmentManager());
+//        pager.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+//
+//        pager.addOnPageChangeListener(adapter);
+//
+//        // Set current item to the middle page so we can fling to both
+//        // directions left and right
+//        pager.setCurrentItem(FIRST_PAGE);
+//        pager.setOffscreenPageLimit(3);
+
+        List<Object> list = new ArrayList<>();
+        mAdapter = new Adapter(list, mActivity);
+        adsViewPager = view.findViewById(R.id.myviewpager);
+        adsViewPager.setAdapter(mAdapter);
+        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_indicator_layout);
+        tabLayout.setupWithViewPager(adsViewPager, true);
+        ll_form_view_ads.setVisibility(View.VISIBLE);
 
     }
 
@@ -176,13 +231,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (!headerList.isEmpty()) {
             ImageAdapter adapter = new ImageAdapter(mActivity, headerList);
             viewPager.setAdapter(adapter);
-            try {
-                indicatorView.setViewPager(viewPager);
-            } catch (PagesLessException e) {
-                e.printStackTrace();
-            }
+            TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_indicator_line_layout);
+            tabLayout.setupWithViewPager(viewPager, true);
             pageSwitcher(3);
-        }
+            banner_header.setVisibility(View.VISIBLE);
+        }else banner_header.setVisibility(View.GONE);
     }
 
     public void pageSwitcher(int seconds) {

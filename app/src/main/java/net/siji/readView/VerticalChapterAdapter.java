@@ -51,7 +51,7 @@ public class VerticalChapterAdapter extends BaseAdapter {
         return position;
     }
 
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.item_chapter, null);
@@ -77,10 +77,11 @@ public class VerticalChapterAdapter extends BaseAdapter {
 //        convertView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                rowIndex = position;
+//
 //                notifyDataSetChanged();
 //                if (itemClickListener != null) {
 //                    itemClickListener.onClick(v, position, false);
+//                    rowIndex = position;
 //                }
 //            }
 //        });
@@ -88,6 +89,11 @@ public class VerticalChapterAdapter extends BaseAdapter {
 //            holder.tv_chapter.setTextColor(mActivity.getResources().getColor(R.color.red));
 //        }
         return convertView;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {

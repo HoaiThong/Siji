@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.siji.carouselViewPager.CarouselLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:gravity="center"
+    android:gravity="center_vertical"
+    android:padding="4dp"
     android:orientation="vertical">
 
     <ImageView
@@ -12,11 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name"
-        android:scaleType="fitXY"
+        android:layout_gravity="center"
+        android:scaleType="matrix"
         android:src="@drawable/bleach" />
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-</net.siji.carouselViewPager.CarouselLinearLayout>
+</LinearLayout>

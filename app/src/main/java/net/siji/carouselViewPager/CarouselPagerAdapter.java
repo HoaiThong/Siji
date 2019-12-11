@@ -1,5 +1,7 @@
 package net.siji.carouselViewPager;
 
+import android.app.Activity;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -13,7 +15,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements ViewPa
     public final static float BIG_SCALE = 1.0f;
     public final static float SMALL_SCALE = 0.7f;
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
-    private MainActivity context;
+    private Activity context;
     private FragmentManager fragmentManager;
     private float scale;
     ViewPager pager;
@@ -21,7 +23,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements ViewPa
     public static int count = 10;
     public static int FIRST_PAGE = 10;
 
-    public CarouselPagerAdapter(MainActivity context, FragmentManager fm) {
+    public CarouselPagerAdapter(Activity context, FragmentManager fm) {
         super(fm);
         this.fragmentManager = fm;
         this.context = context;

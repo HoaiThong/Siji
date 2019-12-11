@@ -17,6 +17,7 @@
     <string name="bang_xep_hang">BẢNG XẾP HẠNG</string>
     <string name="title_today">HÔM NAY XEM GÌ? </string>
     <string name="truyen_hoan_thanh">TRUYỆN HOÀN THÀNH</string>
+    <string name="advertise">Advertise</string>
 
     <string name="title_loading">Loading...</string>
     <string name="chi_tiet">Chi Tiết</string>
@@ -72,6 +73,8 @@
     <string name="title_slide_mode">Slide Mode</string>
     <string name="title_line_mode">Line Mode</string>
     <string name="title_bao_loi">Báo lỗi! </string>
+    <string name="title_dang_doc">Đang đọc: </string>
+    <string name="title_chapter">Chapter </string>
 
     <string name="send_btn">Gửi</string>
     <string name="exit_dialog_title">Bạn có muốn đăng xuất không?</string>

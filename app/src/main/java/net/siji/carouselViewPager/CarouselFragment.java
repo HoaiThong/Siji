@@ -1,6 +1,7 @@
 package net.siji.carouselViewPager;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -28,9 +29,10 @@ public class CarouselFragment extends Fragment {
 
     private int[] imageArray = new int[]{R.drawable.bleach, R.drawable.bleach,
             R.drawable.bleach, R.drawable.bleach, R.drawable.bleach,
+            R.drawable.bleach, R.drawable.bleach, R.drawable.bleach,
             R.drawable.bleach, R.drawable.bleach};
 
-    public static Fragment newInstance(MainActivity context, int pos, float scale) {
+    public static Fragment newInstance(Activity context, int pos, float scale) {
         Bundle b = new Bundle();
         b.putInt(POSITON, pos);
         b.putFloat(SCALE, scale);
