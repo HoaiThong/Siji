@@ -1,6 +1,7 @@
 package net.siji;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
@@ -22,6 +23,8 @@ import net.siji.dao.NetworkChangeReceiver;
 import net.siji.homeView.HomeFragment;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.libraryView.LibraryFragment;
+import net.siji.search.SearchViewActivity;
+import net.siji.splashScreenView.SplashScreenActivity;
 import net.siji.userView.UserFragment;
 
 import java.util.ArrayList;
@@ -136,6 +139,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == R.id.action_search) {
+            Intent intent = new Intent(this, SearchViewActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

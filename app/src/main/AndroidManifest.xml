@@ -21,6 +21,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".search.SearchViewActivity"
+            android:theme="@style/SearchTheme" ></activity>
         <activity
             android:name=".readView.ViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

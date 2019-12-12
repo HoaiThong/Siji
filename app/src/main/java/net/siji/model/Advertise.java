@@ -12,6 +12,13 @@ public class Advertise implements Serializable {
     private int heightImg;
     private Timestamp createAt;
 
+    public String TAG_ID="id";
+    public String TAG_IMG_URL="imgUrl";
+    public String TAG_TARGET_URL="targetUrl";
+    public String TAG_DESCRIPTION="description";
+    public String TAG_IMG_WIDTH="widthImg";
+    public String TAG_IMG_HEIGHT="heightImg";
+
     public Advertise() {
     }
 
@@ -70,4 +77,5 @@ public class Advertise implements Serializable {
     public void setCreateAt(Timestamp createAt) {
         this.createAt = createAt;
     }
+
 }

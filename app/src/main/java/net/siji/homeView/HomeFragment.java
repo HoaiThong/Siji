@@ -29,14 +29,17 @@ import com.google.android.material.tabs.TabLayout;
 import net.siji.R;
 import net.siji.carouselViewPager.Adapter;
 import net.siji.carouselViewPager.CarouselPagerAdapter;
+import net.siji.dao.AdvertiseUtils;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.imageSliderViewPager.PagesLessException;
+import net.siji.model.Advertise;
 import net.siji.model.Comic;
 import net.siji.model.Header;
 import net.siji.sessionApp.SessionManager;
 import net.siji.verticalView.VerticalListFragment;
 
 import java.lang.reflect.Field;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -49,7 +52,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ViewPager viewPager;
     private IndicatorView indicatorView;
     Timer timer;
-    int page = 0,pageAds=0;
+    int page = 0, pageAds = 0;
     ArrayList<Header> headerList;
     private Activity mActivity;
     private RecyclerView recyclerViewRank;
@@ -63,6 +66,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private String API_GET_LIMIT_COMIC_BY_UPDATE = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_update.php";
     private String API_GET_LIMIT_COMIC_FULL = "http://192.168.1.121/siji-server/view/api_get_limit_comic_full.php";
     private String API_GET_LIMIT_COMIC_BY_VIEW_DAY = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_view_day.php";
+    private String API_GET_ADVERTIDE = "http://192.168.1.121/siji-server/view/api_get_advertise.php";
     private LinearLayout ll_form_comic_full;
     private LinearLayout ll_form_view_day;
     private LinearLayout ll_form_new_comic;
@@ -80,8 +84,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
      * Let define firstpage = 'number viewpager size' to make endless carousel
      */
     public static int FIRST_PAGE = 10;
-    private Adapter mAdapter;
+    private AdvertiseAdapter advertiseAdapter;
     private ViewPager adsViewPager;
+    private Adapter mAdapter;
+    private ArrayList<Advertise> advertiseList;
 
     @Nullable
     @Override
@@ -119,8 +125,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         initNew();
         initViewsDay();
         initFull();
-        initAds();
-
+        initAdvertise();
+        pageSwitcher(3);
     }
 
     public void initAds() {
@@ -208,6 +214,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         } else ll_form_view_day.setVisibility(View.GONE);
     }
 
+    public void initAdvertise() {
+        advertiseList = new ArrayList<>();
+        adsViewPager = view.findViewById(R.id.myviewpager);
+        try {
+            advertiseList = new LoadAdvertiseAsyncTask().execute(API_GET_ADVERTIDE).get();
+            if (!advertiseList.isEmpty()) {
+                AdvertiseAdapter advertiseAdapter = new AdvertiseAdapter(mActivity,advertiseList);
+                Log.d("advertise",advertiseList.get(0).getImgUrl());
+                adsViewPager.setAdapter(advertiseAdapter);
+                TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_indicator_layout);
+                tabLayout.setupWithViewPager(adsViewPager, true);
+                ll_form_view_ads.setVisibility(View.VISIBLE);
+            } else ll_form_view_ads.setVisibility(View.GONE);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void initFull() {
         List<Comic> objectArrayList = new ArrayList<>();
         objectArrayList = mActivity.getIntent().getParcelableArrayListExtra("full");
@@ -233,9 +259,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             viewPager.setAdapter(adapter);
             TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_indicator_line_layout);
             tabLayout.setupWithViewPager(viewPager, true);
-            pageSwitcher(3);
             banner_header.setVisibility(View.VISIBLE);
-        }else banner_header.setVisibility(View.GONE);
+        } else banner_header.setVisibility(View.GONE);
     }
 
     public void pageSwitcher(int seconds) {
@@ -288,19 +313,35 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             // to call runOnUiThread to do work on UI thread.
             mActivity.runOnUiThread(new Runnable() {
                 public void run() {
-
-                    if (page >= headerList.size()) { // In my case the number of pages are 5
+                    if (!headerList.isEmpty()) {
+                        if (page >= headerList.size()) { // In my case the number of pages are 5
 //                        timer.cancel();
-                        page = 0;
-                        viewPager.setCurrentItem(page);
+                            page = 0;
+                            viewPager.setCurrentItem(page);
 //                        indicatorView.onPageSelected(page);
 //                        // Showing a toast for just testing purpose
 //                        Toast.makeText(getApplicationContext(), "Timer stoped",
 //                                Toast.LENGTH_LONG).show();
-                    } else {
-                        page++;
-                        viewPager.setCurrentItem(page);
+                        } else {
+                            page++;
+                            viewPager.setCurrentItem(page);
 //                        indicatorView.onPageSelected(page);
+                        }
+                    }
+                    if (!advertiseList.isEmpty()) {
+                        if (pageAds >= advertiseList.size()) { // In my case the number of pages are 5
+//                        timer.cancel();
+                            pageAds = 0;
+                            adsViewPager.setCurrentItem(pageAds);
+//                        indicatorView.onPageSelected(page);
+//                        // Showing a toast for just testing purpose
+//                        Toast.makeText(getApplicationContext(), "Timer stoped",
+//                                Toast.LENGTH_LONG).show();
+                        } else {
+                            pageAds++;
+                            adsViewPager.setCurrentItem(pageAds);
+//                        indicatorView.onPageSelected(page);
+                        }
                     }
                 }
             });

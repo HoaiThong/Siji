@@ -82,6 +82,8 @@
     <string name="cancel_btn">Hủy</string>
     <string name="exit_label">Thông báo lỗi!</string>
     <string name="thanks_label">Cảm ơn bạn đã phản hồi cho chúng tôi !</string>
+    <string name="search">Search ...</string>
+    <string name="type_some_text">Nhập tìm kiếm...</string>
 
 
 </resources>

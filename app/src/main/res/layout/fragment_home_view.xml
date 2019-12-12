@@ -40,8 +40,7 @@
                         android:layout_gravity="center"
                         android:clipToPadding="false"
                         android:foregroundGravity="center"
-                        android:overScrollMode="never"
-                        />
+                        android:overScrollMode="never" />
 
                     <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tab_indicator_line_layout"
@@ -185,7 +184,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
                 android:orientation="vertical"
-                >
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -213,19 +212,18 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="120sp">
+                    android:layout_height="100sp">
 
                     <androidx.viewpager.widget.ViewPager
                         android:id="@+id/myviewpager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal"
                         android:clipToPadding="false"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
                         android:foregroundGravity="center"
                         android:overScrollMode="never"
-                         />
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp" />
 
                     <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tab_indicator_layout"

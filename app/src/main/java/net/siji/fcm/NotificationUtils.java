@@ -173,10 +173,8 @@ public class NotificationUtils {
      */
     public void playNotificationSound(String sound) {
         switch (sound) {
-            // Trường hợp tuổi bằng 18
             case "0":
                 break;
-            // Trường hợp tuổi bằng 20
             case "1":
                 try {
                     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
