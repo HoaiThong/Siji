@@ -130,7 +130,6 @@ public class SignInDAO {
                         getCustomerFirebaseAuthWithGoogle(acc, token);
                         // Log and toast
                         String msg = mActivity.getString(R.string.msg_token_fmt, token);
-                        Log.d("token id :", token);
 //                        Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
                     }
                 });

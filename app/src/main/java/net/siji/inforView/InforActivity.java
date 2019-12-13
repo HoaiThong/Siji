@@ -2,6 +2,7 @@ package net.siji.inforView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -48,7 +50,7 @@ public class InforActivity extends AppCompatActivity {
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     AppBarLayout appBarLayout;
     FloatingActionButton fab;
-    Comic comic=new Comic();
+    Comic comic = new Comic();
     Customer user;
     String isNotifi = "0";
     String idCustomer;
@@ -73,7 +75,7 @@ public class InforActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        relativeLayout = (RelativeLayout) findViewById(R.id.header_layout);
+//        relativeLayout = (RelativeLayout) findViewById(R.id.header_layout);
 //        Bitmap originalBitmap = BlurBuilder.getBitmapFromURL("https://i-giaitri.vnecdn.net/2019/02/25/ngoc-diem-2-1551065105_r_680x0.jpg");
 //         Bitmap blurredBitmap = BlurBuilder.blur(getApplicationContext(), bitmap);
 //            relativeLayout.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
@@ -83,6 +85,58 @@ public class InforActivity extends AppCompatActivity {
         showHideTitle();
         setTitle("");
         init();
+        initTabHost();
+    }
+
+
+    public void initTabHost() {
+        tabLayout = findViewById(R.id.htab_tabs);
+        viewPager = findViewById(R.id.htab_viewpager);
+        setupViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                viewPager.setCurrentItem(tab.getPosition());
+                Log.d("TAG", "onTabSelected: pos: " + tab.getPosition());
+
+                switch (tab.getPosition()) {
+                    case 0:
+                        showToast("One");
+                        break;
+                    case 1:
+                        showToast("Two");
+                        break;
+                    case 2:
+                        showToast("Three");
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
+    private void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+
+        ViewPagerAdapter adapter = new ViewPagerAdapter(
+                getSupportFragmentManager());
+        adapter.addFrag(new DummyFragment(
+                ContextCompat.getColor(this, R.color.white)), "Cyan");
+        adapter.addFrag(new DummyFragment(
+                ContextCompat.getColor(this, R.color.white)), "Amber");
+        viewPager.setAdapter(adapter);
     }
 
     public void init() {
@@ -90,7 +144,7 @@ public class InforActivity extends AppCompatActivity {
         chapterList = new ArrayList<>();
         commentList = new ArrayList<>();
         startAt = 0;
-        isNotifi="0";
+        isNotifi = "0";
         startAtCmt = 0;
         comic = (Comic) getIntent().getSerializableExtra("comic");
         SessionManager sessionManager = new SessionManager(this);
@@ -129,7 +183,7 @@ public class InforActivity extends AppCompatActivity {
         String start = String.valueOf(startAt);
         try {
             String tableComic = comic.getTblName();
-            chapterList = new LoadListChapterAsyncTask().execute(idCustomer,idComic,tableComic, start, API_URL_GET_LIST_CHAPTER).get();
+            chapterList = new LoadListChapterAsyncTask().execute(idCustomer, idComic, tableComic, start, API_URL_GET_LIST_CHAPTER).get();
             startAt = startAt + chapterList.size();
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -143,7 +197,7 @@ public class InforActivity extends AppCompatActivity {
         try {
             commentList = new LoadCommentAsyncTask().execute(idComic, startCmt, API_URL_GET_COMMENT).get();
             startAtCmt = startAtCmt + commentList.size();
-            for (int i = 0; i <commentList.size() ; i++) {
+            for (int i = 0; i < commentList.size(); i++) {
                 System.out.println(commentList.get(i).getCustomer().getNameGoogle());
                 System.out.println(commentList.get(i).getComment());
             }
@@ -154,7 +208,7 @@ public class InforActivity extends AppCompatActivity {
         }
     }
 
-    public void redirect(){
+    public void redirect() {
         Intent intent = new Intent(this, ViewerActivity.class);
         Bundle data = new Bundle();
         data.putSerializable("comic", comic);
@@ -162,6 +216,7 @@ public class InforActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -169,6 +224,7 @@ public class InforActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

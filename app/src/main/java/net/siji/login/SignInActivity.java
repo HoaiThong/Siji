@@ -160,17 +160,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onStart() {
         super.onStart();
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (isLoggedInFaceBook() || isLoggedInGoogle()) {
-                    SessionManager sessionManager = new SessionManager(SignInActivity.this);
-                    String data = sessionManager.getReaded("datauser");
+        SessionManager sessionManager = new SessionManager(SignInActivity.this);
+        String idUser = sessionManager.getReaded("idUser");
 
-                    signInDAO = new SignInDAO(SignInActivity.this);
-                    signInDAO.registerServer(data);
-                }
-            }
-        }, 10);
+        if (isLoggedInFaceBook() || isLoggedInGoogle()) {
+            if (idUser.equals("")) {
+                String data = sessionManager.getReaded("datauser");
+                signInDAO = new SignInDAO(SignInActivity.this);
+                signInDAO.registerServer(data);
+            }else redirect();
+        }
 
     }
 

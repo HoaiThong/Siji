@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -46,6 +48,7 @@ public class LibraryFragment
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_list_manga, container, false);
         mActivity.setTitle(mActivity.getString(R.string.bo_suu_tap));
+        setHasOptionsMenu(true);
         SessionManager sessionManager=new SessionManager(mActivity);
         idCustomer=sessionManager.getReaded("idUser");
         start = 0;
@@ -116,5 +119,11 @@ public class LibraryFragment
             }
 
         };
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

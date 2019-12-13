@@ -571,25 +571,11 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         webSetting.setAllowFileAccess(true);
         webSetting.setAllowFileAccessFromFileURLs(true);
         mContentView.setHorizontalScrollBarEnabled(false);
-//        StringBuilder builder = new StringBuilder();
-//        builder.append("<html><head></head><body> ");
-////                String html = "<html><head></head><body> <img src=\""+ imagePath + "\"> </body></html>";
-//        for (Chapter c : chapterList) {
-//            builder.append("<img src=\"");
-//            builder.append(c.getUrl());
-//            builder.append("\">");
-//        }
-//        builder.append(" </body></html>");
         String html = "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + builderHtml.toString();
         mContentView.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
-        mContentView.getSettings();
+        mContentView.scrollTo(0,0);
     }
 
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.epub_menu, menu);
-//        return true;
-//    }
 
     @Override
     public void onBackPressed() {

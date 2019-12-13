@@ -36,14 +36,35 @@
                 android:gravity="center"
                 android:keepScreenOn="true" />
 
-            <LinearLayout
-                android:id="@+id/action"
-                android:layout_width="match_parent"
+            <FrameLayout
+                android:id="@+id/action_prev"
+                android:layout_width="44sp"
                 android:layout_height="44sp"
-                android:orientation="horizontal"
-                android:layout_alignParentBottom="true"
-                android:background="@android:color/transparent" />
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@color/silver_transparent">
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_chevron_left_black" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/action_next"
+                android:layout_width="44sp"
+                android:layout_height="44sp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@color/silver_transparent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_keyboard_arrow_right" />
+            </FrameLayout>
         </RelativeLayout>
         <!-- This FrameLayout insets its children based on system windows using
              android:fitsSystemWindows. -->
@@ -128,16 +149,17 @@
                 android:layout_above="@+id/chapter_reading_tv"
                 android:layout_below="@id/nav_header"
                 android:visibility="gone" />
+
             <TextView
                 android:id="@+id/chapter_reading_tv"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:gravity="center"
-                android:textSize="16dp"
                 android:layout_alignParentBottom="true"
-                android:text="Bạn đang đọc"
                 android:background="@color/colorPrimary"
-                android:textColor="@color/white"/>
+                android:gravity="center"
+                android:text="Bạn đang đọc"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
 
         </RelativeLayout>
     </com.google.android.material.navigation.NavigationView>

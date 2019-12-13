@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -95,6 +97,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_home_view, container, false);
         mActivity.setTitle(mActivity.getString(R.string.title_home));
+        setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         SessionManager sessionManager = new SessionManager(mActivity);
         String user = sessionManager.getReaded("user");
@@ -304,6 +307,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
     class RemindTask extends TimerTask {
 
         @Override

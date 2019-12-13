@@ -24,7 +24,7 @@
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="6dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="24dp"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="1dp">
 
@@ -59,9 +59,8 @@
                 android:id="@+id/ll_hot_today"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="6dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -100,9 +99,8 @@
                 android:id="@+id/ll_form_new_comic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="6dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -141,9 +139,8 @@
                 android:id="@+id/ll_form_view_day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:layout_marginEnd="6dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -181,8 +178,7 @@
                 android:id="@+id/ll_form_view_ads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -241,9 +237,8 @@
                 android:id="@+id/ll_form_comic_full"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:layout_marginEnd="6dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="vertical">
 
                 <LinearLayout
