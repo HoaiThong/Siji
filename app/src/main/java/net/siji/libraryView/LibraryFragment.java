@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 
 import net.siji.R;
+import net.siji.model.ApiManager;
 import net.siji.model.Comic;
 import net.siji.sessionApp.SessionManager;
 
@@ -33,7 +34,7 @@ public class LibraryFragment
         extends Fragment {
     private ListView listView;
     private View view;
-    private String API_URL="http://192.168.1.121/siji-server/view/api_get_limit_subcribe_comic.php";
+    private String API_URL = "http://192.168.1.121/siji-server/view/api_get_limit_subcribe_comic.php";
     private Activity mActivity;
     private static int start = 0;
     private int quantity;
@@ -49,24 +50,31 @@ public class LibraryFragment
         view = inflater.inflate(R.layout.fragment_list_manga, container, false);
         mActivity.setTitle(mActivity.getString(R.string.bo_suu_tap));
         setHasOptionsMenu(true);
-        SessionManager sessionManager=new SessionManager(mActivity);
-        idCustomer=sessionManager.getReaded("idUser");
+        SessionManager sessionManager = new SessionManager(mActivity);
+        idCustomer = sessionManager.getReaded("idUser");
         start = 0;
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+                loadApiUrl();
                 init();
             }
         }, 100);
         return view;
     }
 
+
+    private void loadApiUrl() {
+        ApiManager apiManager = new ApiManager();
+        API_URL = apiManager.API_GET_COMIC_LIBRARY;
+    }
+
     private List<Comic> getListComic() {
         List<Comic> listUpdate = new ArrayList<Comic>();
         try {
             String startAt = String.valueOf(start);
-            listUpdate = new LoadDataAsyncTask().execute(idCustomer,startAt, API_URL).get();
+            listUpdate = new LoadDataAsyncTask().execute(idCustomer, startAt, API_URL).get();
             quantity = listUpdate.size();
             start = start + quantity;
         } catch (ExecutionException e) {
@@ -82,7 +90,7 @@ public class LibraryFragment
         linkedList = new LinkedList<>();
         getListComic();
         listView = view.findViewById(R.id.list_view_manga);
-        libraryListAdapter= new LibraryListAdapter(mActivity, linkedList);
+        libraryListAdapter = new LibraryListAdapter(mActivity, linkedList);
         listView.setAdapter(libraryListAdapter);
         listView.setOnScrollListener(onScrollListener());
 

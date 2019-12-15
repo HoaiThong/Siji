@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.siji.R;
+import net.siji.model.ApiManager;
 import net.siji.model.Comic;
 import net.siji.splashScreenView.SplashScreenActivity;
 
@@ -46,6 +47,8 @@ public class SearchViewActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         setTitle(getString(R.string.search));
+        ApiManager apiManager=new ApiManager();
+        API_URL_SEARCH=apiManager.API_URL_SEARCH;
         linkedList = new LinkedList<>();
         init();
 

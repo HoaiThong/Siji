@@ -2,7 +2,6 @@ package net.siji.carouselViewPager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import net.siji.MainActivity;
 import net.siji.R;
 
 public class CarouselFragment extends Fragment {
@@ -27,10 +25,10 @@ public class CarouselFragment extends Fragment {
     private int screenWidth;
     private int screenHeight;
 
-    private int[] imageArray = new int[]{R.drawable.bleach, R.drawable.bleach,
-            R.drawable.bleach, R.drawable.bleach, R.drawable.bleach,
-            R.drawable.bleach, R.drawable.bleach, R.drawable.bleach,
-            R.drawable.bleach, R.drawable.bleach};
+    private int[] imageArray = new int[]{R.drawable.holder_error, R.drawable.holder_error,
+            R.drawable.holder_error, R.drawable.holder_error, R.drawable.holder_error,
+            R.drawable.holder_error, R.drawable.holder_error, R.drawable.holder_error,
+            R.drawable.holder_error, R.drawable.holder_error};
 
     public static Fragment newInstance(Activity context, int pos, float scale) {
         Bundle b = new Bundle();

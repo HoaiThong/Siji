@@ -2,6 +2,7 @@
     <string name="app_name">Siji</string>
 
     <string name="ADMOB_APP_ID">ca-app-pub-1474947036905548~8964044047</string>
+    <string name="ADMOB_UNIT_REWARD">ca-app-pub-3940256099942544/5224354917</string>
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -75,15 +76,20 @@
     <string name="title_bao_loi">Báo lỗi! </string>
     <string name="title_dang_doc">Đang đọc: </string>
     <string name="title_chapter">Chapter </string>
+    <string name="title_translator">Translator</string>
+    <string name="title_comment">Comment </string>
 
     <string name="send_btn">Gửi</string>
     <string name="exit_dialog_title">Bạn có muốn đăng xuất không?</string>
     <string name="exit_btn">Thoát</string>
     <string name="cancel_btn">Hủy</string>
+    <string name="xac_nhan">Đồng ý </string>
     <string name="exit_label">Thông báo lỗi!</string>
     <string name="thanks_label">Cảm ơn bạn đã phản hồi cho chúng tôi !</string>
     <string name="search">Search ...</string>
     <string name="type_some_text">Nhập tìm kiếm...</string>
+
+    <string name="title_reward_dialog">Để đọc chap tiếp theo vui lòng xác nhận bạn xem quảng cáo</string>
 
 
 </resources>

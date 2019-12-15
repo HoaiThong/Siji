@@ -5,10 +5,7 @@ import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -18,15 +15,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.AttributeSet;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AbsListView;
@@ -41,9 +32,12 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import net.siji.adsGg.RewardGgAds;
 import net.siji.R;
 import net.siji.dao.ItemClickListener;
 import net.siji.dialog.LoadingDialog;
+import net.siji.dialog.RewardDialog;
+import net.siji.model.ApiManager;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
 import net.siji.sessionApp.SessionManager;
@@ -147,9 +141,11 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     int width;
     Context mContext;
     FrameLayout frameLayout;
-    private final String API_URL_GET_LIST_CHAPTER = "http://192.168.1.121/siji-server/view/api_get_limit_chapters.php";
-    private final String API_GET_CONTENT_CHAPTER_URL = "http://192.168.1.121/siji-server/view/api_get_all_page_of_chapter.php";
-    private final String API_GET_TRANSLATOR_URL = "http://192.168.1.121/siji-server/view/api_get_translator.php";
+    private static final String TAG_SUCCESS = "success";
+    private static final String TAG_MESSAGE = "message";
+    private String API_URL_GET_LIST_CHAPTER = "http://192.168.1.121/siji-server/view/api_get_limit_chapters.php";
+    private String API_GET_CONTENT_CHAPTER_URL = "http://192.168.1.121/siji-server/view/api_get_all_page_of_chapter.php";
+    private String API_GET_TRANSLATOR_URL = "http://192.168.1.121/siji-server/view/api_get_translator.php";
     List<Chapter> chapterList;
     List<Chapter> chapterViewPager;
     int startAt = 0;
@@ -163,7 +159,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     private LinearLayout fabContainer, img_view;
     private FloatingActionButton fab;
     private boolean fabMenuOpen = false;
-    private FloatingActionButton exchange_fab, msg_bug_fab;
+    private FloatingActionButton exchange_fab, msg_bug_fab, home_fab;
     private ViewPager viewPager;
     private TextView exchange_fb_tv;
     ListView chapterListView;
@@ -181,27 +177,42 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     private View line_tab_chapter, line_tab_translator;
     private TextView tv_reading;
     private List<String> stringList;
+    private FrameLayout frameLayout_prev, frameLayout_next;
+    private int posit = 0;
+    private String success;
+    private RewardDialog rewardDialog;
+    RewardGgAds rewardGgAds;
+
+    private boolean isShowReward = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_viewer);
+        rewardDialog = new RewardDialog(this, getSupportFragmentManager());
         init();
         initFab();
+//        initRewardAds();
         final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
         loadingDialog.show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
+                loadApiUrl();
 //                loadTranslator();
                 loadDistinctChapters();
                 initChapterMenu();
                 loadContentChapter();
-                processData();
-                initTranslator();
-                initViewMode();
-                initSpinner();
+                if (!chapterList.isEmpty()) {
+                    processData();
+                    initTranslator();
+                    initViewMode();
+                } else if (success.equals(TAG_SUCCESS)) {
+                    rewardDialog.show();
+                    rewardDialog.setCancelable(false);
+                }
+
                 loadingDialog.dismiss();
             }
         }, 2000);
@@ -209,6 +220,14 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
         hide();
 
+    }
+
+
+    private void loadApiUrl() {
+        ApiManager apiManager = new ApiManager();
+        API_URL_GET_LIST_CHAPTER = apiManager.API_URL_GET_LIST_CHAPTER;
+        API_GET_CONTENT_CHAPTER_URL = apiManager.API_GET_CONTENT_CHAPTER_URL;
+        API_GET_TRANSLATOR_URL = apiManager.API_GET_TRANSLATOR_URL;
     }
 
     public void loadDistinctChapters() {
@@ -229,11 +248,13 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         chapterList = new ArrayList<>();
         float c = chapter.getChapter();
         String chapter = String.valueOf(c);
-
-        String str = getString(R.string.title_dang_doc) + " "+getString(R.string.chapter)+" " + chapter;
+        String str = getString(R.string.chapter) + " " + chapter;
+        Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
         tv_reading.setText(str);
         try {
-            chapterList = new LoadChapterAsyncTask().execute(idCustomer, fcmtoken, idComic, chapter, API_GET_CONTENT_CHAPTER_URL).get();
+            LoadChapterAsyncTask task = new LoadChapterAsyncTask();
+            chapterList = task.execute(idCustomer, fcmtoken, idComic, chapter, API_GET_CONTENT_CHAPTER_URL).get();
+            success = task.success;
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -295,7 +316,6 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 //            }
 //        });
 //
-        chapter = linkedList.get(0);
         verticalChapterAdapter = new VerticalChapterAdapter(this, linkedList);
         chapterListView.setAdapter(verticalChapterAdapter);
         chapterListView.setOnScrollListener(onScrollListener());
@@ -309,14 +329,21 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         chapterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                posit = position;
                 chapter = linkedList.get(position);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         loadContentChapter();
-                        processData();
-                        initTranslator();
-                        initViewMode();
+                        if (!chapterList.isEmpty()) {
+                            processData();
+                            initTranslator();
+                            initViewMode();
+                        } else if (success.equals(TAG_SUCCESS)) {
+                            rewardDialog.show();
+                            rewardDialog.setCancelable(false);
+                        }
+
                     }
                 }, 100);
 
@@ -346,7 +373,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     public void init() {
         startAt = 0;
         chapter = new Chapter();
-        chapter.setChapter(1);
+        chapter = (Chapter) getIntent().getSerializableExtra("chapter");
         SessionManager sessionManager = new SessionManager(this);
         idCustomer = sessionManager.getReaded("idUser");
         fcmtoken = sessionManager.getReaded("tokenfcm");
@@ -371,6 +398,10 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         line_tab_chapter = findViewById(R.id.line_tab_chapter);
         line_tab_translator = findViewById(R.id.line_tab_translator);
         tv_reading = findViewById(R.id.chapter_reading_tv);
+        frameLayout_next = findViewById(R.id.action_next);
+        frameLayout_prev = findViewById(R.id.action_prev);
+        frameLayout_next.setOnClickListener(this);
+        frameLayout_prev.setOnClickListener(this);
         tabChapter.setOnClickListener(this);
         translatorTab.setOnClickListener(this);
         mContext = this;
@@ -406,6 +437,15 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 String chap = String.valueOf(chapter.getChapter());
                 NotificationBugDialog bugDialog = new NotificationBugDialog(getApplicationContext(), idCustomer, idComic, chap);
                 bugDialog.show(getSupportFragmentManager(), "dialogMsgBug");
+            }
+        });
+        home_fab = findViewById(R.id.home_fab);
+        home_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewerActivity.this, SplashScreenActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -573,7 +613,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         mContentView.setHorizontalScrollBarEnabled(false);
         String html = "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + builderHtml.toString();
         mContentView.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
-        mContentView.scrollTo(0,0);
+        mContentView.scrollTo(0, 0);
     }
 
 
@@ -628,7 +668,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void hide() {
+    public void hide() {
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -665,7 +705,6 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -681,7 +720,73 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 line_tab_translator.setVisibility(View.VISIBLE);
                 line_tab_chapter.setVisibility(View.GONE);
                 break;
+            case R.id.action_prev:
+
+                if (posit < linkedList.size() - 1) {
+                    posit++;
+                    chapter = linkedList.get(posit);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            loadContentChapter();
+                            if (!chapterList.isEmpty()) {
+                                processData();
+                                initTranslator();
+                                initViewMode();
+                            } else if (success.equals(TAG_SUCCESS) && !isShowReward) {
+                                isShowReward = true;
+                                rewardDialog.show();
+                                rewardDialog.setCancelable(false);
+                                posit--;
+
+                            }
+
+                        }
+                    }, 100);
+                }
+                hide();
+                break;
+            case R.id.action_next:
+
+                if (posit > 0) {
+                    posit--;
+                    chapter = linkedList.get(posit);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            loadContentChapter();
+                            if (!chapterList.isEmpty()) {
+                                processData();
+                                initTranslator();
+                                initViewMode();
+                            } else if (success.equals(TAG_SUCCESS)) {
+                                rewardDialog.show();
+                                rewardDialog.setCancelable(false);
+                                posit++;
+                            }
+
+                        }
+                    }, 100);
+                }
+                hide();
+                break;
         }
 
+    }
+
+    public void initRewardAds() {
+        rewardGgAds = new RewardGgAds(this);
+//        rewardGgAds.setIdUnit(getString(R.string.advertise));
+        rewardGgAds.loadAdsReward();
+    }
+
+    public void dismissRewardDialog() {
+        rewardDialog.dismiss();
+        isShowReward = false;
+    }
+
+    public void showRewardAds() {
+        rewardGgAds.showAdsReward();
+        dismissRewardDialog();
     }
 }

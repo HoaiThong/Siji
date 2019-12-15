@@ -28,6 +28,7 @@ import net.siji.homeView.HorizontalListAdapter;
 import net.siji.homeView.ImageAdapter;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.imageSliderViewPager.PagesLessException;
+import net.siji.model.ApiManager;
 import net.siji.model.Comic;
 import net.siji.sessionApp.SessionManager;
 
@@ -75,6 +76,7 @@ public class CategoryFragment extends Fragment {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
+                loadApiUrl();
                 initCategory();
                 init();
             }
@@ -82,6 +84,12 @@ public class CategoryFragment extends Fragment {
         return view;
     }
 
+
+    private  void loadApiUrl(){
+        ApiManager apiManager=new ApiManager();
+        API_URL=apiManager.API_GET_COMIC_BY_CATEGORY;
+        API_GET_CATEGORYS=apiManager.API_GET_CATEGORYS;
+    }
     public void getCategory() {
         try {
             listCategory = new LoadCategorysAsyncTask().execute(API_GET_CATEGORYS).get();

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -44,7 +43,7 @@ public class Adapter extends PagerAdapter {
         ImageView imageView;
 //        TextView titleView;
         imageView=view.findViewById(R.id.pagerImg);
-        imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.bleach));
+        imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.holder_error));
 //        titleView=view.findViewById(R.id.description_tv);
 //        Lession lession=lessionList.get(position);
 //        imageView.setImageResource(lession.getImage());

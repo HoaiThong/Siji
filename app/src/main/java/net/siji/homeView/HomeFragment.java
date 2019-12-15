@@ -35,6 +35,7 @@ import net.siji.dao.AdvertiseUtils;
 import net.siji.imageSliderViewPager.IndicatorView;
 import net.siji.imageSliderViewPager.PagesLessException;
 import net.siji.model.Advertise;
+import net.siji.model.ApiManager;
 import net.siji.model.Comic;
 import net.siji.model.Header;
 import net.siji.sessionApp.SessionManager;
@@ -69,6 +70,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private String API_GET_LIMIT_COMIC_FULL = "http://192.168.1.121/siji-server/view/api_get_limit_comic_full.php";
     private String API_GET_LIMIT_COMIC_BY_VIEW_DAY = "http://192.168.1.121/siji-server/view/api_get_limit_comic_by_view_day.php";
     private String API_GET_ADVERTIDE = "http://192.168.1.121/siji-server/view/api_get_advertise.php";
+    private String API_GET_HEADER;
     private LinearLayout ll_form_comic_full;
     private LinearLayout ll_form_view_day;
     private LinearLayout ll_form_new_comic;
@@ -103,10 +105,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         String user = sessionManager.getReaded("user");
         Log.d("uuuuuuuuuuuuuu:", user);
         fragmentManager = getFragmentManager();
+        loadApiUrl();
         init();
 //        progressBar.setVisibility(View.GONE);
         return view;
     }
+
+    private  void loadApiUrl(){
+        ApiManager apiManager=new ApiManager();
+        API_URL_RANDOM_COMIC=apiManager.API_GET_COMIC_RANDOM;
+        API_GET_ADVERTIDE=apiManager.API_GET_ADVERTIDE;
+        API_GET_HEADER=apiManager.API_GET_HEADER;
+        API_GET_LIMIT_COMIC_BY_UPDATE=apiManager.API_GET_LIMIT_COMIC_BY_UPDATE;
+        API_GET_LIMIT_COMIC_BY_VIEW_DAY=apiManager.API_GET_LIMIT_COMIC_BY_VIEW_DAY;
+        API_GET_LIMIT_COMIC_FULL=apiManager.API_GET_LIMIT_COMIC_FULL;
+    }
+
 
     public void init() {
         viewPager = view.findViewById(R.id.viewPager);

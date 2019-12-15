@@ -15,37 +15,45 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import net.siji.MainActivity;
 import net.siji.R;
 import net.siji.dao.BlurBuilder;
 import net.siji.dialog.LoadingDialog;
+import net.siji.model.ApiManager;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
 import net.siji.model.Comment;
 import net.siji.model.Customer;
+import net.siji.readView.VerticalChapterAdapter;
 import net.siji.readView.ViewerActivity;
 import net.siji.sessionApp.SessionManager;
 import net.siji.splashScreenView.SplashScreenActivity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
 
 
-public class InforActivity extends AppCompatActivity {
+public class InforActivity extends AppCompatActivity implements View.OnClickListener {
     TabLayout tabLayout;
     ViewPager viewPager;
-    private DetailFragment detailFragment;
-    private ContentsFragment contentsFragment;
     RelativeLayout relativeLayout;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     AppBarLayout appBarLayout;
@@ -60,11 +68,22 @@ public class InforActivity extends AppCompatActivity {
     int startAtCmt = 0;
     String translator = "";
     String idComic;
-    private final String API_URL_READED_COMIC = "http://192.168.1.121/siji-server/view/api_readed_comic.php";
-    private final String API_URL_SUBCRIBE_COMIC = "http://192.168.1.121/siji-server/view/api_subcribe_comic.php";
-    private final String API_URL_GET_COMIC_BY_ID = "http://192.168.1.121/siji-server/view/api_get_comic_by_id.php";
-    private final String API_URL_GET_LIST_CHAPTER = "http://192.168.1.121/siji-server/view/api_get_limit_chapters.php";
-    private final String API_URL_GET_COMMENT = "http://192.168.1.121/siji-server/view/api_comments_get_all_of_comic.php";
+    private String API_URL_READED_COMIC = "http://192.168.1.121/siji-server/view/api_readed_comic.php";
+    private String API_URL_SUBCRIBE_COMIC = "http://192.168.1.121/siji-server/view/api_subcribe_comic.php";
+    private String API_URL_GET_COMIC_BY_ID = "http://192.168.1.121/siji-server/view/api_get_comic_by_id.php";
+    private String API_URL_GET_LIST_CHAPTER = "http://192.168.1.121/siji-server/view/api_get_limit_chapters.php";
+    private String API_URL_GET_COMMENT = "http://192.168.1.121/siji-server/view/api_comments_get_all_of_comic.php";
+    private VerticalChapterAdapter verticalChapterAdapter;
+    private VerticalCommentAdapter verticalCommentAdapter;
+    private LinkedList<Chapter> linkedList;
+    private LinkedList<Comment> linkedListCmt;
+    private ListView chapterListView;
+    private ListView commentListView;
+    private View line_tab_chapter, line_tab_comment;
+    private int quantity = 0;
+    private int quantityCmt = 0;
+    private boolean flagSubcribe = false;
+    private ImageView imgIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,65 +103,31 @@ public class InforActivity extends AppCompatActivity {
         appBarLayout = findViewById(R.id.app_bar_layout);
         showHideTitle();
         setTitle("");
+        loadApiUrl();
         init();
-        initTabHost();
     }
 
 
-    public void initTabHost() {
-        tabLayout = findViewById(R.id.htab_tabs);
-        viewPager = findViewById(R.id.htab_viewpager);
-        setupViewPager(viewPager);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-                viewPager.setCurrentItem(tab.getPosition());
-                Log.d("TAG", "onTabSelected: pos: " + tab.getPosition());
-
-                switch (tab.getPosition()) {
-                    case 0:
-                        showToast("One");
-                        break;
-                    case 1:
-                        showToast("Two");
-                        break;
-                    case 2:
-                        showToast("Three");
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+    private void loadApiUrl() {
+        ApiManager apiManager = new ApiManager();
+        API_URL_GET_COMIC_BY_ID = apiManager.API_URL_GET_COMIC_BY_ID;
+        API_URL_SUBCRIBE_COMIC = apiManager.API_URL_SUBCRIBE_COMIC;
+        API_URL_GET_COMMENT = apiManager.API_URL_GET_COMMENT;
+        API_URL_GET_LIST_CHAPTER = apiManager.API_URL_GET_LIST_CHAPTER;
+        API_URL_READED_COMIC = apiManager.API_URL_READED_COMIC;
     }
 
     private void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-
-        ViewPagerAdapter adapter = new ViewPagerAdapter(
-                getSupportFragmentManager());
-        adapter.addFrag(new DummyFragment(
-                ContextCompat.getColor(this, R.color.white)), "Cyan");
-        adapter.addFrag(new DummyFragment(
-                ContextCompat.getColor(this, R.color.white)), "Amber");
-        viewPager.setAdapter(adapter);
-    }
 
     public void init() {
         comic = new Comic();
         chapterList = new ArrayList<>();
         commentList = new ArrayList<>();
+        linkedList = new LinkedList<>();
+        linkedListCmt = new LinkedList<>();
         startAt = 0;
         isNotifi = "0";
         startAtCmt = 0;
@@ -165,8 +150,59 @@ public class InforActivity extends AppCompatActivity {
                 getListChapters();
                 getComment();
                 spotsDialog.dismiss();
+                initInfo();
+                initChaptersMenu();
+                initComments();
+
             }
-        }, 1000);
+        }, 2000);
+
+        imgIcon = findViewById(R.id.img_comic);
+        chapterListView = findViewById(R.id.list_view_chapters);
+        commentListView = findViewById(R.id.list_view_comments);
+        line_tab_chapter = findViewById(R.id.line_tab_chapter);
+        line_tab_comment = findViewById(R.id.line_tab_comment);
+        findViewById(R.id.tab_chapter).setOnClickListener(this);
+        findViewById(R.id.tab_comment).setOnClickListener(this);
+
+//        initComments();
+    }
+
+    public void initInfo() {
+        Glide.with(this)
+                .load(comic.getIconUrl())
+                .into(imgIcon);
+    }
+
+    public void initChaptersMenu() {
+        verticalChapterAdapter = new VerticalChapterAdapter(this, linkedList);
+        chapterListView.setAdapter(verticalChapterAdapter);
+        chapterListView.setOnScrollListener(onScrollListener());
+        chapterListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Chapter chapter = linkedList.get(position);
+                Bundle data=new Bundle();
+                data.putSerializable("chapter",chapter);
+                data.putSerializable("comic", comic);
+                Intent intent = new Intent(InforActivity.this, ViewerActivity.class);
+                intent.putExtras(data);
+                startActivity(intent);
+                finish();
+
+            }
+        });
+        chapterListView.setVisibility(View.VISIBLE);
+        line_tab_chapter.setVisibility(View.VISIBLE);
+        commentListView.setVisibility(View.GONE);
+        line_tab_comment.setVisibility(View.GONE);
+    }
+
+    public void initComments() {
+        verticalCommentAdapter = new VerticalCommentAdapter(this, linkedListCmt);
+        commentListView.setAdapter(verticalCommentAdapter);
+        commentListView.setOnScrollListener(onScrollCommentListener());
+
     }
 
     public void getComic() {
@@ -184,23 +220,24 @@ public class InforActivity extends AppCompatActivity {
         try {
             String tableComic = comic.getTblName();
             chapterList = new LoadListChapterAsyncTask().execute(idCustomer, idComic, tableComic, start, API_URL_GET_LIST_CHAPTER).get();
+            quantity = chapterList.size();
             startAt = startAt + chapterList.size();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        linkedList.addAll(chapterList);
+
     }
 
     public void getComment() {
         String startCmt = String.valueOf(startAtCmt);
         try {
             commentList = new LoadCommentAsyncTask().execute(idComic, startCmt, API_URL_GET_COMMENT).get();
-            startAtCmt = startAtCmt + commentList.size();
-            for (int i = 0; i < commentList.size(); i++) {
-                System.out.println(commentList.get(i).getCustomer().getNameGoogle());
-                System.out.println(commentList.get(i).getComment());
-            }
+            quantityCmt = commentList.size();
+            startAtCmt = startAtCmt + quantityCmt;
+            linkedListCmt.addAll(commentList);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -233,6 +270,15 @@ public class InforActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.menu_main_subcrise);
+        if (flagSubcribe) item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
+        else item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
@@ -240,8 +286,15 @@ public class InforActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-        if (item.getItemId() == R.id.menu_main_share) {
-            redirect();
+
+        if (item.getItemId() == R.id.menu_main_subcrise) {
+            if (flagSubcribe) {
+                flagSubcribe = false;
+                item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
+            } else {
+                flagSubcribe=true;
+                item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -258,14 +311,85 @@ public class InforActivity extends AppCompatActivity {
                 }
                 if (scrollRange + verticalOffset == 0) {
 //                    mCollapsingToolbarLayout.setTitle("Bleach"); // Careful! There should be a space between double quote. Otherwise it won't work.
-                    mCollapsingToolbarLayout.setTitle("");
+//                    mCollapsingToolbarLayout.setTitle(comic.getName());
+                    setTitle(comic.getName());
                     isShow = false;
                 } else if (!isShow) {
-                    mCollapsingToolbarLayout.setTitle("");
+                    setTitle("");
+//                    mCollapsingToolbarLayout.setTitle(comic.getName());
                     isShow = true;
                 }
             }
         });
+    }
+
+    private AbsListView.OnScrollListener onScrollListener() {
+        return new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                int threshold = 1;
+                int count = chapterListView.getCount();
+
+                if (scrollState == SCROLL_STATE_IDLE) {
+                    if (chapterListView.getLastVisiblePosition() >= count - threshold && quantity > 0) {
+                        // Execute LoadMoreDataTask AsyncTask
+                        getListChapters();
+                        verticalChapterAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                                 int totalItemCount) {
+            }
+
+        };
+    }
+
+    private AbsListView.OnScrollListener onScrollCommentListener() {
+        return new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                int threshold = 1;
+                int count = commentListView.getCount();
+
+                if (scrollState == SCROLL_STATE_IDLE) {
+                    if (commentListView.getLastVisiblePosition() >= count - threshold && quantityCmt > 0) {
+                        // Execute LoadMoreDataTask AsyncTask
+                        getComment();
+                        verticalCommentAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                                 int totalItemCount) {
+            }
+
+        };
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tab_chapter:
+                chapterListView.setVisibility(View.VISIBLE);
+                line_tab_chapter.setVisibility(View.VISIBLE);
+                commentListView.setVisibility(View.GONE);
+                line_tab_comment.setVisibility(View.GONE);
+                break;
+            case R.id.tab_comment:
+                chapterListView.setVisibility(View.GONE);
+                line_tab_chapter.setVisibility(View.GONE);
+                commentListView.setVisibility(View.VISIBLE);
+                line_tab_comment.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     private class AsyncGettingBitmapFromUrl extends AsyncTask<String, Void, Bitmap> {

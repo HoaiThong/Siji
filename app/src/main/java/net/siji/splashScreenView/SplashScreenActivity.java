@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import net.siji.MainActivity;
 import net.siji.R;
+import net.siji.model.ApiManager;
 import net.siji.model.Comic;
 import net.siji.model.Header;
 
@@ -48,6 +49,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 data = new Bundle();
+                loadApiUrl();
                 getListComicToday();
                 getListComicFull();
                 getListComicUpdate();
@@ -57,6 +59,15 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         }, 100);
 
+    }
+
+    private  void loadApiUrl(){
+        ApiManager apiManager=new ApiManager();
+        API_GET_COMIC_RANDOM=apiManager.API_GET_COMIC_RANDOM;
+        API_GET_HEADER=apiManager.API_GET_HEADER;
+        API_GET_LIMIT_COMIC_BY_UPDATE=apiManager.API_GET_LIMIT_COMIC_BY_UPDATE;
+        API_GET_LIMIT_COMIC_BY_VIEW_DAY=apiManager.API_GET_LIMIT_COMIC_BY_VIEW_DAY;
+        API_GET_LIMIT_COMIC_FULL=apiManager.API_GET_LIMIT_COMIC_FULL;
     }
 
     private List<Comic> getListComicUpdate() {

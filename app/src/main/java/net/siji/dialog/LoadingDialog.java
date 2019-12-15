@@ -51,5 +51,6 @@ public class LoadingDialog extends DialogFragment {
 
     public void show(){
         this.show(fragmentManager,"dialog");
+        this.setCancelable(false);
     }
 }

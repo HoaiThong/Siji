@@ -26,7 +26,6 @@
         <activity
             android:name=".readView.ViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_epub_viewer"
             android:theme="@style/FullscreenTheme" />
 
         <uses-library

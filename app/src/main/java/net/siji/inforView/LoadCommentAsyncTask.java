@@ -3,6 +3,7 @@ package net.siji.inforView;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.siji.dao.CommentUtils;
 import net.siji.dao.HttpHander;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
@@ -57,17 +58,10 @@ public class LoadCommentAsyncTask extends AsyncTask<String, String, List<Comment
                 JSONArray jsonArray = jsonObject.getJSONArray(TAG_COMMENT);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     cmt = new Comment();
-                    c = new Customer();
                     JSONObject o = jsonArray.getJSONObject(i);
                     Log.e("ALL THE STUFF", o.toString());
-                    cmt.setComment(o.getString("cmtCustomer"));
-                    if (!o.isNull("nameGoogle"))
-                        c.setNameGoogle(o.getString("nameGoogle"));
-                    if (!o.isNull("nameFaceBook"))
-                        c.setNameFaceBook(o.getString("nameFaceBook"));
-                    c.setIconUrl(o.getString("iconUrl"));
-                    cmt.setCustomer(c);
-                    Log.e("ALL THE STUFF", cmt.getComment());
+                    cmt=new CommentUtils().createFromJSONObject(o);
+
                     // adding HashList to ArrayList
                     arrayList.add(cmt);
                 }

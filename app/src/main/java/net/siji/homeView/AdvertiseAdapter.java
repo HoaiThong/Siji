@@ -58,6 +58,7 @@ public class AdvertiseAdapter extends PagerAdapter {
 
         imageView = (ImageView) imageLayout.findViewById(R.id.image);
         final Advertise a = arrayList.get(position);
+        imageView.setMinimumHeight(a.getHeightImg());
         try {
             Glide.with(activity)
                     .load(a.getImgUrl())

@@ -208,7 +208,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="100sp">
+                    android:layout_height="90sp">
 
                     <androidx.viewpager.widget.ViewPager
                         android:id="@+id/myviewpager"
@@ -217,7 +217,6 @@
                         android:layout_gravity="center_horizontal"
                         android:clipToPadding="false"
                         android:foregroundGravity="center"
-                        android:overScrollMode="never"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp" />
 

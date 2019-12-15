@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import net.siji.model.ApiManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +37,7 @@ public class OkHttpHandler extends AsyncTask<String, Void, Integer> {
     public OkHttpHandler(Activity mActivity) {
         super.onPreExecute();
         this.mActivity = mActivity;
+        this.url=new ApiManager().API_URL_SIGNIN;
 //        myProgressDialog = new MyProgressDialog(mActivity);
 //        myProgressDialog.setMessage(message);
 //        myProgressDialog.setCancelable(false);

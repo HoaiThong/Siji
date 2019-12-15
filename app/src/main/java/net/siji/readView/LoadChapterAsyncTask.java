@@ -1,10 +1,12 @@
 package net.siji.readView;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import net.siji.dao.ChapterUtils;
 import net.siji.dao.HttpHander;
+import net.siji.dialog.RewardDialog;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
 
@@ -28,6 +30,8 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
     private String idComic;
     private String condition;
     private String fcmtoken;
+    String success;
+    String msgResponse;
 
     /**
      * Before starting background thread Show Progress Dialog
@@ -57,8 +61,8 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
             ChapterUtils chapterUtils = new ChapterUtils();
-            String success = jsonObject.getString(TAG_SUCCESS);
-            String message = jsonObject.getString(TAG_MESSAGE);
+            success = jsonObject.getString(TAG_SUCCESS);
+            msgResponse = jsonObject.getString(TAG_MESSAGE);
             if (success.equals(TAG_SUCCESS)) {
                 JSONArray jsonArray = jsonObject.getJSONArray(condition);
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -75,6 +79,5 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
         }
         return arrayList;
     }
-
 
 }
