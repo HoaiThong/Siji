@@ -208,17 +208,17 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="90sp">
+                    android:layout_height="wrap_content">
 
                     <androidx.viewpager.widget.ViewPager
                         android:id="@+id/myviewpager"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="90sp"
                         android:layout_gravity="center_horizontal"
                         android:clipToPadding="false"
                         android:foregroundGravity="center"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp" />
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp" />
 
                     <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tab_indicator_layout"
@@ -227,6 +227,7 @@
                         android:layout_gravity="bottom"
                         app:tabBackground="@drawable/indicator_dot_tab_selector"
                         app:tabGravity="center"
+                        android:visibility="gone"
                         app:tabIndicatorHeight="0dp" />
                 </FrameLayout>
             </LinearLayout>

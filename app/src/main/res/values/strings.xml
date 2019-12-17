@@ -78,6 +78,7 @@
     <string name="title_chapter">Chapter </string>
     <string name="title_translator">Translator</string>
     <string name="title_comment">Comment </string>
+    <string name="them_truyen_yeu_thich">Đã thêm vào mục yêu thích!</string>
 
     <string name="send_btn">Gửi</string>
     <string name="exit_dialog_title">Bạn có muốn đăng xuất không?</string>
@@ -88,8 +89,10 @@
     <string name="thanks_label">Cảm ơn bạn đã phản hồi cho chúng tôi !</string>
     <string name="search">Search ...</string>
     <string name="type_some_text">Nhập tìm kiếm...</string>
+    <string name="ho_tro_tim_truyen">Hỗ trợ tìm truyện </string>
+    <string name="yeu_cau_tim_truyen">Bạn muốn tìm truyện gì? </string>
 
-    <string name="title_reward_dialog">Để đọc chap tiếp theo vui lòng xác nhận bạn xem quảng cáo</string>
+    <string name="title_reward_dialog">Để đọc tiếp vui lòng xác nhận bạn đồng ý xem quảng cáo!</string>
 
 
 </resources>

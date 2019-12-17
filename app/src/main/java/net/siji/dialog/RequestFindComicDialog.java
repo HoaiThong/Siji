@@ -1,4 +1,4 @@
-package net.siji.readView;
+package net.siji.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -6,21 +6,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import net.siji.R;
 import net.siji.dao.HttpHander;
 import net.siji.model.ApiManager;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
+import net.siji.readView.ViewerActivity;
+import net.siji.search.SearchViewActivity;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -30,12 +33,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationBugDialog extends DialogFragment {
+public class RequestFindComicDialog extends DialogFragment implements View.OnClickListener {
     Button send_btn;
     Button cancel_btn;
     EditText msg_edt;
     String msg = "";
-    private String API_URL_SEND_BUG = "http://192.168.0.104/siji-server/view/api_send_msg_bug_chapter.php";
+    private String API_URL_REQUEST_FIND_COMIC = "http://192.168.0.104/siji-server/view/api_customer_send_message.php";
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MSG = "message";
     private String nameChapter;
@@ -44,21 +47,24 @@ public class NotificationBugDialog extends DialogFragment {
     Activity activity;
     String message = "";
     String idCustomer;
-    String idComic;
-    String chapter;
-
+    String status="find";
+    String fcmtoken;
     View view;
+    private Activity mActivity;
+    private FragmentManager fragmentManager;
 
-    public NotificationBugDialog(Context context, String idCustomer, String idComic, String chapter) {
-        this.idComic = idComic;
+    public RequestFindComicDialog(Activity mActivity, FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+        this.mActivity = mActivity;
+    }
+
+    public RequestFindComicDialog(Activity mActivity, FragmentManager fragmentManager, String idCustomer, String fcmtoken) {
+        this.fragmentManager = fragmentManager;
+        this.mActivity = mActivity;
         this.idCustomer = idCustomer;
-        this.chapter = chapter;
+        this.fcmtoken=fcmtoken;
         this.context = context;
-        message = context.getString(R.string.thanks_label);
-        this.API_URL_SEND_BUG=new ApiManager().API_URL_SEND_BUG;
-        System.out.println(idCustomer);
-        System.out.println(idComic);
-        System.out.println(chapter);
+        this.API_URL_REQUEST_FIND_COMIC=new ApiManager().API_URL_REQUEST_FIND_COMIC;
     }
 
     @Override
@@ -66,35 +72,44 @@ public class NotificationBugDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        view = inflater.inflate(R.layout.layout_dialog_notification_bug, null);
-        msg_edt = (EditText) view.findViewById(R.id.msg_dialog_edt);
+        view = inflater.inflate(R.layout.layout_find_comic, null);
+        msg_edt = (EditText) view.findViewById(R.id.edt_content);
+        view.findViewById(R.id.find_dialog_btn_cancel).setOnClickListener(this);
+        view.findViewById(R.id.find_dialog_btn_ok).setOnClickListener(this);
+
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton(R.string.send_btn, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        msg = msg_edt.getText().toString().trim();
-                        if (!msg.equals("")) {
-                            new BugChapterAsyncTask().execute();
-                            dismiss();
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        NotificationBugDialog.this.getDialog().cancel();
-                    }
-                });
+        builder.setView(view);
+
         return builder.create();
     }
 
-    private class BugChapterAsyncTask extends AsyncTask<String, String, String> {
+    public void show() {
+        this.show(fragmentManager, "dialog");
+        this.setCancelable(false);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.find_dialog_btn_cancel:
+                this.dismiss();
+                break;
+            case R.id.find_dialog_btn_ok:
+                msg = msg_edt.getText().toString().trim();
+                if (!msg.isEmpty() && !msg.equals("")) {
+                    new FindAsyncTask().execute(idCustomer,msg,status,API_URL_REQUEST_FIND_COMIC);
+                    this.dismiss();
+                }
+                break;
+        }
+    }
+
+
+    private class FindAsyncTask extends AsyncTask<String, String, String> {
         HttpHander httpHander = new HttpHander();
         private static final String TAG_SUCCESS = "success";
         private static final String TAG_MESSAGE = "message";
-        Chapter c;
 
         private String msgResponse = "";
 
@@ -114,18 +129,14 @@ public class NotificationBugDialog extends DialogFragment {
         protected String doInBackground(String... args) {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("idCustomer", idCustomer));
-            params.add(new BasicNameValuePair("idComic", idComic));
-            params.add(new BasicNameValuePair("chapter", chapter));
             params.add(new BasicNameValuePair("msg", msg));
-            JSONObject jsonObject = httpHander.makeHttpRequest(API_URL_SEND_BUG, "POST", params);
-            System.out.println(idCustomer);
-            System.out.println(idComic);
-            System.out.println(chapter);
-            System.out.println(msg);
+            params.add(new BasicNameValuePair("status", status));
+            params.add(new BasicNameValuePair("fcmtoken", fcmtoken));
+            JSONObject jsonObject = httpHander.makeHttpRequest(API_URL_REQUEST_FIND_COMIC, "POST", params);
             try {
-                String success = jsonObject.getString(TAG_SUCCESS);
+                int success = jsonObject.getInt(TAG_SUCCESS);
                 msgResponse = jsonObject.getString(TAG_MESSAGE);
-                if (success.equals(TAG_SUCCESS)) {
+                if (success==1) {
                 }
                 return msgResponse;
             } catch (JSONException e) {
@@ -136,11 +147,9 @@ public class NotificationBugDialog extends DialogFragment {
 
         @Override
         protected void onPostExecute(String s) {
-            Toast.makeText(context,s,Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, s, Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
 
 }

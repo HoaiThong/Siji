@@ -105,7 +105,7 @@
                 app:backgroundTint="@color/white"
                 app:borderWidth="0dp"
                 app:fabSize="normal"
-                app:srcCompat="@drawable/ic_home" />
+                app:srcCompat="@drawable/ic_home_black" />
         </LinearLayout>
     </LinearLayout>
 

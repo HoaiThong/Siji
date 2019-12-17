@@ -146,6 +146,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     private String API_URL_GET_LIST_CHAPTER = "http://192.168.1.121/siji-server/view/api_get_limit_chapters.php";
     private String API_GET_CONTENT_CHAPTER_URL = "http://192.168.1.121/siji-server/view/api_get_all_page_of_chapter.php";
     private String API_GET_TRANSLATOR_URL = "http://192.168.1.121/siji-server/view/api_get_translator.php";
+    private String API_EXECUTE_WALLET = "http://192.168.1.121/siji-server/view/api_wallet_execute.php";
     List<Chapter> chapterList;
     List<Chapter> chapterViewPager;
     int startAt = 0;
@@ -182,6 +183,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     private String success;
     private RewardDialog rewardDialog;
     RewardGgAds rewardGgAds;
+    private int flagWallet = -3;
 
     private boolean isShowReward = false;
 
@@ -203,16 +205,17 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 //                loadTranslator();
                 loadDistinctChapters();
                 initChapterMenu();
-                loadContentChapter();
-                if (!chapterList.isEmpty()) {
+                flagWallet = executeWallet();
+                if (flagWallet == -1) {
+                    loadingDialog.dismiss();
+                    rewardDialog.show();
+                    rewardDialog.setCancelable(false);
+                } else if (flagWallet >= 0) {
+                    loadContentChapter();
                     processData();
                     initTranslator();
                     initViewMode();
-                } else if (success.equals(TAG_SUCCESS)) {
-                    rewardDialog.show();
-                    rewardDialog.setCancelable(false);
                 }
-
                 loadingDialog.dismiss();
             }
         }, 2000);
@@ -228,6 +231,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         API_URL_GET_LIST_CHAPTER = apiManager.API_URL_GET_LIST_CHAPTER;
         API_GET_CONTENT_CHAPTER_URL = apiManager.API_GET_CONTENT_CHAPTER_URL;
         API_GET_TRANSLATOR_URL = apiManager.API_GET_TRANSLATOR_URL;
+        API_EXECUTE_WALLET = apiManager.API_EXECUTE_WALLET;
     }
 
     public void loadDistinctChapters() {
@@ -244,13 +248,28 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    public int executeWallet() {
+        int i = -3;
+        String chap = String.valueOf(chapter.getChapter());
+        String price = String.valueOf(chapter.getPrice());
+        WalletAsyncTask walletAsyncTask = new WalletAsyncTask();
+        try {
+            i = walletAsyncTask.execute(idCustomer, fcmtoken, idComic, chap, price, API_EXECUTE_WALLET).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return i;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return i;
+        }
+        return i;
+    }
+
     public void loadContentChapter() {
         chapterList = new ArrayList<>();
         float c = chapter.getChapter();
         String chapter = String.valueOf(c);
-        String str = getString(R.string.chapter) + " " + chapter;
-        Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
-        tv_reading.setText(str);
+
         try {
             LoadChapterAsyncTask task = new LoadChapterAsyncTask();
             chapterList = task.execute(idCustomer, fcmtoken, idComic, chapter, API_GET_CONTENT_CHAPTER_URL).get();
@@ -331,21 +350,26 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 posit = position;
                 chapter = linkedList.get(position);
+                final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+                loadingDialog.show();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                        loadContentChapter();
-                        if (!chapterList.isEmpty()) {
+                        flagWallet = executeWallet();
+                        if (flagWallet == -1) {
+                            loadingDialog.dismiss();
+                            rewardDialog.show();
+                            rewardDialog.setCancelable(false);
+                        } else if (flagWallet >= 0) {
+                            loadContentChapter();
                             processData();
                             initTranslator();
                             initViewMode();
-                        } else if (success.equals(TAG_SUCCESS)) {
-                            rewardDialog.show();
-                            rewardDialog.setCancelable(false);
                         }
-
+                        loadingDialog.dismiss();
                     }
                 }, 100);
+                hide();
 
             }
         });
@@ -479,6 +503,9 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
     public void processData() {
         int i = 0;
+        String s = getString(R.string.chapter) + " " + String.valueOf(chapter.getChapter());
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        tv_reading.setText(s);
         String o = chapterList.get(0).getTranslator().trim();
         listTranslator = new ArrayList<>();
         chapterViewPager = new ArrayList<>();
@@ -725,24 +752,28 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 if (posit < linkedList.size() - 1) {
                     posit++;
                     chapter = linkedList.get(posit);
+                    final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+                    loadingDialog.show();
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            loadContentChapter();
-                            if (!chapterList.isEmpty()) {
-                                processData();
-                                initTranslator();
-                                initViewMode();
-                            } else if (success.equals(TAG_SUCCESS) && !isShowReward) {
-                                isShowReward = true;
+                            flagWallet = executeWallet();
+                            if (flagWallet == -1) {
+                                loadingDialog.dismiss();
                                 rewardDialog.show();
                                 rewardDialog.setCancelable(false);
                                 posit--;
-
+                            } else if (flagWallet >= 0) {
+                                loadContentChapter();
+                                processData();
+                                initTranslator();
+                                initViewMode();
                             }
-
+                            loadingDialog.dismiss();
                         }
                     }, 100);
+                    hide();
+
                 }
                 hide();
                 break;
@@ -751,22 +782,28 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 if (posit > 0) {
                     posit--;
                     chapter = linkedList.get(posit);
+                    final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+                    loadingDialog.show();
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            loadContentChapter();
-                            if (!chapterList.isEmpty()) {
-                                processData();
-                                initTranslator();
-                                initViewMode();
-                            } else if (success.equals(TAG_SUCCESS)) {
+                            flagWallet = executeWallet();
+                            if (flagWallet == -1) {
+                                loadingDialog.dismiss();
                                 rewardDialog.show();
                                 rewardDialog.setCancelable(false);
                                 posit++;
+                            } else if (flagWallet >= 0) {
+                                loadContentChapter();
+                                processData();
+                                initTranslator();
+                                initViewMode();
                             }
-
+                            loadingDialog.dismiss();
                         }
                     }, 100);
+                    hide();
+
                 }
                 hide();
                 break;

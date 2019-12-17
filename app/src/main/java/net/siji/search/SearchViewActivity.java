@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -18,8 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.siji.R;
+import net.siji.dialog.RequestFindComicDialog;
 import net.siji.model.ApiManager;
 import net.siji.model.Comic;
+import net.siji.sessionApp.SessionManager;
 import net.siji.splashScreenView.SplashScreenActivity;
 
 import java.util.ArrayList;
@@ -123,12 +127,26 @@ public class SearchViewActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
             Intent intent = new Intent(this, SplashScreenActivity.class);
             startActivity(intent);
             finish();
+        }
+        if (item.getItemId() == R.id.action_help) {
+            SessionManager sessionManager=new SessionManager(this);
+            String idCustomer= sessionManager.getReaded("idUser");
+            String fcmtoken = sessionManager.getReaded("tokenfcm");
+            RequestFindComicDialog dialog=new RequestFindComicDialog(this,getSupportFragmentManager(),idCustomer,fcmtoken);
+            dialog.show();
         }
 
         return super.onOptionsItemSelected(item);

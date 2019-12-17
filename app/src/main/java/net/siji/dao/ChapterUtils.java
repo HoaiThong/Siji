@@ -26,7 +26,7 @@ public class ChapterUtils {
             if (!jsonObject.isNull(TAG_PRICE)) c.setPrice((float) jsonObject.getDouble(TAG_PRICE));
             if (!jsonObject.isNull("chapterComic")) {
                 c.setPrice((float) jsonObject.getDouble("realprice"));
-            } else c.setPrice(0);
+            } else c.setPrice(-1);
             if (!jsonObject.isNull(TAG_URL)) c.setUrl(jsonObject.getString(TAG_URL));
             if (!jsonObject.isNull(TAG_TRANSLATOR))
                 c.setTranslator(jsonObject.getString(TAG_TRANSLATOR));

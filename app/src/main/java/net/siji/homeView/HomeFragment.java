@@ -171,6 +171,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         adsViewPager.setAdapter(mAdapter);
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_indicator_layout);
         tabLayout.setupWithViewPager(adsViewPager, true);
+        adsViewPager.setCurrentItem(pageAds);
         ll_form_view_ads.setVisibility(View.VISIBLE);
 
     }
@@ -242,6 +243,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 adsViewPager.setAdapter(advertiseAdapter);
                 TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_indicator_layout);
                 tabLayout.setupWithViewPager(adsViewPager, true);
+                adsViewPager.setCurrentItem(pageAds);
                 ll_form_view_ads.setVisibility(View.VISIBLE);
             } else ll_form_view_ads.setVisibility(View.GONE);
         } catch (ExecutionException e) {
@@ -276,6 +278,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             viewPager.setAdapter(adapter);
             TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_indicator_line_layout);
             tabLayout.setupWithViewPager(viewPager, true);
+            viewPager.setCurrentItem(page);
             banner_header.setVisibility(View.VISIBLE);
         } else banner_header.setVisibility(View.GONE);
     }

@@ -60,7 +60,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     FloatingActionButton fab;
     Comic comic = new Comic();
     Customer user;
-    String isNotifi = "0";
+    String isNotifi = "-1";
     String idCustomer;
     List<Comment> commentList;
     List<Chapter> chapterList;
@@ -129,7 +129,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         linkedList = new LinkedList<>();
         linkedListCmt = new LinkedList<>();
         startAt = 0;
-        isNotifi = "0";
+        isNotifi = "-1";
         startAtCmt = 0;
         comic = (Comic) getIntent().getSerializableExtra("comic");
         SessionManager sessionManager = new SessionManager(this);
@@ -182,8 +182,8 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Chapter chapter = linkedList.get(position);
-                Bundle data=new Bundle();
-                data.putSerializable("chapter",chapter);
+                Bundle data = new Bundle();
+                data.putSerializable("chapter", chapter);
                 data.putSerializable("comic", comic);
                 Intent intent = new Intent(InforActivity.this, ViewerActivity.class);
                 intent.putExtras(data);
@@ -290,10 +290,15 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         if (item.getItemId() == R.id.menu_main_subcrise) {
             if (flagSubcribe) {
                 flagSubcribe = false;
+                isNotifi = "-1";
+                new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
                 item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
             } else {
-                flagSubcribe=true;
+                flagSubcribe = true;
+                isNotifi = "1";
+                new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
                 item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
+                Toast.makeText(getApplicationContext(), getString(R.string.them_truyen_yeu_thich), Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);

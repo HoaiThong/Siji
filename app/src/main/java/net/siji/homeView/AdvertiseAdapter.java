@@ -11,12 +11,14 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 
@@ -58,7 +60,6 @@ public class AdvertiseAdapter extends PagerAdapter {
 
         imageView = (ImageView) imageLayout.findViewById(R.id.image);
         final Advertise a = arrayList.get(position);
-        imageView.setMinimumHeight(a.getHeightImg());
         try {
             Glide.with(activity)
                     .load(a.getImgUrl())
@@ -74,7 +75,7 @@ public class AdvertiseAdapter extends PagerAdapter {
                 activity.startActivity(i);
             }
         });
-        view.addView(imageLayout);
+        view.addView(imageLayout,400,400);
         return imageLayout;
     }
 
