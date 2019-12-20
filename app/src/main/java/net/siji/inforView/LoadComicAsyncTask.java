@@ -38,9 +38,12 @@ public class LoadComicAsyncTask extends AsyncTask<String, String, Comic> {
      */
     protected Comic doInBackground(String... args) {
         String idComic = args[0];
-        String API_URL = args[1];
+        String idCustomer = args[1];
+        System.out.println(idCustomer);
+        String API_URL = args[2];
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("idComic", idComic));
+        params.add(new BasicNameValuePair("idCustomer", idCustomer));
         return execute(params, API_URL);
     }
 

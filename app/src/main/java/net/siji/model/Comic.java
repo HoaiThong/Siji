@@ -42,6 +42,8 @@ public class Comic implements Parcelable,Serializable  {
     @Expose
     private int viewSum;
     @Expose
+    private int isNotifi;
+    @Expose
     private String newChapter;
     @Expose
     private Timestamp createAt;
@@ -64,6 +66,7 @@ public class Comic implements Parcelable,Serializable  {
     public static final String TAG_AUTHOR = "author";
     public static final String TAG_NEW_CHAP = "newChapter";
     public static final String TAG_UPDATE_AT = "update_at";
+    public static final String TAG_IS_NOTIFI = "isNotifi";
     //
     public Comic() {
 
@@ -235,6 +238,13 @@ public class Comic implements Parcelable,Serializable  {
         this.updateAt = updateAt;
     }
 
+    public void setIsNotifi(int isNotifi) {
+        this.isNotifi = isNotifi;
+    }
+
+    public int getIsNotifi() {
+        return isNotifi;
+    }
 
     @Override
     public int describeContents() {

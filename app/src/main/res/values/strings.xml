@@ -18,12 +18,14 @@
     <string name="bang_xep_hang">BẢNG XẾP HẠNG</string>
     <string name="title_today">HÔM NAY XEM GÌ? </string>
     <string name="truyen_hoan_thanh">TRUYỆN HOÀN THÀNH</string>
-    <string name="advertise">Advertise</string>
+    <string name="advertise">Advertise - Quảng cáo</string>
 
     <string name="title_loading">Loading...</string>
     <string name="chi_tiet">Chi Tiết</string>
     <string name="noi_dung">Nội Dung</string>
     <string name="title_noi_dung">Nhập không quá 100 ký tự...</string>
+    <string name="title_max_length_350">Nhập không quá 350 ký tự...</string>
+    <string name="title_user_notifi">Bạn là tác giả ,dịch giả muốn đăng truyện lên ứng dụng. Xin vui lòng để lại lời nhắn dưới đây. Cảm ơn! </string>
     <string name="refresh">Refresh</string>
     <string name="thay_doi">Thay Đổi</string>
 
@@ -33,7 +35,7 @@
     <string name="name">name</string>
     <string name="id">id</string>
     <string name="email">email</string>
-    <string name="link">link</string>
+    <string name="link">link</string>exit_dialog_title
     <string name="fields">fields</string>
     <string name="fields_name">id,name,link,email,location,last_name,hometown,first_name,gender,birthday,age_range,address</string>
     <string name="data">data</string>
@@ -94,5 +96,7 @@
 
     <string name="title_reward_dialog">Để đọc tiếp vui lòng xác nhận bạn đồng ý xem quảng cáo!</string>
 
+    <string name="mimeType_text">text</string>
+    <string name="mimeType_image">image</string>
 
 </resources>

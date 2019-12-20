@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +34,9 @@ import java.util.List;
 public class AdvertiseAdapter extends PagerAdapter {
     private LayoutInflater inflater;
     private Activity activity;
-    private ImageView imageView;
+    private ImageView imageView, imgIcon;
+    private TextView tv_title, tv_description;
+    private RelativeLayout relativeLayout;
     private Context mContext;
     private ArrayList<Advertise> arrayList;
     private PendingIntent pendingIntent;
@@ -59,13 +62,36 @@ public class AdvertiseAdapter extends PagerAdapter {
         View imageLayout = inflater.inflate(R.layout.item_advertise, view, false);
 
         imageView = (ImageView) imageLayout.findViewById(R.id.image);
+        relativeLayout = imageLayout.findViewById(R.id.rl_advertise);
         final Advertise a = arrayList.get(position);
-        try {
-            Glide.with(activity)
-                    .load(a.getImgUrl())
-                    .into(imageView);
-        } catch (Exception e) {
+        String mimeTypeText = activity.getResources().getString(R.string.mimeType_text);
+        String mimeTypeImg = activity.getResources().getString(R.string.mimeType_image);
+        if (a.getMimeType().toLowerCase().trim().equals(mimeTypeImg)) {
+            try {
+                Glide.with(activity)
+                        .load(a.getImgUrl())
+                        .into(imageView);
+            } catch (Exception e) {
+            }
+            imageView.setVisibility(View.VISIBLE);
+            relativeLayout.setVisibility(View.GONE);
         }
+        if (a.getMimeType().toLowerCase().trim().equals(mimeTypeText)) {
+            imgIcon = imageLayout.findViewById(R.id.img_icon);
+            tv_title = imageLayout.findViewById(R.id.tv_title);
+            tv_description = imageLayout.findViewById(R.id.tv_description);
+            tv_title.setText(a.getTitle());
+            tv_description.setText(a.getDescription());
+            try {
+                Glide.with(activity)
+                        .load(a.getImgUrl())
+                        .into(imgIcon);
+            } catch (Exception e) {
+            }
+            imageView.setVisibility(View.GONE);
+            relativeLayout.setVisibility(View.VISIBLE);
+        }
+
         imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +101,7 @@ public class AdvertiseAdapter extends PagerAdapter {
                 activity.startActivity(i);
             }
         });
-        view.addView(imageLayout,400,400);
+        view.addView(imageLayout);
         return imageLayout;
     }
 

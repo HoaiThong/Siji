@@ -8,12 +8,18 @@ public class Advertise implements Serializable {
     private String imgUrl;
     private String description;
     private String targetUrl;
+
+    private String title;
+    private String mimeType;
     private int widthImg;
     private int heightImg;
     private Timestamp createAt;
 
     public String TAG_ID="id";
     public String TAG_IMG_URL="imgUrl";
+    public String TAG_TITLE="title";
+    // mimeType: image/text
+    public String TAG_MIME_TYPE="mimeType";
     public String TAG_TARGET_URL="targetUrl";
     public String TAG_DESCRIPTION="description";
     public String TAG_IMG_WIDTH="widthImg";
@@ -36,6 +42,22 @@ public class Advertise implements Serializable {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public String getDescription() {

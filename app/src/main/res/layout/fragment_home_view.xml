@@ -17,27 +17,24 @@
             android:orientation="vertical">
 
 
-            <androidx.cardview.widget.CardView
+            <FrameLayout
                 android:id="@+id/banner_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="6dp"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="6dp"
-                app:cardElevation="1dp">
+                android:layout_marginBottom="8dp">
 
                 <RelativeLayout
                     android:id="@+id/slider_image_view"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp">
+                    android:layout_height="wrap_content">
 
                     <androidx.viewpager.widget.ViewPager
                         android:id="@+id/viewPager"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="250sp"
                         android:clipToPadding="false"
                         android:foregroundGravity="center"
                         android:overScrollMode="never" />
@@ -46,13 +43,13 @@
                         android:id="@+id/tab_indicator_line_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/viewPager"
                         android:layout_alignParentBottom="true"
-                        android:layout_marginBottom="8dp"
                         app:tabBackground="@drawable/indicator_tab_selector"
                         app:tabGravity="center"
                         app:tabIndicatorHeight="0dp" />
                 </RelativeLayout>
-            </androidx.cardview.widget.CardView>
+            </FrameLayout>
 
 
             <LinearLayout
@@ -210,25 +207,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <androidx.viewpager.widget.ViewPager
-                        android:id="@+id/myviewpager"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="90sp"
-                        android:layout_gravity="center_horizontal"
-                        android:clipToPadding="false"
-                        android:foregroundGravity="center"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp" />
+                        android:layout_height="wrap_content">
 
-                    <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/tab_indicator_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        app:tabBackground="@drawable/indicator_dot_tab_selector"
-                        app:tabGravity="center"
-                        android:visibility="gone"
-                        app:tabIndicatorHeight="0dp" />
+                        <LinearLayout
+                            android:id="@+id/ll_ads"
+                            android:layout_width="match_parent"
+                            android:layout_height="74sp">
+
+                            <androidx.viewpager.widget.ViewPager
+                                android:id="@+id/myviewpager"
+                                android:layout_width="match_parent"
+                                android:layout_height="74sp"
+                                android:layout_gravity="center_horizontal"
+                                android:clipToPadding="false"
+                                android:foregroundGravity="center"
+                                 />
+                        </LinearLayout>
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tab_indicator_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:layout_below="@id/ll_ads"
+                            android:layout_gravity="bottom"
+                            android:layout_marginTop="3sp"
+                            android:visibility="visible"
+                            app:tabBackground="@drawable/indicator_dot_tab_selector"
+                            app:tabGravity="center"
+                            app:tabIndicatorHeight="0dp" />
+                    </RelativeLayout>
                 </FrameLayout>
             </LinearLayout>
 

@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -179,7 +180,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     private TextView tv_reading;
     private List<String> stringList;
     private FrameLayout frameLayout_prev, frameLayout_next;
-    private int posit = 0;
+    private int posit = 1;
     private String success;
     private RewardDialog rewardDialog;
     RewardGgAds rewardGgAds;
@@ -404,6 +405,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
         comic = (Comic) getIntent().getSerializableExtra("comic");
         idComic = String.valueOf(comic.getId());
+        Log.d("idComic", idComic);
         distinctChapterList = new ArrayList<>();
         linkedList = new LinkedList<>();
         mVisible = true;
@@ -506,19 +508,20 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         String s = getString(R.string.chapter) + " " + String.valueOf(chapter.getChapter());
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
         tv_reading.setText(s);
-        String o = chapterList.get(0).getTranslator().trim();
+        String trans = "";
+        if (!chapterList.isEmpty()) trans = chapterList.get(0).getTranslator().trim();
         listTranslator = new ArrayList<>();
         chapterViewPager = new ArrayList<>();
         builderHtml = new StringBuilder();
         builderHtml.append("<html><head></head><body> ");
-        listTranslator.add(o);
+        listTranslator.add(trans);
         for (Chapter c : chapterList) {
 
             String str = c.getTranslator().trim();
-            if (!str.equals(o)) {
+            if (!str.equals(trans)) {
                 listTranslator.add(str);
                 i++;
-                o = str;
+                trans = str;
             } else {
                 if (i == 0) {
                     builderHtml.append("<img src=\"");
@@ -749,7 +752,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.action_prev:
 
-                if (posit < linkedList.size() - 1) {
+                if (posit >= 0 && posit < linkedList.size()-1 ) {
                     posit++;
                     chapter = linkedList.get(posit);
                     final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
@@ -779,7 +782,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.action_next:
 
-                if (posit > 0) {
+                if (posit > 0 && posit < linkedList.size()) {
                     posit--;
                     chapter = linkedList.get(posit);
                     final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());

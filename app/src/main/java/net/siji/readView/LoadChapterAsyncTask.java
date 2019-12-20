@@ -30,6 +30,8 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
     private String idComic;
     private String condition;
     private String fcmtoken;
+    private String API_URL;
+    private List<NameValuePair> params;
     String success;
     String msgResponse;
 
@@ -52,12 +54,17 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
         fcmtoken = args[1];
         idComic = args[2];
         condition = args[3];
-        String API_URL = args[4];
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        API_URL = args[4];
+        params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("idCustomer", idCustomer));
         params.add(new BasicNameValuePair("fcmtoken", fcmtoken));
         params.add(new BasicNameValuePair("idComic", idComic));
         params.add(new BasicNameValuePair("condition", condition));
+        execute();
+        return arrayList;
+    }
+
+    public void execute() {
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
             ChapterUtils chapterUtils = new ChapterUtils();
@@ -73,11 +80,8 @@ public class LoadChapterAsyncTask extends AsyncTask<String, String, List<Chapter
                     arrayList.add(c);
                 }
             }
-            return arrayList;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return arrayList;
     }
-
 }

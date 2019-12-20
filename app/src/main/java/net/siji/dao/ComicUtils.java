@@ -24,27 +24,34 @@ public class ComicUtils {
     public static final String TAG_AUTHOR = "author";
     public static final String TAG_NEW_CHAP = "newChapter";
     public static final String TAG_TAG = "tag";
+    public static final String TAG_IS_NOTIFI = "isNotifi";
     public static final String TAG_UPDATE_AT = "update_at";
 
-    public Comic convertFromJSONObject(JSONObject jsonObject){
-        Comic c=new Comic();
+    public Comic convertFromJSONObject(JSONObject jsonObject) {
+        Comic c = new Comic();
         try {
             if (!jsonObject.isNull(TAG_ID)) c.setId(jsonObject.getInt(TAG_ID));
             if (!jsonObject.isNull(TAG_NAME)) c.setName(jsonObject.getString(TAG_NAME));
             if (!jsonObject.isNull(TAG_TABLE))
                 c.setTblName(jsonObject.getString(TAG_TABLE));
             else c.setTblName("0");
-            if (!jsonObject.isNull(TAG_OTHER_NAME)) c.setOtherName(jsonObject.getString(TAG_OTHER_NAME));
+            if (!jsonObject.isNull(TAG_OTHER_NAME))
+                c.setOtherName(jsonObject.getString(TAG_OTHER_NAME));
             if (!jsonObject.isNull(TAG_SUMMARY)) c.setSummary(jsonObject.getString(TAG_SUMMARY));
             if (!jsonObject.isNull(TAG_ICON_URL)) c.setIconUrl(jsonObject.getString(TAG_ICON_URL));
-            if (!jsonObject.isNull(TAG_TYPE))c.setType(jsonObject.getString(TAG_TYPE));
-            if (!jsonObject.isNull(TAG_AUTHOR))c.setAuthor(jsonObject.getString(TAG_AUTHOR));
-            if ((!jsonObject.isNull(TAG_NEW_CHAP)))c.setNewChapter(jsonObject.getString(TAG_NEW_CHAP));
-            if ((!jsonObject.isNull(TAG_TAG)))c.setTag(jsonObject.getString(TAG_TAG));
-            if ((!jsonObject.isNull(TAG_VIEW_DAY)))c.setViewDay(jsonObject.getInt(TAG_VIEW_DAY));
-            if ((!jsonObject.isNull(TAG_VIEW_MONTH)))c.setViewMonth(jsonObject.getInt(TAG_VIEW_MONTH));
-            if ((!jsonObject.isNull(TAG_VIEW_WEEK)))c.setViewWeek(jsonObject.getInt(TAG_VIEW_WEEK));
-            if ((!jsonObject.isNull(TAG_VIEW_SUM)))c.setViewSum(jsonObject.getInt(TAG_VIEW_SUM));
+            if (!jsonObject.isNull(TAG_TYPE)) c.setType(jsonObject.getString(TAG_TYPE));
+            if (!jsonObject.isNull(TAG_AUTHOR)) c.setAuthor(jsonObject.getString(TAG_AUTHOR));
+            if ((!jsonObject.isNull(TAG_NEW_CHAP)))
+                c.setNewChapter(jsonObject.getString(TAG_NEW_CHAP));
+            if ((!jsonObject.isNull(TAG_TAG))) c.setTag(jsonObject.getString(TAG_TAG));
+            if ((!jsonObject.isNull(TAG_VIEW_DAY))) c.setViewDay(jsonObject.getInt(TAG_VIEW_DAY));
+            if ((!jsonObject.isNull(TAG_VIEW_MONTH)))
+                c.setViewMonth(jsonObject.getInt(TAG_VIEW_MONTH));
+            if ((!jsonObject.isNull(TAG_VIEW_WEEK)))
+                c.setViewWeek(jsonObject.getInt(TAG_VIEW_WEEK));
+            if ((!jsonObject.isNull(TAG_VIEW_SUM))) c.setViewSum(jsonObject.getInt(TAG_VIEW_SUM));
+            if ((!jsonObject.isNull(TAG_IS_NOTIFI))) c.setIsNotifi(jsonObject.getInt(TAG_IS_NOTIFI));
+            else c.setIsNotifi(-1);
         } catch (JSONException e) {
             e.printStackTrace();
         }

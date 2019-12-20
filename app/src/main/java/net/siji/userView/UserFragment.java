@@ -2,6 +2,7 @@ package net.siji.userView;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,9 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import net.siji.R;
@@ -66,18 +69,19 @@ public class UserFragment extends Fragment {
 
     private void excute(int i) {
         if (i == R.string.logout) {
-            LogOutDAO logOutDAO = new LogOutDAO(getActivity());
-            boolean exit = logOutDAO.exit();
-            if (exit) {
-                Intent intent = new Intent(getActivity(), SignInActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-            }
+            showDialogConfirmLogOut();
         }
         if (i == R.string.profile) {
 
         }
+        if (i == R.string.user_notification) {
+            NotifiFragment notifiFragment = new NotifiFragment();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_content, notifiFragment);
+            fragmentTransaction.commit();
+        }
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
@@ -90,5 +94,33 @@ public class UserFragment extends Fragment {
         if (context instanceof Activity) {
             mActivity = (Activity) context;
         }
+    }
+
+    public void showDialogConfirmLogOut(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage(getString(R.string.exit_dialog_title));
+        builder.setCancelable(false);
+        builder.setNegativeButton(getString(R.string.cancel_btn), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setPositiveButton(getString(R.string.exit_btn), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                LogOutDAO logOutDAO = new LogOutDAO(getActivity());
+                boolean exit = logOutDAO.exit();
+                if (exit) {
+                    Intent intent = new Intent(getActivity(), SignInActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
     }
 }

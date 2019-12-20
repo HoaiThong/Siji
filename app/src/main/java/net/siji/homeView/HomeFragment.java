@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -76,7 +77,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private LinearLayout ll_form_new_comic;
     private LinearLayout ll_form_random_today;
     private LinearLayout ll_form_view_ads;
-    private CardView banner_header;
+    private FrameLayout banner_header;
 
     //    Carousel
     public final static int LOOPS = 1000;

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.viewpager.widget.PagerAdapter;
@@ -28,6 +29,7 @@ public class ImageAdapter extends PagerAdapter {
     private LayoutInflater inflater;
     private Activity activity;
     private ImageView imageView;
+    private TextView tv_summary;
     private Context mContext;
     private ArrayList<Header> arrayList;
 
@@ -52,8 +54,10 @@ public class ImageAdapter extends PagerAdapter {
         View imageLayout = inflater.inflate(R.layout.image_slide, view, false);
 
         imageView = (ImageView) imageLayout.findViewById(R.id.image);
+        tv_summary=(TextView) imageLayout.findViewById(R.id.tv_summary);
         DisplayMetrics dis = new DisplayMetrics();
         final Header header=arrayList.get(position);
+        tv_summary.setText(header.getComic().getSummary());
         try {
             Glide.with(activity)
                     .load(header.getComic().getIconUrl())

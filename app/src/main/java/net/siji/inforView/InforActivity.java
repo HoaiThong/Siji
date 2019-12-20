@@ -207,12 +207,13 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
 
     public void getComic() {
         try {
-            comic = new LoadComicAsyncTask().execute(idComic, API_URL_GET_COMIC_BY_ID).get();
+            comic = new LoadComicAsyncTask().execute(idComic,idCustomer, API_URL_GET_COMIC_BY_ID).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        invalidateOptionsMenu();
     }
 
     public void getListChapters() {
@@ -266,14 +267,21 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.info_menu, menu);
+
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.menu_main_subcrise);
-        if (flagSubcribe) item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
-        else item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
+        if (comic.getIsNotifi()==1) {
+            item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
+        flagSubcribe=true;
+        }
+        else {
+            flagSubcribe=false;
+            item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
+        }
 
         return super.onPrepareOptionsMenu(menu);
     }

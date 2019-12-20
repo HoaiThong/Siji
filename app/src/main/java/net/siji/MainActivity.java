@@ -51,9 +51,10 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Intent intent = new Intent(MainActivity.this, SplashScreenActivity.class);
-                    startActivity(intent);
-                    finish();
+                    transaction = fragmentManager.beginTransaction();
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    transaction.replace(R.id.fragment_content, new HomeFragment());
+                    transaction.commit();
                     return true;
                 case R.id.navigation_library:
                     transaction = fragmentManager.beginTransaction();
