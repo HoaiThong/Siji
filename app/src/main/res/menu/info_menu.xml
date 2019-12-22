@@ -2,10 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
+    <item
+        android:id="@+id/menu_main_notifi"
+        android:icon="@drawable/ic_notifications_off"
+        app:showAsAction="always"
+        android:title="@string/khong_nhan_thong_bao" />
     <item
         android:id="@+id/menu_main_subcrise"
         android:icon="@drawable/ic_heart_border"
         app:showAsAction="always"
-        android:title="subcribe" />
+        android:title="@string/them_vao_thu_vien" />
 </menu>

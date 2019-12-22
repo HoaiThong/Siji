@@ -18,6 +18,7 @@
     <string name="bang_xep_hang">BẢNG XẾP HẠNG</string>
     <string name="title_today">HÔM NAY XEM GÌ? </string>
     <string name="truyen_hoan_thanh">TRUYỆN HOÀN THÀNH</string>
+    <string name="tom_tat_truyen">TÓM TẮT NỘI DUNG</string>
     <string name="advertise">Advertise - Quảng cáo</string>
 
     <string name="title_loading">Loading...</string>
@@ -98,5 +99,9 @@
 
     <string name="mimeType_text">text</string>
     <string name="mimeType_image">image</string>
+
+    <string name="nhan_thong_bao">Nhận thông báo khi có truyện mới</string>
+    <string name="khong_nhan_thong_bao">Không nhận thông báo khi có truyện mới</string>
+    <string name="them_vao_thu_vien">Thêm vào bộ sưu tập </string>
 
 </resources>

@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -82,7 +83,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     private View line_tab_chapter, line_tab_comment;
     private int quantity = 0;
     private int quantityCmt = 0;
-    private boolean flagSubcribe = false;
+    private boolean flagSubcribe = false, flagNotifi = false;
     private ImageView imgIcon;
 
     @Override
@@ -169,6 +170,17 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void initInfo() {
+        TextView tv_title = findViewById(R.id.tv_title);
+        TextView tv_other_name = findViewById(R.id.tv_other_name);
+        TextView tv_author = findViewById(R.id.tv_author);
+        TextView tv_summary = findViewById(R.id.tv_summary);
+        TextView tv_quantity_view = findViewById(R.id.tv_quantity_views);
+        tv_title.setText(comic.getName());
+        tv_other_name.setText(comic.getOtherName());
+        tv_author.setText(comic.getAuthor());
+        tv_summary.setText(comic.getSummary());
+        tv_quantity_view.setText(String.valueOf(comic.getViewSum()));
+
         Glide.with(this)
                 .load(comic.getIconUrl())
                 .into(imgIcon);
@@ -207,7 +219,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
 
     public void getComic() {
         try {
-            comic = new LoadComicAsyncTask().execute(idComic,idCustomer, API_URL_GET_COMIC_BY_ID).get();
+            comic = new LoadComicAsyncTask().execute(idComic, idCustomer, API_URL_GET_COMIC_BY_ID).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -274,13 +286,23 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.menu_main_subcrise);
-        if (comic.getIsNotifi()==1) {
+        MenuItem itemNotifi = menu.findItem(R.id.menu_main_notifi);
+
+        int is=comic.getIsNotifi();
+        if (is == 1) {
             item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
-        flagSubcribe=true;
-        }
-        else {
-            flagSubcribe=false;
-            item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
+            itemNotifi.setIcon(getResources().getDrawable(R.drawable.ic_notifications));
+
+            flagSubcribe = true;
+            flagNotifi=true;
+        }else {
+            if (is == -1) {
+                flagSubcribe = false;
+                item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
+            }
+            flagNotifi=false;
+            itemNotifi.setIcon(getResources().getDrawable(R.drawable.ic_notifications_off));
+
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -307,6 +329,24 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
                 new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
                 item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
                 Toast.makeText(getApplicationContext(), getString(R.string.them_truyen_yeu_thich), Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (item.getItemId() == R.id.menu_main_notifi) {
+            if (flagNotifi) {
+                flagNotifi = false;
+                isNotifi = "0";
+                new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
+                item.setIcon(getResources().getDrawable(R.drawable.ic_notifications_off));
+                Toast.makeText(getApplicationContext(), getString(R.string.khong_nhan_thong_bao), Toast.LENGTH_SHORT).show();
+
+            } else {
+                flagNotifi = true;
+                flagSubcribe=true;
+                isNotifi = "1";
+                new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
+                item.setIcon(getResources().getDrawable(R.drawable.ic_notifications));
+                Toast.makeText(getApplicationContext(), getString(R.string.nhan_thong_bao), Toast.LENGTH_SHORT).show();
+
             }
         }
         return super.onOptionsItemSelected(item);

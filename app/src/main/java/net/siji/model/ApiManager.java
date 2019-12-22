@@ -27,6 +27,7 @@ public class ApiManager {
     //    public final String API_URL_SIGNIN = "http://192.168.1.121/view/signin.php";
     public final String API_URL_REQUEST = "http://curcumin.tieudungthongminh.xyz/view/api_customer_send_message.php";
     public final String API_URL_UPDATE_REWARD_ADS = "http://curcumin.tieudungthongminh.xyz/view/api_update_coin_reward_from_ads.php";
+    public final String API_URL_REQUEST_PROFILE = "http://curcumin.tieudungthongminh.xyz/view/api_get_info_customer.php";
 
 
 }

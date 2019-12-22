@@ -10,6 +10,8 @@ import java.util.Locale;
 
 public class Customer implements Serializable{
     //Gson serializable
+
+    private Wallet wallet;
 //    @Expose
     private int id;
 //    @Expose
@@ -58,6 +60,14 @@ public class Customer implements Serializable{
     private Timestamp updateAt;
 
     public Customer() {
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     public String getIdAccoutKit() {

@@ -72,7 +72,9 @@ public class UserFragment extends Fragment {
             showDialogConfirmLogOut();
         }
         if (i == R.string.profile) {
-
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_content, new ProfileFragment());
+            fragmentTransaction.commit();
         }
         if (i == R.string.user_notification) {
             NotifiFragment notifiFragment = new NotifiFragment();

@@ -24,8 +24,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/black_tranperent"
             android:maxLines="6"
-            android:minLines="4"
-            android:lines="5"
+            android:minLines="5"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:textColor="@color/white" />

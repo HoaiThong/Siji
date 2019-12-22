@@ -54,8 +54,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp" />
 
+
         <TextView
-            android:id="@+id/tv_detail_kind"
+            android:id="@+id/tv_view_sum"
+            android:drawablePadding="8sp"
+            android:drawableStart="@drawable/ic_red_eye"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
