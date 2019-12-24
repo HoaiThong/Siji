@@ -34,6 +34,8 @@ import net.siji.MainActivity;
 import net.siji.R;
 import net.siji.dao.BlurBuilder;
 import net.siji.dialog.LoadingDialog;
+import net.siji.dialog.RatingComicDialog;
+import net.siji.dialog.SummaryComicDialog;
 import net.siji.model.ApiManager;
 import net.siji.model.Chapter;
 import net.siji.model.Comic;
@@ -74,6 +76,9 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     private String API_URL_GET_COMIC_BY_ID = "http://192.168.1.121/siji-server/view/api_get_comic_by_id.php";
     private String API_URL_GET_LIST_CHAPTER = "http://192.168.1.121/siji-server/view/api_get_limit_chapters.php";
     private String API_URL_GET_COMMENT = "http://192.168.1.121/siji-server/view/api_comments_get_all_of_comic.php";
+    private String API_URL_RATING_STAR = "http://curcumin.tieudungthongminh.xyz/view/api_rating_star_comic.php";
+    private String API_URL_LIKE_COMIC = "http://curcumin.tieudungthongminh.xyz/view/api_like_comic.php";
+
     private VerticalChapterAdapter verticalChapterAdapter;
     private VerticalCommentAdapter verticalCommentAdapter;
     private LinkedList<Chapter> linkedList;
@@ -83,8 +88,13 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     private View line_tab_chapter, line_tab_comment;
     private int quantity = 0;
     private int quantityCmt = 0;
-    private boolean flagSubcribe = false, flagNotifi = false;
+    private boolean flagSubcribe = false, flagNotifi = false,flagRating=false;
+    private String flagLike = "0";
     private ImageView imgIcon;
+    private String fcmtoken;
+    private MenuItem itemNotifi, itemSubcribe;
+    private TextView tv_quantity_like, tv_rating_star;
+    private  int quantityLike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +126,8 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         API_URL_GET_COMMENT = apiManager.API_URL_GET_COMMENT;
         API_URL_GET_LIST_CHAPTER = apiManager.API_URL_GET_LIST_CHAPTER;
         API_URL_READED_COMIC = apiManager.API_URL_READED_COMIC;
+        API_URL_LIKE_COMIC = apiManager.API_URL_LIKE_COMIC;
+        API_URL_RATING_STAR = apiManager.API_URL_RATING_STAR;
     }
 
     private void showToast(String text) {
@@ -136,6 +148,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         SessionManager sessionManager = new SessionManager(this);
         idCustomer = sessionManager.getReaded("idUser");
         idComic = String.valueOf(comic.getId());
+        fcmtoken = sessionManager.getReaded("tokenfcm");
 //        final SpotsDialog spotsDialog = (SpotsDialog) new SpotsDialog.Builder().setContext(this).build();
 //        spotsDialog.setCancelable(false);
 //        spotsDialog.setMessage("");
@@ -175,11 +188,29 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         TextView tv_author = findViewById(R.id.tv_author);
         TextView tv_summary = findViewById(R.id.tv_summary);
         TextView tv_quantity_view = findViewById(R.id.tv_quantity_views);
+        tv_rating_star = findViewById(R.id.tv_star_rating);
+        tv_quantity_like = findViewById(R.id.tv_quantity_like);
+        tv_quantity_like.setOnClickListener(this);
+        findViewById(R.id.tv_title_summary).setOnClickListener(this);
+        findViewById(R.id.tv_star_rating).setOnClickListener(this);
+
+        if (comic.getStatusLike() == 1) {
+            flagLike = "1";
+            tv_quantity_like.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_like, 0, 0);
+        }
+        if (comic.getRatingStar()>0){
+            flagRating=true;
+            tv_rating_star.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_half, 0, 0);
+
+        }
+        quantityLike = comic.getQuantityLike();
         tv_title.setText(comic.getName());
         tv_other_name.setText(comic.getOtherName());
         tv_author.setText(comic.getAuthor());
         tv_summary.setText(comic.getSummary());
         tv_quantity_view.setText(String.valueOf(comic.getViewSum()));
+        tv_rating_star.setText(String.valueOf(comic.getScoreRating()));
+        tv_quantity_like.setText(String.valueOf(comic.getQuantityLike()));
 
         Glide.with(this)
                 .load(comic.getIconUrl())
@@ -279,7 +310,8 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.info_menu, menu);
-
+        itemNotifi = menu.findItem(R.id.menu_main_notifi);
+        itemSubcribe = menu.findItem(R.id.menu_main_subcrise);
         return true;
     }
 
@@ -288,21 +320,26 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         MenuItem item = menu.findItem(R.id.menu_main_subcrise);
         MenuItem itemNotifi = menu.findItem(R.id.menu_main_notifi);
 
-        int is=comic.getIsNotifi();
+        int is = comic.getIsNotifi();
         if (is == 1) {
             item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
             itemNotifi.setIcon(getResources().getDrawable(R.drawable.ic_notifications));
 
             flagSubcribe = true;
-            flagNotifi=true;
-        }else {
-            if (is == -1) {
-                flagSubcribe = false;
-                item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
-            }
-            flagNotifi=false;
+            flagNotifi = true;
+        }
+        if (is == -1) {
+            flagSubcribe = false;
+            flagNotifi = false;
+            item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
             itemNotifi.setIcon(getResources().getDrawable(R.drawable.ic_notifications_off));
 
+        }
+        if (is == 0) {
+            flagNotifi = false;
+            flagSubcribe = true;
+            item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
+            itemNotifi.setIcon(getResources().getDrawable(R.drawable.ic_notifications_off));
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -319,15 +356,18 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
 
         if (item.getItemId() == R.id.menu_main_subcrise) {
             if (flagSubcribe) {
-                flagSubcribe = false;
+                flagSubcribe = flagNotifi = false;
                 isNotifi = "-1";
                 new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
                 item.setIcon(getResources().getDrawable(R.drawable.ic_heart_border));
+                itemNotifi.setIcon(getResources().getDrawable(R.drawable.ic_notifications_off));
+
             } else {
-                flagSubcribe = true;
+                flagSubcribe = flagNotifi = true;
                 isNotifi = "1";
                 new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
                 item.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
+                itemNotifi.setIcon(getResources().getDrawable(R.drawable.ic_notifications));
                 Toast.makeText(getApplicationContext(), getString(R.string.them_truyen_yeu_thich), Toast.LENGTH_SHORT).show();
             }
         }
@@ -341,12 +381,12 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
 
             } else {
                 flagNotifi = true;
-                flagSubcribe=true;
+                flagSubcribe = true;
                 isNotifi = "1";
                 new SubcribeComicAsyncTask().execute(idCustomer, idComic, isNotifi, API_URL_SUBCRIBE_COMIC);
                 item.setIcon(getResources().getDrawable(R.drawable.ic_notifications));
+                itemSubcribe.setIcon(getResources().getDrawable(R.drawable.ic_heart_white));
                 Toast.makeText(getApplicationContext(), getString(R.string.nhan_thong_bao), Toast.LENGTH_SHORT).show();
-
             }
         }
         return super.onOptionsItemSelected(item);
@@ -441,6 +481,30 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
                 line_tab_chapter.setVisibility(View.GONE);
                 commentListView.setVisibility(View.VISIBLE);
                 line_tab_comment.setVisibility(View.VISIBLE);
+                break;
+            case R.id.tv_quantity_like:
+                if (flagLike.equals("0")) {
+                    flagLike = "1";
+                    new LikeComicAsyncTask().execute(idCustomer, idComic, flagLike, fcmtoken, API_URL_LIKE_COMIC);
+                    quantityLike++;
+                    tv_quantity_like.setText(String.valueOf(quantityLike));
+                    tv_quantity_like.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_like, 0, 0);
+
+                } else if (flagLike.equals("1")) {
+                    flagLike = "0";
+                    new LikeComicAsyncTask().execute(idCustomer, idComic, flagLike, fcmtoken, API_URL_LIKE_COMIC);
+                    tv_quantity_like.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_un_like, 0, 0);
+                    quantityLike--;
+                    tv_quantity_like.setText(String.valueOf(quantityLike));
+                }
+                break;
+            case R.id.tv_title_summary:
+                SummaryComicDialog summaryComicDialog = new SummaryComicDialog(getApplicationContext(), getSupportFragmentManager(), comic);
+                summaryComicDialog.show();
+                break;
+            case R.id.tv_star_rating:
+                RatingComicDialog ratingComicDialog = new RatingComicDialog(getApplicationContext(), getSupportFragmentManager(), comic);
+                ratingComicDialog.show();
                 break;
         }
     }

@@ -44,6 +44,12 @@ public class Comic implements Parcelable,Serializable  {
     @Expose
     private int isNotifi;
     @Expose
+    private float ratingStar;
+    @Expose
+    private int statusLike;
+    @Expose
+    private int quantityLike;
+    @Expose
     private String newChapter;
     @Expose
     private Timestamp createAt;
@@ -108,6 +114,30 @@ public class Comic implements Parcelable,Serializable  {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public float getRatingStar() {
+        return ratingStar;
+    }
+
+    public void setRatingStar(float ratingStar) {
+        this.ratingStar = ratingStar;
+    }
+
+    public int getStatusLike() {
+        return statusLike;
+    }
+
+    public void setStatusLike(int statusLike) {
+        this.statusLike = statusLike;
+    }
+
+    public int getQuantityLike() {
+        return quantityLike;
+    }
+
+    public void setQuantityLike(int quantityLike) {
+        this.quantityLike = quantityLike;
     }
 
     public int getViewDay() {

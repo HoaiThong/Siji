@@ -25,6 +25,11 @@ public class ComicUtils {
     public static final String TAG_NEW_CHAP = "newChapter";
     public static final String TAG_TAG = "tag";
     public static final String TAG_IS_NOTIFI = "isNotifi";
+    public static final String TAG_QUANTITY_LIKE = "quantityLike";
+    public static final String TAG_STATUS_LIKE = "statusLike";
+    public static final String TAG_MY_RATING_STAR = "ratingStar";
+    public static final String TAG_RATING = "rating";
+    public static final String TAG_SCORE_RATING = "scoreRating";
     public static final String TAG_UPDATE_AT = "update_at";
 
     public Comic convertFromJSONObject(JSONObject jsonObject) {
@@ -44,13 +49,24 @@ public class ComicUtils {
             if ((!jsonObject.isNull(TAG_NEW_CHAP)))
                 c.setNewChapter(jsonObject.getString(TAG_NEW_CHAP));
             if ((!jsonObject.isNull(TAG_TAG))) c.setTag(jsonObject.getString(TAG_TAG));
+            if ((!jsonObject.isNull(TAG_RATING)))
+                c.setScoreRating((float) jsonObject.getDouble(TAG_RATING));
+            else if ((!jsonObject.isNull(TAG_SCORE_RATING)))
+                c.setScoreRating((float) jsonObject.getDouble(TAG_SCORE_RATING));
+            if ((!jsonObject.isNull(TAG_QUANTITY_LIKE)))
+                c.setQuantityLike(jsonObject.getInt(TAG_QUANTITY_LIKE));
+            if ((!jsonObject.isNull(TAG_MY_RATING_STAR)))
+                c.setRatingStar((float)jsonObject.getDouble(TAG_MY_RATING_STAR));
+            if ((!jsonObject.isNull(TAG_STATUS_LIKE)))
+                c.setStatusLike(jsonObject.getInt(TAG_STATUS_LIKE));
             if ((!jsonObject.isNull(TAG_VIEW_DAY))) c.setViewDay(jsonObject.getInt(TAG_VIEW_DAY));
             if ((!jsonObject.isNull(TAG_VIEW_MONTH)))
                 c.setViewMonth(jsonObject.getInt(TAG_VIEW_MONTH));
             if ((!jsonObject.isNull(TAG_VIEW_WEEK)))
                 c.setViewWeek(jsonObject.getInt(TAG_VIEW_WEEK));
             if ((!jsonObject.isNull(TAG_VIEW_SUM))) c.setViewSum(jsonObject.getInt(TAG_VIEW_SUM));
-            if ((!jsonObject.isNull(TAG_IS_NOTIFI))) c.setIsNotifi(jsonObject.getInt(TAG_IS_NOTIFI));
+            if ((!jsonObject.isNull(TAG_IS_NOTIFI)))
+                c.setIsNotifi(jsonObject.getInt(TAG_IS_NOTIFI));
             else c.setIsNotifi(-1);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -21,8 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".inforView.DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".inforView.DetailActivity"></activity>
         <activity
             android:name=".search.SearchViewActivity"
             android:theme="@style/SearchTheme" />

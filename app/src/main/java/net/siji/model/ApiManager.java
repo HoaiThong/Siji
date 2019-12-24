@@ -28,6 +28,8 @@ public class ApiManager {
     public final String API_URL_REQUEST = "http://curcumin.tieudungthongminh.xyz/view/api_customer_send_message.php";
     public final String API_URL_UPDATE_REWARD_ADS = "http://curcumin.tieudungthongminh.xyz/view/api_update_coin_reward_from_ads.php";
     public final String API_URL_REQUEST_PROFILE = "http://curcumin.tieudungthongminh.xyz/view/api_get_info_customer.php";
+    public final String API_URL_RATING_STAR = "http://curcumin.tieudungthongminh.xyz/view/api_rating_star_comic.php";
+    public final String API_URL_LIKE_COMIC = "http://curcumin.tieudungthongminh.xyz/view/api_like_comic.php";
 
 
 }
