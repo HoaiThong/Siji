@@ -61,4 +61,9 @@ public class Comment implements Serializable {
     public void setUpdateAt(Timestamp updateAt) {
         this.updateAt = updateAt;
     }
+
+    public String toJSON(){
+        String json="{\"idComic\": "+comic.getId()+",\"idCustomer\": "+customer.getId()+", \"cmtCustomer\":\""+comment+"\"}";
+        return json;
+    }
 }

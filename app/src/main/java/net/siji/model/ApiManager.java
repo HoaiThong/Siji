@@ -30,6 +30,7 @@ public class ApiManager {
     public final String API_URL_REQUEST_PROFILE = "http://curcumin.tieudungthongminh.xyz/view/api_get_info_customer.php";
     public final String API_URL_RATING_STAR = "http://curcumin.tieudungthongminh.xyz/view/api_rating_star_comic.php";
     public final String API_URL_LIKE_COMIC = "http://curcumin.tieudungthongminh.xyz/view/api_like_comic.php";
+    public final String API_URL_SEND_COMMENT = "http://curcumin.tieudungthongminh.xyz/view/api_comments_insert.php";
 
 
 }

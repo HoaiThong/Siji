@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 
 import net.siji.R;
+import net.siji.inforView.InforActivity;
 import net.siji.inforView.RatingComicAsyncTask;
 import net.siji.model.ApiManager;
 import net.siji.model.Comic;
@@ -78,6 +79,7 @@ public class RatingComicDialog extends DialogFragment {
                                         boolean fromUser) {
                 String rate = String.valueOf(rating);
                 String idComic=String.valueOf(comic.getId());
+                ((InforActivity)getActivity()).setRatingColor( rating);
                 new RatingComicAsyncTask().execute(idCustomer, idComic, rate, fcmtoken, API_URL_RATING_STAR);
                 Toast.makeText(mContext,rate,Toast.LENGTH_SHORT).show();
                 dismiss();

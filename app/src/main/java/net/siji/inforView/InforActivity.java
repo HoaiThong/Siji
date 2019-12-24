@@ -12,11 +12,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -43,6 +46,8 @@ import net.siji.model.Comment;
 import net.siji.model.Customer;
 import net.siji.readView.VerticalChapterAdapter;
 import net.siji.readView.ViewerActivity;
+import net.siji.search.SearchViewActivity;
+import net.siji.search.VerticalListAdapter;
 import net.siji.sessionApp.SessionManager;
 import net.siji.splashScreenView.SplashScreenActivity;
 
@@ -85,16 +90,18 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     private LinkedList<Comment> linkedListCmt;
     private ListView chapterListView;
     private ListView commentListView;
+    private LinearLayout ll_comment;
     private View line_tab_chapter, line_tab_comment;
     private int quantity = 0;
     private int quantityCmt = 0;
-    private boolean flagSubcribe = false, flagNotifi = false,flagRating=false;
+    private boolean flagSubcribe = false, flagNotifi = false, flagRating = false;
     private String flagLike = "0";
     private ImageView imgIcon;
     private String fcmtoken;
     private MenuItem itemNotifi, itemSubcribe;
-    private TextView tv_quantity_like, tv_rating_star;
-    private  int quantityLike;
+    private TextView tv_quantity_like, tv_rating_star, tv_tab_chapter, tv_tab_comment;
+    private int quantityLike;
+    private EditText edt_comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,12 +168,9 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         handler.postDelayed(new Runnable() {
             public void run() {
                 getComic();
-                getListChapters();
-                getComment();
-                spotsDialog.dismiss();
                 initInfo();
                 initChaptersMenu();
-                initComments();
+                spotsDialog.dismiss();
 
             }
         }, 2000);
@@ -176,8 +180,34 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         commentListView = findViewById(R.id.list_view_comments);
         line_tab_chapter = findViewById(R.id.line_tab_chapter);
         line_tab_comment = findViewById(R.id.line_tab_comment);
+        tv_tab_chapter = findViewById(R.id.tv_tab_chapter);
+        tv_tab_comment = findViewById(R.id.tv_tab_comment);
+        ll_comment = findViewById(R.id.ll_comment);
         findViewById(R.id.tab_chapter).setOnClickListener(this);
         findViewById(R.id.tab_comment).setOnClickListener(this);
+        edt_comment = findViewById(R.id.edt_cmt);
+        edt_comment.setImeActionLabel("Send", KeyEvent.KEYCODE_ENTER);
+        edt_comment.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String cmtText = edt_comment.getText().toString().trim();
+                if (actionId == EditorInfo.IME_ACTION_SEND && !cmtText.equals("")) {
+                    Comment comment = new Comment();
+                    comment.setComic(comic);
+                    Customer customer = new Customer();
+                    customer.setId(Integer.parseInt(idCustomer));
+                    comment.setCustomer(customer);
+                    comment.setComment(cmtText);
+                    String jsonData = comment.toJSON();
+                    new SendCommentAsyncTask().execute(jsonData);
+                    Toast.makeText(getApplicationContext(), cmtText, Toast.LENGTH_SHORT).show();
+                    edt_comment.setText("");
+                    initComments();
+                    return true;
+                }
+                return false;
+            }
+        });
 
 //        initComments();
     }
@@ -198,8 +228,8 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
             flagLike = "1";
             tv_quantity_like.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_like, 0, 0);
         }
-        if (comic.getRatingStar()>0){
-            flagRating=true;
+        if (comic.getRatingStar() > 0) {
+            flagRating = true;
             tv_rating_star.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_half, 0, 0);
 
         }
@@ -218,6 +248,9 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void initChaptersMenu() {
+        startAt = 0;
+        linkedList = new LinkedList<>();
+        getListChapters();
         verticalChapterAdapter = new VerticalChapterAdapter(this, linkedList);
         chapterListView.setAdapter(verticalChapterAdapter);
         chapterListView.setOnScrollListener(onScrollListener());
@@ -236,16 +269,30 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         chapterListView.setVisibility(View.VISIBLE);
-        line_tab_chapter.setVisibility(View.VISIBLE);
+        tv_tab_chapter.setTextColor(ContextCompat.getColor(this, R.color.color_tab));
+        tv_tab_comment.setTextColor(ContextCompat.getColor(this, R.color.black));
+//        line_tab_chapter.setVisibility(View.VISIBLE);
         commentListView.setVisibility(View.GONE);
-        line_tab_comment.setVisibility(View.GONE);
+//        line_tab_comment.setVisibility(View.GONE);
+        ll_comment.setVisibility(View.GONE);
+
     }
 
     public void initComments() {
+        startAtCmt = 0;
+        linkedListCmt = new LinkedList<>();
+        getComment();
         verticalCommentAdapter = new VerticalCommentAdapter(this, linkedListCmt);
         commentListView.setAdapter(verticalCommentAdapter);
         commentListView.setOnScrollListener(onScrollCommentListener());
 
+        chapterListView.setVisibility(View.GONE);
+        tv_tab_comment.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        tv_tab_chapter.setTextColor(ContextCompat.getColor(this, R.color.black));
+//                line_tab_chapter.setVisibility(View.GONE);
+        commentListView.setVisibility(View.VISIBLE);
+//                line_tab_comment.setVisibility(View.VISIBLE);
+        ll_comment.setVisibility(View.VISIBLE);
     }
 
     public void getComic() {
@@ -471,16 +518,10 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tab_chapter:
-                chapterListView.setVisibility(View.VISIBLE);
-                line_tab_chapter.setVisibility(View.VISIBLE);
-                commentListView.setVisibility(View.GONE);
-                line_tab_comment.setVisibility(View.GONE);
+                initChaptersMenu();
                 break;
             case R.id.tab_comment:
-                chapterListView.setVisibility(View.GONE);
-                line_tab_chapter.setVisibility(View.GONE);
-                commentListView.setVisibility(View.VISIBLE);
-                line_tab_comment.setVisibility(View.VISIBLE);
+                initComments();
                 break;
             case R.id.tv_quantity_like:
                 if (flagLike.equals("0")) {
@@ -507,6 +548,14 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
                 ratingComicDialog.show();
                 break;
         }
+    }
+
+    public void setRatingColor(float rating) {
+        if (rating > 0)
+            tv_rating_star.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_half, 0, 0);
+        else
+            tv_rating_star.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_border, 0, 0);
+
     }
 
     private class AsyncGettingBitmapFromUrl extends AsyncTask<String, Void, Bitmap> {

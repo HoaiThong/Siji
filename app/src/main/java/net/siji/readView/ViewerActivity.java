@@ -613,7 +613,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
     public void initViewMode() {
         if (mFlag) {
-            exchange_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic__line));
+            exchange_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_line));
             exchange_fb_tv.setText(getString(R.string.title_line_mode));
             initWebView();
         } else {
