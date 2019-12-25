@@ -28,10 +28,13 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_img"
                 android:layout_width="100sp"
                 android:layout_height="150sp"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:cardCornerRadius="5sp"
                 app:cardElevation="4sp">
 
@@ -49,6 +52,7 @@
                 android:textSize="@dimen/activity_horizontal_margin"
                 android:text="@string/tom_tat_truyen"
                 android:fontFamily="monospace"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
         </LinearLayout>

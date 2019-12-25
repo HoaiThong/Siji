@@ -39,7 +39,8 @@
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".inforView.InforActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

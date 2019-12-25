@@ -15,6 +15,8 @@
     public static *** d(...);
     public static *** v(...);
 }
+-keep class com.squareup.picasso.** { *; }
+-keep class com.github.bumptech.glide.** { *; }
 
 -keep class com.facebook.** { *; }
 -keep class com.androidquery.** { *; }

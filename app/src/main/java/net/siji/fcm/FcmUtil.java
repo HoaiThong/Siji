@@ -40,7 +40,7 @@ public class FcmUtil {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
+//                            Log.w(TAG, "getInstanceId failed", task.getException());
                             return;
                         }
 
@@ -49,7 +49,7 @@ public class FcmUtil {
                         setToken(token);
                         // Log and toast
 //                        String msg = mActivity.getString(R.string.msg_token_fmt, token);
-                        Log.d("token id :", token);
+//                        Log.d("token id :", token);
 //                        Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
                     }
                 });

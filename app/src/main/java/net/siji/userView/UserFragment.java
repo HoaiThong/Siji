@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 import net.siji.R;
+import net.siji.dialog.PoliceDialog;
 import net.siji.login.LogOutDAO;
 import net.siji.login.SignInActivity;
 
@@ -60,7 +61,7 @@ public class UserFragment extends Fragment {
 
     private List<Integer> getListActionUser() {
         List<Integer> list = new ArrayList<>();
-        list.add(R.string.profile);
+//        list.add(R.string.profile);
         list.add(R.string.user_notification);
         list.add(R.string.logout);
         list.add(R.string.policy);
@@ -71,17 +72,22 @@ public class UserFragment extends Fragment {
         if (i == R.string.logout) {
             showDialogConfirmLogOut();
         }
-        if (i == R.string.profile) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_content, new ProfileFragment());
-            fragmentTransaction.commit();
-        }
+//        if (i == R.string.profile) {
+//            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//            fragmentTransaction.replace(R.id.fragment_content, new ProfileFragment());
+//            fragmentTransaction.commit();
+//        }
         if (i == R.string.user_notification) {
             NotifiFragment notifiFragment = new NotifiFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_content, notifiFragment);
             fragmentTransaction.commit();
         }
+        if (i == R.string.policy) {
+            PoliceDialog policeDialog = new PoliceDialog(mActivity,getFragmentManager());
+            policeDialog.show();
+        }
+
     }
 
     @Override
@@ -98,7 +104,7 @@ public class UserFragment extends Fragment {
         }
     }
 
-    public void showDialogConfirmLogOut(){
+    public void showDialogConfirmLogOut() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(getString(R.string.app_name));
         builder.setMessage(getString(R.string.exit_dialog_title));

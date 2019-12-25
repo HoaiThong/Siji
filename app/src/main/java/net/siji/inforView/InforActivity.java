@@ -269,7 +269,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         chapterListView.setVisibility(View.VISIBLE);
-        tv_tab_chapter.setTextColor(ContextCompat.getColor(this, R.color.color_tab));
+        tv_tab_chapter.setTextColor(ContextCompat.getColor(this, R.color.red));
         tv_tab_comment.setTextColor(ContextCompat.getColor(this, R.color.black));
 //        line_tab_chapter.setVisibility(View.VISIBLE);
         commentListView.setVisibility(View.GONE);
@@ -287,7 +287,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         commentListView.setOnScrollListener(onScrollCommentListener());
 
         chapterListView.setVisibility(View.GONE);
-        tv_tab_comment.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        tv_tab_comment.setTextColor(ContextCompat.getColor(this, R.color.red));
         tv_tab_chapter.setTextColor(ContextCompat.getColor(this, R.color.black));
 //                line_tab_chapter.setVisibility(View.GONE);
         commentListView.setVisibility(View.VISIBLE);

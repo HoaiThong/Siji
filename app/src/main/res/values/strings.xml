@@ -2,7 +2,10 @@
     <string name="app_name">Siji</string>
 
     <string name="ADMOB_APP_ID">ca-app-pub-1474947036905548~8964044047</string>
+    <!--    test device-->
     <string name="ADMOB_UNIT_REWARD">ca-app-pub-3940256099942544/5224354917</string>
+    <!--real devide-->
+    <!--    <string name="ADMOB_UNIT_REWARD">ca-app-pub-1474947036905548/3525411307</string>-->
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -31,8 +34,8 @@
     <string name="thay_doi">Thay Đổi</string>
 
     <string name="app_name_fb">Siji</string>
-    <string name="FACEBOOK_APP_ID">701080807008710</string>
-    <string name="ACCOUNT_KIT_CLIENT_TOKEN">239a1b571614af29e473068bf3c44cee</string>
+    <string name="FACEBOOK_APP_ID">1375023275989160</string>
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">06208c0606c8b7b0604f9d8831622305</string>
     <string name="name">name</string>
     <string name="id">id</string>
     <string name="email">email</string>
@@ -59,6 +62,7 @@
     <string name="profile">Profile</string>
     <string name="user_notification">Gửi thông báo</string>
     <string name="policy">Tuyên bố quyền miễn trừ trách nhiệm</string>
+    <string name="content_policy">Tuyên bố quyền miễn trừ trách nhiệm</string>
 
     <string name="nomedia_document">.nomedia</string>
 

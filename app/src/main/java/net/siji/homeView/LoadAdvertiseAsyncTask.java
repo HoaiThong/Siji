@@ -50,7 +50,7 @@ public class LoadAdvertiseAsyncTask extends AsyncTask<String, String, ArrayList<
                 for (int i = 0; i < jsonArray.length(); i++) {
                     advertise = new Advertise();
                     JSONObject c = jsonArray.getJSONObject(i);
-                    Log.e("ALL THE STUFF", c.toString());
+//                    Log.e("ALL THE STUFF", c.toString());
                     advertise=advertiseUtils.createFromJSONObject(c);
                     // adding HashList to ArrayList
                     arrayList.add(advertise);

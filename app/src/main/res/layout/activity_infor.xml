@@ -144,7 +144,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8sp"
-                            android:drawableEnd="@drawable/ic_arrow_forward"
+                            android:drawableEnd="@drawable/ic_arrow_forward_white"
                             android:drawablePadding="8sp"
                             android:drawableTint="@color/white"
                             android:singleLine="true"

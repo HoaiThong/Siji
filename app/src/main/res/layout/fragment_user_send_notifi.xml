@@ -22,15 +22,15 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8sp"
+            android:gravity="center"
+            android:maxEms="@android:integer/config_mediumAnimTime"
             android:padding="8sp"
             android:text="@string/title_user_notifi"
-            android:textColor="@color/myColorPrimary"
-            android:textSize="18sp"
-            android:layout_marginBottom="8sp"
-            android:textStyle="italic" />
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/edt_msg"
@@ -39,7 +39,7 @@
             android:background="@drawable/round_corners"
             android:gravity="top|left"
             android:hint="@string/title_max_length_350"
-            android:lines="18"
+            android:lines="8"
             android:maxLength="350"
             android:maxLines="20"
             android:minLines="5"
@@ -50,8 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="8sp"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
 
             <Button
