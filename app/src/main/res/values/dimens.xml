@@ -6,6 +6,8 @@
     <dimen name="tool_bar_height">44dp</dimen>
     <dimen name="elevation_dimen">250dp</dimen>
     <dimen name="margin_for_status_bar">250dp</dimen>
+    <dimen name="margin_top">8dp</dimen>
+
     <!--Design bottom navigation-->
     <dimen name="design_bottom_navigation_text_size" tools:override="true">10sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>

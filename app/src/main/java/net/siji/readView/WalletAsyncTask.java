@@ -69,8 +69,8 @@ public class WalletAsyncTask extends AsyncTask<String, String, Integer> {
     public void execute() {
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
-            Log.d(WalletAsyncTask.this.toString(),params.toString());
-            Log.d("wallet", jsonObject.toString());
+//            Log.d(WalletAsyncTask.this.toString(),params.toString());
+//            Log.d("wallet", jsonObject.toString());
             amountResp = jsonObject.getInt(TAG_AMOUNT);
             updateResp = jsonObject.getInt(TAG_UPDATE);
             insertResp = jsonObject.getInt(TAG_INSERT);

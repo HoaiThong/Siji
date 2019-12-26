@@ -160,10 +160,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     @Override
     public void onNewToken(String token) {
-        Log.d(TAG, "Refreshed token: " + token);
+//        Log.d(TAG, "Refreshed token: " + token);
         SessionManager sessionManager = new SessionManager(getApplicationContext());
         String jsonUser = sessionManager.getReaded("user");
-        System.out.println(jsonUser);
+//        System.out.println(jsonUser);
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.

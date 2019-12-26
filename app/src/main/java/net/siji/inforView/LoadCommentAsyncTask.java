@@ -59,7 +59,7 @@ public class LoadCommentAsyncTask extends AsyncTask<String, String, List<Comment
                 for (int i = 0; i < jsonArray.length(); i++) {
                     cmt = new Comment();
                     JSONObject o = jsonArray.getJSONObject(i);
-                    Log.e("ALL THE STUFF", o.toString());
+//                    Log.e("ALL THE STUFF", o.toString());
                     cmt=new CommentUtils().createFromJSONObject(o);
 
                     // adding HashList to ArrayList

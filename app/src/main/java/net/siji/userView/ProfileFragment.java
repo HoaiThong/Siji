@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import net.siji.R;
@@ -48,9 +49,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_user_send_notifi, container, false);
+        view = inflater.inflate(R.layout.fragment_profile, container, false);
         mActivity.setTitle(mActivity.getString(R.string.profile));
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
+//        relativeLayout = (RelativeLayout) findViewById(R.id.header_layout);
+//        Bitmap originalBitmap = BlurBuilder.getBitmapFromURL("https://i-giaitri.vnecdn.net/2019/02/25/ngoc-diem-2-1551065105_r_680x0.jpg");
+//         Bitmap blurredBitmap = BlurBuilder.blur(getApplicationContext(), bitmap);
+//            relativeLayout.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
         setHasOptionsMenu(true);
         SessionManager sessionManager = new SessionManager(mActivity);
         idCustomer = sessionManager.getReaded("idUser");

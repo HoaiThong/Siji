@@ -58,7 +58,7 @@ public class LoadComicAsyncTask extends AsyncTask<String, String, Comic> {
                 JSONArray jsonArray = jsonObject.getJSONArray(TAG_COMIC);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject o = jsonArray.getJSONObject(i);
-                    Log.e("ALL THE STUFF", o.toString());
+//                    Log.e("ALL THE STUFF", o.toString());
                     comic=comicUtil.convertFromJSONObject(o);
 //                    Log.e("json convert: ", comic.getSummary());
 //                    comic.setId(o.getInt(comic.TAG_PID));

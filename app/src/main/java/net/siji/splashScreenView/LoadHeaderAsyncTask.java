@@ -42,7 +42,7 @@ public class LoadHeaderAsyncTask extends AsyncTask<String, String, ArrayList<Hea
      */
     protected ArrayList<Header> doInBackground(String... args) {
         API_URL = args[0];
-        Log.e("API", API_URL);
+//        Log.e("API", API_URL);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
         try {
@@ -54,7 +54,7 @@ public class LoadHeaderAsyncTask extends AsyncTask<String, String, ArrayList<Hea
                     header = new Header();
                     m = new Comic();
                     JSONObject c = jsonArray.getJSONObject(i);
-                    Log.e("ALL THE STUFF", c.toString());
+//                    Log.e("ALL THE STUFF", c.toString());
                     m.setId(c.getInt(m.TAG_PID));
                     m.setName(c.getString(m.TAG_NAME));
                     m.setSummary(c.getString(m.TAG_SUMMARY));

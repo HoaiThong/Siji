@@ -105,6 +105,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         google_btn.setOnClickListener(this);
         fcmUtil = new FcmUtil(this);
         fcmUtil.accessToken();
+        fcmUtil.subscribe("10001");
         receiver = new NetworkChangeReceiver();
         final IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(receiver, filter);
@@ -276,7 +277,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             packageInfo = context.getPackageManager().getPackageInfo(packageName,
                     PackageManager.GET_SIGNATURES);
 
-            Log.e("Package Name=", context.getApplicationContext().getPackageName());
+//            Log.e("Package Name=", context.getApplicationContext().getPackageName());
 
             for (android.content.pm.Signature signature : packageInfo.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
@@ -284,7 +285,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 key = new String(Base64.encode(md.digest(), 0));
 
                 // String key = new String(Base64.encodeBytes(md.digest()));
-                Log.e("Key Hash=", key);
+//                Log.e("Key Hash=", key);
             }
         } catch (PackageManager.NameNotFoundException e1) {
             Log.e("Name not found", e1.toString());

@@ -39,8 +39,8 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
     protected ArrayList<Comic> doInBackground(String... args) {
         String startAt=args[0];
         String API_URL=args[1];
-        Log.e("start At", startAt);
-        Log.e("API", API_URL);
+//        Log.e("start At", startAt);
+//        Log.e("API", API_URL);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("startAt", startAt));
         JSONObject jsonObject = httpHander.makeHttpRequest(API_URL, "POST", params);
@@ -53,7 +53,7 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
                 for (int i = 0; i < jsonArray.length(); i++) {
                     m = new Comic();
                     JSONObject c = jsonArray.getJSONObject(i);
-                    Log.e("ALL THE STUFF", c.toString());
+//                    Log.e("ALL THE STUFF", c.toString());
                     m=comicUtils.convertFromJSONObject(c);
 //                    m.setId(c.getInt(m.TAG_PID));
 //                    m.setName(c.getString(m.TAG_NAME));

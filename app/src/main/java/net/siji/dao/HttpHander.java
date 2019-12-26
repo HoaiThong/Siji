@@ -96,7 +96,7 @@ public class HttpHander {
 //            Log.e("Buffer Error", "Error converting result " + e.toString());
 //        }
 //
-        Log.e("JSON printf", "json " + json.toString());
+//        Log.e("JSON printf", "json " + json.toString());
 
         try {
             jObj = new JSONObject(json);
@@ -106,7 +106,7 @@ public class HttpHander {
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
+//            Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
 
         // return JSON String

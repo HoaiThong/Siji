@@ -63,7 +63,7 @@ public class LoadListChapterAsyncTask extends AsyncTask<String, String, List<Cha
                 for (int i = 0; i < jsonArray.length(); i++) {
                     c = new Chapter();
                     JSONObject o = jsonArray.getJSONObject(i);
-                    Log.e("ALL THE STUFF", o.toString());
+//                    Log.e("ALL THE STUFF", o.toString());
                     c.setChapter((float) o.getDouble("chapter"));
                     if (o.isNull("chapterComic")) {
                         c.setPrice((float) o.getDouble("realprice"));

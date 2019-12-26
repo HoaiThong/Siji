@@ -40,8 +40,8 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
         String startAt=args[1];
         String idCustomer=args[0];
         String API_URL=args[2];
-        Log.e("start At", startAt);
-        Log.e("API", API_URL);
+//        Log.e("start At", startAt);
+//        Log.e("API", API_URL);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("startAt", startAt));
         params.add(new BasicNameValuePair("idCustomer", idCustomer));
@@ -56,8 +56,8 @@ public class LoadDataAsyncTask extends AsyncTask<String, String, ArrayList<Comic
                     m = new Comic();
                     JSONObject c = jsonArray.getJSONObject(i);
                     m=comicUtils.convertFromJSONObject(c);
-                    Log.e("ALL THE STUFF", c.toString());
-                    Log.e("obj", c.get("name").toString().trim());
+//                    Log.e("ALL THE STUFF", c.toString());
+//                    Log.e("obj", c.get("name").toString().trim());
 //                    m.setId(c.getInt(m.TAG_PID));
 //                    m.setName(c.getString(m.TAG_NAME).trim());
 //                    m.setNewChapter(c.getString(m.TAG_NEW_CHAP).trim());
