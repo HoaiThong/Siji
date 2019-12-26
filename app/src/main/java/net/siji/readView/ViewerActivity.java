@@ -33,6 +33,8 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import net.siji.adsFb.InterstitialAdFacebook;
+import net.siji.adsFb.NativeAdFacebook;
 import net.siji.adsGg.RewardGgAds;
 import net.siji.R;
 import net.siji.dao.ItemClickListener;
@@ -185,6 +187,9 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     private RewardDialog rewardDialog;
     RewardGgAds rewardGgAds;
     private int flagWallet = -3;
+    private LoadingDialog loadingDialog;
+    private static int flagShowAdFacebook = 0;
+    private InterstitialAdFacebook interstitialAdFacebook;
 
     private boolean isShowReward = false;
 
@@ -194,10 +199,11 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
         setContentView(R.layout.activity_viewer);
         rewardDialog = new RewardDialog(this, getSupportFragmentManager());
+
         init();
         initFab();
 //        initRewardAds();
-        final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+        loadingDialog = new LoadingDialog(getSupportFragmentManager());
         loadingDialog.show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -206,18 +212,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 //                loadTranslator();
                 loadDistinctChapters();
                 initChapterMenu();
-                flagWallet = executeWallet();
-                if (flagWallet == -1) {
-                    loadingDialog.dismiss();
-                    rewardDialog.show();
-                    rewardDialog.setCancelable(false);
-                } else if (flagWallet >= 0) {
-                    loadContentChapter();
-                    processData();
-                    initTranslator();
-                    initViewMode();
-                }
-                loadingDialog.dismiss();
+                load();
             }
         }, 2000);
 
@@ -351,7 +346,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 posit = position;
                 chapter = linkedList.get(position);
-                final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+                loadingDialog = new LoadingDialog(getSupportFragmentManager());
                 loadingDialog.show();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -646,6 +641,46 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         mContentView.scrollTo(0, 0);
     }
 
+    public void load() {
+        interstitialAdFacebook = new InterstitialAdFacebook(this);
+
+        flagWallet = executeWallet();
+        if (flagWallet == -1) {
+            loadingDialog.dismiss();
+            rewardDialog.show();
+            rewardDialog.setCancelable(false);
+        }
+        if (flagWallet >= 0) {
+
+            loadContentChapter();
+            processData();
+            initTranslator();
+            initViewMode();
+        }
+        if (flagWallet == -100) {
+            flagShowAdFacebook++;
+            if (flagShowAdFacebook > 2) {
+                flagShowAdFacebook = 0;
+//                NativeAdFacebook nativeAdFacebook = new NativeAdFacebook(this, getSupportFragmentManager());
+//                nativeAdFacebook.show();
+                interstitialAdFacebook.show();
+            }
+            loadContentChapter();
+            processData();
+            initTranslator();
+            initViewMode();
+        }
+        if (flagWallet == -101) {
+            showToast("Hi!");
+        }
+        loadingDialog.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        interstitialAdFacebook.destroy();
+        super.onDestroy();
+    }
 
     @Override
     public void onBackPressed() {
@@ -664,6 +699,11 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         // are available.
         delayedHide(100);
     }
+
+    private void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
 
     private AbsListView.OnScrollListener onScrollListener() {
         return new AbsListView.OnScrollListener() {
@@ -752,27 +792,15 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.action_prev:
 
-                if (posit >= 0 && posit < linkedList.size()-1 ) {
+                if (posit >= 0 && posit < linkedList.size() - 1) {
                     posit++;
                     chapter = linkedList.get(posit);
-                    final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+                    loadingDialog = new LoadingDialog(getSupportFragmentManager());
                     loadingDialog.show();
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            flagWallet = executeWallet();
-                            if (flagWallet == -1) {
-                                loadingDialog.dismiss();
-                                rewardDialog.show();
-                                rewardDialog.setCancelable(false);
-                                posit--;
-                            } else if (flagWallet >= 0) {
-                                loadContentChapter();
-                                processData();
-                                initTranslator();
-                                initViewMode();
-                            }
-                            loadingDialog.dismiss();
+                            load();
                         }
                     }, 100);
                     hide();
@@ -785,24 +813,12 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 if (posit > 0 && posit < linkedList.size()) {
                     posit--;
                     chapter = linkedList.get(posit);
-                    final LoadingDialog loadingDialog = new LoadingDialog(getSupportFragmentManager());
+                    loadingDialog = new LoadingDialog(getSupportFragmentManager());
                     loadingDialog.show();
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            flagWallet = executeWallet();
-                            if (flagWallet == -1) {
-                                loadingDialog.dismiss();
-                                rewardDialog.show();
-                                rewardDialog.setCancelable(false);
-                                posit++;
-                            } else if (flagWallet >= 0) {
-                                loadContentChapter();
-                                processData();
-                                initTranslator();
-                                initViewMode();
-                            }
-                            loadingDialog.dismiss();
+                            load();
                         }
                     }, 100);
                     hide();

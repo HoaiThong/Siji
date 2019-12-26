@@ -36,6 +36,10 @@
     <string name="app_name_fb">Siji</string>
     <string name="FACEBOOK_APP_ID">1375023275989160</string>
     <string name="ACCOUNT_KIT_CLIENT_TOKEN">06208c0606c8b7b0604f9d8831622305</string>
+    <string name="Ad_Facebook_Inters">610775702589870_897625177238253</string>
+    <string name="Ad_Facebook_Native">610775702589870_897623900571714</string>
+
+
     <string name="name">name</string>
     <string name="id">id</string>
     <string name="email">email</string>

@@ -35,6 +35,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import net.siji.MainActivity;
 import net.siji.R;
+import net.siji.adsFb.InterstitialAdFacebook;
+import net.siji.adsFb.NativeAdFacebook;
 import net.siji.dao.BlurBuilder;
 import net.siji.dialog.LoadingDialog;
 import net.siji.dialog.RatingComicDialog;
@@ -102,6 +104,7 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
     private TextView tv_quantity_like, tv_rating_star, tv_tab_chapter, tv_tab_comment;
     private int quantityLike;
     private EditText edt_comment;
+    private InterstitialAdFacebook interstitialAdFacebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +122,10 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         mCollapsingToolbarLayout.setTitle("");
         appBarLayout = findViewById(R.id.app_bar_layout);
+//        interstitialAdFacebook=new InterstitialAdFacebook(this);
+//        interstitialAdFacebook.show();
+//        NativeAdFacebook nativeAdFacebook=new NativeAdFacebook(this,getSupportFragmentManager());
+//        nativeAdFacebook.show();
         showHideTitle();
         setTitle("");
         loadApiUrl();
@@ -513,15 +520,22 @@ public class InforActivity extends AppCompatActivity implements View.OnClickList
         };
     }
 
+//    @Override
+//    protected void onDestroy() {
+//        interstitialAdFacebook.destroy();
+//        super.onDestroy();
+//    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tab_chapter:
                 initChaptersMenu();
+                appBarLayout.setExpanded(false);
                 break;
             case R.id.tab_comment:
                 initComments();
+                appBarLayout.setExpanded(false);
                 break;
             case R.id.tv_quantity_like:
                 if (flagLike.equals("0")) {
